@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>うみと かわの つりびと - いぶちゃん・みーちゃん</title>
+  <title>いぶみー フィッシング</title>
   <meta name="color-scheme" content="only light">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icon-192.png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="つりびと">
+  <meta name="apple-mobile-web-app-title" content="いぶみー">
   <meta name="theme-color" content="#2FB0F0">
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=M+PLUS+Rounded+1c:wght@700;800;900&display=swap" rel="stylesheet">
   <style>
@@ -198,6 +198,24 @@
     .friend { display: flex; align-items: center; gap: 0.8rem; padding: 0.6rem 0.9rem; border-radius: 1.2rem; background: linear-gradient(135deg, #FFF3C4, #FFE08A); font-weight: 900; text-align: left; animation: bob 2s ease-in-out infinite; }
     .friend img { width: 4.5rem; height: 4.5rem; object-fit: contain; }
     .friend b { font-size: 1.3rem; }
+    .trip-opts { display: flex; flex-direction: column; gap: 0.6rem; }
+    .trip-opts .sub { display: block; margin-top: 0.3rem; font-weight: 800; color: var(--ink-soft); font-size: 0.75rem; }
+    .dchips button.lock { background: #EEF2F5; color: #9AB0C0; }
+    .home-go { padding: 0.5rem 1rem; font-size: 1.05rem; border-radius: 999px; }
+    .trip-scene { position: relative; height: 15rem; border-radius: 1.4rem; background: linear-gradient(180deg, #FFD9A8, #FFB58A 60%, #2E9CC8 61%, #0E5A86); overflow: hidden; }
+    .trip-av { position: absolute; left: 8%; bottom: 4%; height: 80%; }
+    .trip-pk { position: absolute; right: 10%; bottom: 10%; height: 45%; }
+    .trip-say { position: absolute; left: 50%; top: 8%; transform: translateX(-50%); max-width: 70%; padding: 0.5rem 0.9rem; border-radius: 1rem; background: #FFF; font-weight: 900; box-shadow: 0 6px 14px rgba(0,0,0,0.2); }
+    .trip-lines p { margin: 0.2rem 0; font-weight: 900; font-size: 1.1rem; }
+    .mgrid.small { grid-template-columns: repeat(auto-fill, minmax(6rem, 1fr)); max-height: 14rem; overflow-y: auto; }
+    .tank { position: relative; height: 11rem; border-radius: 1.4rem; overflow: hidden; box-shadow: 0 10px 22px var(--shadow), inset 0 0 0 0.5rem #CDE6F2; background: #DFF3FB; }
+    .tank-water { position: absolute; inset: 0.5rem; border-radius: 1rem; overflow: hidden; background: linear-gradient(180deg, #8ED8F2, #2E9CC8); }
+    .tank-sand { position: absolute; left: 0; right: 0; bottom: 0; height: 18%; background: #E8D4A0; border-radius: 50% 50% 0 0 / 30% 30% 0 0; }
+    .tank-fish { position: absolute; left: 0; animation: tankswim linear infinite; cursor: pointer; }
+    @keyframes tankswim { 0% { transform: translateX(-30%) scaleX(-1); } 49% { transform: translateX(260%) scaleX(-1); } 50% { transform: translateX(260%) scaleX(1); } 100% { transform: translateX(-30%) scaleX(1); } }
+    .tank-lbl { position: absolute; left: 1rem; top: 0.8rem; padding: 0.2rem 0.6rem; border-radius: 999px; background: rgba(255,255,255,0.85); font-weight: 900; font-size: 0.85rem; }
+    .tankbtn { padding: 0.6rem 0.7rem; font-size: 0.9rem; }
+    .av-ico { width: 3.4rem !important; }
     .toast { position: fixed; left: 50%; bottom: 2rem; z-index: 80; transform: translateX(-50%); padding: 0.7rem 1.2rem; border-radius: 999px; background: #12324A; color: #FFF; font-weight: 900; opacity: 0; transition: opacity 0.25s; pointer-events: none; white-space: nowrap; }
     .toast.show { opacity: 1; }
     .switch { display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 900; }
@@ -340,7 +358,7 @@
 <section id="title" class="screen show">
   <div class="title-box">
     <p class="kicker">いぶちゃん＆みーちゃんの</p>
-    <h1>うみと かわの つりびと</h1>
+    <h1>いぶみー フィッシング</h1>
     <div class="title-fish" id="title-fish"></div>
     <div class="players" id="players"></div>
   </div>
@@ -362,6 +380,7 @@
       <div class="bubble" id="home-bubble">きょうは なにを つる？</div>
     </div>
     <div class="stat-row" id="home-stats"></div>
+    <div class="tank" id="home-tank" style="display:none"></div>
     <div class="home-grid">
       <button class="btn primary go" id="go-btn"><span class="big">🎣</span>つりに いく！</button>
       <button class="btn" id="zukan-btn"><span class="big">📖</span>ずかん</button>
@@ -385,6 +404,7 @@
     <div class="area-list" id="area-list"></div>
     <p class="hint" id="method-hint">つりかたを えらんでね</p>
     <div class="methods" id="methods"></div>
+    <div class="trip-opts" id="trip-opts"></div>
     <button class="btn primary" id="start-btn" style="font-size:1.5rem;">しゅっぱつ！</button>
   </div>
 </section>
@@ -394,7 +414,7 @@
   <div id="scene"></div>
   <svg id="lines"></svg>
   <div class="hud">
-    <button class="round-btn" id="fish-back" aria-label="もどる">←</button>
+    <button class="btn home-go" id="fish-back">🏠 かえる</button>
     <span class="chip" id="fish-where"></span>
     <span class="sp"></span>
     <span class="chip" id="fish-cool">🧊 0</span>
@@ -422,7 +442,7 @@
 <section id="shop" class="screen">
   <div class="wrap">
     <div class="topbar"><button class="round-btn" id="shop-back" aria-label="もどる">←</button><h2>おみせ</h2><span class="chip money" id="shop-money"></span></div>
-    <div class="tabs" id="shop-tabs"><button data-t="sell" class="on">🐟 うる</button><button data-t="tool">🎣 どうぐ</button><button data-t="ticket">⛴️ ふねの きっぷ</button></div>
+    <div class="tabs" id="shop-tabs"><button data-t="sell" class="on">🐟 うる</button><button data-t="tool">🎣 どうぐ</button><button data-t="ticket">⛴️ ふねの きっぷ</button><button data-t="clothes">👗 ふく</button><button data-t="special">✨ とくべつ</button></div>
     <div class="shop-list" id="shop-list"></div>
   </div>
 </section>
@@ -430,7 +450,7 @@
 <!-- しおひがり -->
 <section id="dig" class="screen">
   <div id="dig-field"></div>
-  <div class="hud"><button class="round-btn" id="dig-back" aria-label="もどる">←</button><span class="chip">🐚 しおひがり</span><span class="sp"></span><span class="chip" id="dig-count">🪣 0</span></div>
+  <div class="hud"><button class="btn home-go" id="dig-back">🏠 かえる</button><span class="chip">🐚 しおひがり</span><span class="sp"></span><span class="chip" id="dig-count">🪣 0</span></div>
   <div class="tide"><i id="tide-bar"></i><span>しおが みちてくるまで</span></div>
   <div class="controls"><button class="act blue" id="salt-btn">🧂 しお</button><span></span></div>
 </section>
@@ -438,7 +458,7 @@
 <!-- もぐり -->
 <section id="dive" class="screen">
   <div id="dive-field"></div>
-  <div class="hud"><button class="round-btn" id="dive-back" aria-label="もどる">←</button><span class="chip">🤿 もぐり</span><span class="sp"></span><span class="chip" id="dive-count">🧺 0</span></div>
+  <div class="hud"><button class="btn home-go" id="dive-back">🏠 あがる</button><span class="chip">🤿 もぐり</span><span class="sp"></span><span class="chip" id="dive-count">🧺 0</span></div>
   <div class="tide breath"><i id="breath-bar"></i><span>いき</span></div>
 </section>
 
@@ -483,6 +503,7 @@
 </section>
 
 <div class="modal" id="eat"><div class="box" id="eat-box"></div></div>
+<div class="modal" id="trip"><div class="box" id="trip-box"></div></div>
 <div class="modal" id="multi"><div class="box" id="multi-box"></div></div>
 <div class="modal" id="result"><div class="box" id="result-box"></div></div>
 <div class="modal" id="zdetail"><div class="box" id="zdetail-box"></div></div>
@@ -1203,6 +1224,7 @@ const RODS = [
   { n: 'じょうぶな さお', price: 1500, power: 1.5, limit: 1.25 },
   { n: 'つよい さお', price: 6000, power: 2.2, limit: 1.6 },
   { n: 'マグロざお', price: 20000, power: 3.2, limit: 2.2 },
+  { n: 'きんの さお', price: 50000, power: 4.2, limit: 3 },
 ];
 const COOLERS = [{ n: 'ちいさい クーラー', cap: 6, price: 0 }, { n: 'おおきい クーラー', cap: 15, price: 800 }, { n: 'ジャンボ クーラー', cap: 30, price: 3000 }];
 
@@ -1458,7 +1480,7 @@ function elementCenter(el) { const r = el.getBoundingClientRect(); return { x: r
 
 function sfx(t) { snd('tap'); }
 // =========================================================
-// ▼▼ アバター（SVG で かく きせかえ にんぎょう）▼▼
+// ▼▼ アバター（SVG の きせかえ にんぎょう：せんが・かげ・ツヤ いり）▼▼
 // =========================================================
 const AV_OPTS = {
   face: [['slim', 'ほっそり'], ['round', 'まるがお']],
@@ -1469,89 +1491,131 @@ const AV_OPTS = {
   top: ['#FF7A9A', '#FFB020', '#3CC48A', '#2FA6F0', '#8F6BFF', '#FFFFFF', '#F2545B', '#2E3A59'],
   bottom: [['skirt', 'スカート'], ['shorts', 'ショートパンツ'], ['pants', 'ながズボン']],
   bottomColor: ['#2E3A59', '#5A7AE0', '#E8607A', '#F2C14E', '#6E5A48', '#FFFFFF'],
-  hat: [['none', 'なし'], ['straw', 'むぎわら'], ['cap', 'キャップ'], ['ribbon', 'リボン'], ['beanie', 'ニット']],
+  outfit: [['none', 'なし'], ['life', 'ライフジャケット'], ['yukata', 'ゆかた'], ['wet', 'ウェットスーツ'], ['mermaid', 'にんぎょひめ'], ['chef', 'コックさん']],
+  hat: [['none', 'なし'], ['straw', 'むぎわら'], ['cap', 'キャップ'], ['ribbon', 'リボン'], ['beanie', 'ニット'], ['pirate', 'かいぞく'], ['crown', 'おうかん'], ['fish', 'おさかな']],
   hatColor: ['#F2545B', '#2FA6F0', '#FFB020', '#3CC48A', '#FF8FB1', '#2E3A59'],
+  acc: [['none', 'なし'], ['sun', 'サングラス'], ['flower', 'はなかざり'], ['star', 'ほしの かみどめ']],
+};
+// おかねで かう もの（ここに ない ものは さいしょから つかえる）
+const AV_SHOP = {
+  'outfit:life': 800, 'outfit:yukata': 2500, 'outfit:wet': 3000, 'outfit:mermaid': 6000, 'outfit:chef': 2000,
+  'hat:pirate': 1500, 'hat:crown': 8000, 'hat:fish': 1200, 'acc:sun': 600, 'acc:flower': 500, 'acc:star': 700,
 };
 const AV_DEFAULT = {
-  ibu: { face: 'slim', eyes: 'cool', hair: 'straight', hairColor: '#2B211C', skin: '#FFE6D2', top: '#FF7A9A', bottom: 'skirt', bottomColor: '#2E3A59', hat: 'straw', hatColor: '#F2545B' },
-  mii: { face: 'round', eyes: 'big', hair: 'ringlet', hairColor: '#4A3326', skin: '#FFE6D2', top: '#2FA6F0', bottom: 'shorts', bottomColor: '#F2C14E', hat: 'ribbon', hatColor: '#FF8FB1' },
+  ibu: { face: 'slim', eyes: 'cool', hair: 'straight', hairColor: '#2B211C', skin: '#FFE6D2', top: '#FF7A9A', bottom: 'skirt', bottomColor: '#2E3A59', hat: 'straw', hatColor: '#F2545B', outfit: 'none', acc: 'none' },
+  mii: { face: 'round', eyes: 'big', hair: 'ringlet', hairColor: '#4A3326', skin: '#FFE6D2', top: '#2FA6F0', bottom: 'shorts', bottomColor: '#F2C14E', hat: 'ribbon', hatColor: '#FF8FB1', outfit: 'none', acc: 'none' },
 };
 function shade(hex, k) {
   const n = parseInt(hex.slice(1), 16), r = n >> 16, g = (n >> 8) & 255, b = n & 255;
-  const f = (c) => Math.round(clamp(k < 0 ? c * (1 + k) : c + (255 - c) * k, 0, 255)).toString(16).padStart(2, '0');
+  const f = (c) => Math.round(Math.max(0, Math.min(255, k < 0 ? c * (1 + k) : c + (255 - c) * k))).toString(16).padStart(2, '0');
   return '#' + f(r) + f(g) + f(b);
 }
-function drawAvatar(a, opt = {}) {
-  const hc = a.hairColor, hd = shade(hc, -0.35), hl = shade(hc, 0.35), sk = a.skin, skd = shade(sk, -0.12), ln = '#3A2A26';
+let _avid = 0;
+function drawAvatar(a0, opt = {}) {
+  const a = { outfit: 'none', acc: 'none', ...a0 };
+  const id = 'av' + (++_avid);
+  const hc = a.hairColor, hd = shade(hc, -0.45), hl = shade(hc, 0.55), sk = a.skin, skd = shade(sk, -0.14), skl = shade(sk, 0.35);
+  const ln = '#4A2E26', LW = 1.5;
   const round = a.face === 'round';
-  const cx = 60, cy = 58, rx = round ? 31 : 27, ry = round ? 29 : 31;
-  // かお の りんかく
+  const cx = 60, cy = 58, rx = round ? 31 : 27.5, ry = round ? 29 : 31;
+  const top = cy - ry - 4;
+  const HS = `fill="url(#${id}h)" stroke="${hd}" stroke-width="1.3" stroke-linejoin="round"`;
   const face = round
     ? `M${cx - rx},${cy} C${cx - rx},${cy - ry * 1.05} ${cx + rx},${cy - ry * 1.05} ${cx + rx},${cy} C${cx + rx},${cy + ry * 0.9} ${cx + 12},${cy + ry + 2} ${cx},${cy + ry + 2} C${cx - 12},${cy + ry + 2} ${cx - rx},${cy + ry * 0.9} ${cx - rx},${cy} Z`
     : `M${cx - rx},${cy - 2} C${cx - rx},${cy - ry * 1.05} ${cx + rx},${cy - ry * 1.05} ${cx + rx},${cy - 2} C${cx + rx},${cy + ry * 0.55} ${cx + 9},${cy + ry + 1} ${cx},${cy + ry + 2} C${cx - 9},${cy + ry + 1} ${cx - rx},${cy + ry * 0.55} ${cx - rx},${cy - 2} Z`;
-  // かみ（うしろ）
+  // ---------- かみ ----------
   let back = '', front = '', extra = '';
-  const top = cy - ry - 4;
+  const ring = (y, w) => `<path d="M${cx - w},${y + 3} Q${cx},${y - 4} ${cx + w},${y + 3}" stroke="${hl}" stroke-width="3.2" fill="none" opacity="0.55" stroke-linecap="round"/>`;
+  const strands = (xs, y0, y1) => xs.map(x => `<path d="M${cx + x},${y0} Q${cx + x * 1.08},${(y0 + y1) / 2} ${cx + x * 1.02},${y1}" stroke="${hd}" stroke-width="0.9" fill="none" opacity="0.55"/>`).join('');
   if (a.hair === 'straight') {
-    back = `<path d="M${cx - rx - 3},${cy - 6} C${cx - rx - 6},${top + 4} ${cx + rx + 6},${top + 4} ${cx + rx + 3},${cy - 6} L${cx + rx + 2},${cy + 58} Q${cx + 16},${cy + 64} ${cx},${cy + 62} Q${cx - 16},${cy + 64} ${cx - rx - 2},${cy + 58} Z" fill="${hc}"/>`
-      + [-20, -8, 6, 18].map(x => `<path d="M${cx + x},${cy + 10} L${cx + x * 1.05},${cy + 60}" stroke="${hl}" stroke-width="1.4" opacity="0.5"/>`).join('');
-    front = `<path d="M${cx - rx - 2},${cy - 2} C${cx - rx - 4},${top - 2} ${cx + rx + 4},${top - 2} ${cx + rx + 2},${cy - 2} L${cx + rx - 2},${cy - 10} Q${cx + 18},${cy - 22} ${cx + 10},${cy - 12} L${cx + 6},${cy - 20} Q${cx},${cy - 10} ${cx - 4},${cy - 14} L${cx - 10},${cy - 8} Q${cx - 16},${cy - 22} ${cx - rx + 2},${cy - 8} Z" fill="${hc}"/>`
-      + `<path d="M${cx - 14},${top + 6} Q${cx},${top + 10} ${cx + 16},${top + 16}" stroke="${hl}" stroke-width="2.4" fill="none" opacity="0.6"/>`
-      + `<path d="M${cx - rx - 2},${cy - 4} L${cx - rx - 1},${cy + 40} L${cx - rx + 4},${cy + 38} L${cx - rx + 3},${cy} Z M${cx + rx + 2},${cy - 4} L${cx + rx + 1},${cy + 40} L${cx + rx - 4},${cy + 38} L${cx + rx - 3},${cy} Z" fill="${hc}"/>`;
+    back = `<path d="M${cx - rx - 3},${cy - 6} C${cx - rx - 6},${top + 4} ${cx + rx + 6},${top + 4} ${cx + rx + 3},${cy - 6} L${cx + rx + 2},${cy + 58} Q${cx + 16},${cy + 63} ${cx},${cy + 61} Q${cx - 16},${cy + 63} ${cx - rx - 2},${cy + 58} Z" ${HS}/>` + strands([-22, -12, -2, 9, 19], cy + 6, cy + 60);
+    front = `<path d="M${cx - rx - 2},${cy - 2} C${cx - rx - 4},${top - 2} ${cx + rx + 4},${top - 2} ${cx + rx + 2},${cy - 2} L${cx + rx - 2},${cy - 10} Q${cx + 18},${cy - 22} ${cx + 10},${cy - 12} L${cx + 6},${cy - 20} Q${cx},${cy - 10} ${cx - 4},${cy - 14} L${cx - 10},${cy - 8} Q${cx - 16},${cy - 22} ${cx - rx + 2},${cy - 8} Z" ${HS}/>`
+      + `<path d="M${cx - rx - 2},${cy - 4} L${cx - rx - 1},${cy + 42} L${cx - rx + 4},${cy + 40} L${cx - rx + 3},${cy} Z M${cx + rx + 2},${cy - 4} L${cx + rx + 1},${cy + 42} L${cx + rx - 4},${cy + 40} L${cx + rx - 3},${cy} Z" ${HS}/>`
+      + ring(top + 11, 16) + strands([-8, 2, 12], top + 6, cy - 14);
   } else if (a.hair === 'ringlet') {
-    const curl = (x, y, s) => `<g transform="translate(${x},${y}) scale(${s})"><path d="M0,0 C-9,4 -9,12 0,14 C9,16 9,24 0,26 C-9,28 -9,36 0,38 C7,40 8,46 2,48" fill="none" stroke="${hc}" stroke-width="9" stroke-linecap="round"/><path d="M-2,2 C-6,5 -6,10 -1,12 M-2,16 C-6,19 -6,24 -1,26 M-2,30 C-6,33 -6,38 -1,40" fill="none" stroke="${hl}" stroke-width="1.8" stroke-linecap="round" opacity="0.7"/></g>`;
+    const cp = 'M0,0 C-10,4 -10,12 0,14 C10,16 10,24 0,26 C-10,28 -10,36 0,38 C8,40 9,46 2,48';
+    const curl = (x, y, s) => `<g transform="translate(${x},${y}) scale(${s})"><path d="${cp}" fill="none" stroke="${hd}" stroke-width="11" stroke-linecap="round"/><path d="${cp}" fill="none" stroke="${hc}" stroke-width="8.4" stroke-linecap="round"/><path d="M-3,3 C-7,6 -7,10 -2,12 M-3,17 C-7,20 -7,24 -2,26 M-3,31 C-7,34 -7,38 -2,40" fill="none" stroke="${hl}" stroke-width="1.8" stroke-linecap="round" opacity="0.75"/></g>`;
     back = `<path d="M${cx - rx - 6},${cy + 6} C${cx - rx - 10},${top - 6} ${cx + rx + 10},${top - 6} ${cx + rx + 6},${cy + 6} L${cx + rx + 2},${cy + 30} L${cx - rx - 2},${cy + 30} Z" fill="${hd}"/>`;
-    extra = [[-rx - 4, 0, 1], [-rx + 4, 6, 0.9], [rx + 4, 0, 1], [rx - 4, 6, 0.9]].map(([dx, dy, s]) => curl(cx + dx, cy - 2 + dy, s)).join('');
-    front = `<path d="M${cx - rx - 4},${cy + 2} C${cx - rx - 8},${top - 6} ${cx + rx + 8},${top - 6} ${cx + rx + 4},${cy + 2} Q${cx + rx},${cy - 14} ${cx + 16},${cy - 14} Q${cx + 12},${cy - 6} ${cx + 4},${cy - 12} Q${cx - 2},${cy - 4} ${cx - 8},${cy - 13} Q${cx - 16},${cy - 6} ${cx - 20},${cy - 14} Q${cx - rx},${cy - 14} ${cx - rx - 4},${cy + 2} Z" fill="${hc}"/>`
-      + `<path d="M${cx - 16},${top + 10} Q${cx},${top + 4} ${cx + 18},${top + 12}" stroke="${hl}" stroke-width="2.6" fill="none" opacity="0.6"/>`;
+    back += [[-rx - 2, 10, 0.95], [rx + 2, 10, 0.95]].map(([dx, dy, s]) => curl(cx + dx, cy - 2 + dy, s)).join('');
+    extra = [[-rx - 6, -2, 1], [rx + 6, -2, 1]].map(([dx, dy, s]) => curl(cx + dx, cy - 2 + dy, s)).join('');
+    front = `<path d="M${cx - rx - 4},${cy + 2} C${cx - rx - 8},${top - 6} ${cx + rx + 8},${top - 6} ${cx + rx + 4},${cy + 2} Q${cx + rx},${cy - 14} ${cx + 16},${cy - 14} Q${cx + 12},${cy - 6} ${cx + 4},${cy - 12} Q${cx - 2},${cy - 4} ${cx - 8},${cy - 13} Q${cx - 16},${cy - 6} ${cx - 20},${cy - 14} Q${cx - rx},${cy - 14} ${cx - rx - 4},${cy + 2} Z" ${HS}/>` + ring(top + 9, 18);
   } else if (a.hair === 'bob') {
-    back = `<path d="M${cx - rx - 6},${cy} C${cx - rx - 8},${top} ${cx + rx + 8},${top} ${cx + rx + 6},${cy} L${cx + rx + 6},${cy + 26} Q${cx},${cy + 34} ${cx - rx - 6},${cy + 26} Z" fill="${hc}"/>`;
-    front = `<path d="M${cx - rx - 5},${cy + 4} C${cx - rx - 8},${top - 4} ${cx + rx + 8},${top - 4} ${cx + rx + 5},${cy + 4} L${cx + rx - 1},${cy - 9} Q${cx},${cy - 15} ${cx - rx + 1},${cy - 9} Z" fill="${hc}"/><path d="M${cx - 14},${top + 13} Q${cx},${top + 8} ${cx + 16},${top + 14}" stroke="${hl}" stroke-width="2.6" fill="none" opacity="0.6"/>`;
+    back = `<path d="M${cx - rx - 6},${cy} C${cx - rx - 8},${top} ${cx + rx + 8},${top} ${cx + rx + 6},${cy} L${cx + rx + 6},${cy + 26} Q${cx},${cy + 34} ${cx - rx - 6},${cy + 26} Z" ${HS}/>`;
+    front = `<path d="M${cx - rx - 5},${cy + 4} C${cx - rx - 8},${top - 4} ${cx + rx + 8},${top - 4} ${cx + rx + 5},${cy + 4} L${cx + rx - 1},${cy - 9} Q${cx},${cy - 15} ${cx - rx + 1},${cy - 9} Z" ${HS}/>` + ring(top + 12, 17);
   } else if (a.hair === 'short') {
-    front = `<path d="M${cx - rx - 3},${cy + 2} C${cx - rx - 6},${top - 6} ${cx + rx + 6},${top - 6} ${cx + rx + 3},${cy + 2} L${cx + rx},${cy - 10} Q${cx + 10},${cy - 22} ${cx - 6},${cy - 12} Q${cx - 16},${cy - 20} ${cx - rx},${cy - 8} Z" fill="${hc}"/><path d="M${cx - 14},${top + 13} Q${cx},${top + 8} ${cx + 16},${top + 14}" stroke="${hl}" stroke-width="2.6" fill="none" opacity="0.6"/>`;
+    front = `<path d="M${cx - rx - 3},${cy + 2} C${cx - rx - 6},${top - 6} ${cx + rx + 6},${top - 6} ${cx + rx + 3},${cy + 2} L${cx + rx},${cy - 10} Q${cx + 10},${cy - 22} ${cx - 6},${cy - 12} Q${cx - 16},${cy - 20} ${cx - rx},${cy - 8} Z" ${HS}/>` + ring(top + 11, 16);
   } else {
-    // ポニー・ツイン・おだんご は まえがみ ＋ むすぶ
-    front = `<path d="M${cx - rx - 3},${cy} C${cx - rx - 6},${top - 4} ${cx + rx + 6},${top - 4} ${cx + rx + 3},${cy} L${cx + rx},${cy - 10} Q${cx + 14},${cy - 20} ${cx + 4},${cy - 12} Q${cx - 6},${cy - 20} ${cx - 12},${cy - 10} Q${cx - 20},${cy - 18} ${cx - rx},${cy - 8} Z" fill="${hc}"/><path d="M${cx - 14},${top + 13} Q${cx},${top + 8} ${cx + 16},${top + 14}" stroke="${hl}" stroke-width="2.6" fill="none" opacity="0.6"/>`;
-    if (a.hair === 'pony') back = `<path d="M${cx + rx - 4},${top + 10} Q${cx + rx + 26},${top + 14} ${cx + rx + 16},${cy + 40} Q${cx + rx + 8},${cy + 10} ${cx + rx - 6},${top + 18} Z" fill="${hc}"/><circle cx="${cx + rx - 2}" cy="${top + 13}" r="4" fill="${opt.tie || '#FF5A7A'}"/>`;
-    if (a.hair === 'twin') back = [-1, 1].map(s => `<path d="M${cx + s * (rx - 2)},${cy - 14} Q${cx + s * (rx + 26)},${cy - 6} ${cx + s * (rx + 12)},${cy + 40} Q${cx + s * (rx + 6)},${cy + 6} ${cx + s * (rx - 6)},${cy - 6} Z" fill="${hc}"/><circle cx="${cx + s * (rx + 1)}" cy="${cy - 12}" r="4" fill="${opt.tie || '#FF5A7A'}"/>`).join('');
-    if (a.hair === 'bun') back = `<circle cx="${cx}" cy="${top - 4}" r="13" fill="${hc}"/><path d="M${cx - 8},${top - 8} Q${cx},${top - 14} ${cx + 8},${top - 6}" stroke="${hl}" stroke-width="2" fill="none" opacity="0.6"/>`;
+    front = `<path d="M${cx - rx - 3},${cy} C${cx - rx - 6},${top - 4} ${cx + rx + 6},${top - 4} ${cx + rx + 3},${cy} L${cx + rx},${cy - 10} Q${cx + 14},${cy - 20} ${cx + 4},${cy - 12} Q${cx - 6},${cy - 20} ${cx - 12},${cy - 10} Q${cx - 20},${cy - 18} ${cx - rx},${cy - 8} Z" ${HS}/>` + ring(top + 11, 16);
+    const tie = a.hatColor || '#FF5A7A';
+    if (a.hair === 'pony') back = `<path d="M${cx + rx - 4},${top + 10} Q${cx + rx + 28},${top + 14} ${cx + rx + 16},${cy + 42} Q${cx + rx + 8},${cy + 10} ${cx + rx - 6},${top + 18} Z" ${HS}/><circle cx="${cx + rx - 2}" cy="${top + 13}" r="4" fill="${tie}" stroke="${shade(tie, -0.3)}"/>`;
+    if (a.hair === 'twin') back = [-1, 1].map(s => `<path d="M${cx + s * (rx - 2)},${cy - 14} Q${cx + s * (rx + 28)},${cy - 6} ${cx + s * (rx + 12)},${cy + 42} Q${cx + s * (rx + 6)},${cy + 6} ${cx + s * (rx - 6)},${cy - 6} Z" ${HS}/><circle cx="${cx + s * (rx + 1)}" cy="${cy - 12}" r="4" fill="${tie}" stroke="${shade(tie, -0.3)}"/>`).join('');
+    if (a.hair === 'bun') back = `<circle cx="${cx}" cy="${top - 4}" r="13" ${HS}/><path d="M${cx - 8},${top - 10} Q${cx},${top - 15} ${cx + 8},${top - 8}" stroke="${hl}" stroke-width="2.4" fill="none" opacity="0.6"/>`;
   }
-  // め
-  const ey = cy + 4, ex = round ? 12 : 11;
+  // ---------- め ----------
+  const ey = cy + 4, ex = round ? 12 : 11, iris = `url(#${id}i)`, browC = shade(a.hairColor, 0.15);
   let eyes = '', brows = '';
   if (a.eyes === 'cool') {
-    eyes = [-1, 1].map(s => `<path d="M${cx + s * ex - 6},${ey} Q${cx + s * ex},${ey - 4.5} ${cx + s * ex + 6},${ey}" stroke="${ln}" stroke-width="2" fill="none" stroke-linecap="round"/><ellipse cx="${cx + s * ex}" cy="${ey + 1}" rx="3.2" ry="3.8" fill="${ln}"/><circle cx="${cx + s * ex - 1}" cy="${ey - 0.4}" r="1.1" fill="#FFF"/>`).join('');
-    brows = [-1, 1].map(s => `<path d="M${cx + s * ex - 5},${ey - 9} Q${cx + s * ex},${ey - 11} ${cx + s * ex + 5},${ey - 9.5}" stroke="${shade(a.hairColor, 0.15)}" stroke-width="1.3" fill="none" stroke-linecap="round"/>`).join('');
-  } else if (a.eyes === 'big') {
-    eyes = [-1, 1].map(s => `<ellipse cx="${cx + s * ex}" cy="${ey + 1}" rx="6" ry="7.5" fill="#FFF"/><ellipse cx="${cx + s * ex}" cy="${ey + 2}" rx="5" ry="6.6" fill="#4A2E22"/><ellipse cx="${cx + s * ex}" cy="${ey + 3}" rx="3" ry="4" fill="#1E1410"/><circle cx="${cx + s * ex - 1.8}" cy="${ey - 1.2}" r="2.2" fill="#FFF"/><circle cx="${cx + s * ex + 2}" cy="${ey + 4.5}" r="1" fill="#FFF"/><path d="M${cx + s * ex - 7},${ey - 4} Q${cx + s * ex},${ey - 10} ${cx + s * ex + 7},${ey - 4}" stroke="${ln}" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M${cx + s * (ex + 6)},${ey - 5} l${s * 3},-3" stroke="${ln}" stroke-width="1.6" stroke-linecap="round"/>`).join('');
-    brows = [-1, 1].map(s => `<path d="M${cx + s * ex - 5},${ey - 13} Q${cx + s * ex},${ey - 15} ${cx + s * ex + 5},${ey - 13}" stroke="${shade(a.hairColor, 0.1)}" stroke-width="1.6" fill="none" stroke-linecap="round"/>`).join('');
-  } else if (a.eyes === 'smile') {
-    eyes = [-1, 1].map(s => `<path d="M${cx + s * ex - 5},${ey + 1} Q${cx + s * ex},${ey - 5} ${cx + s * ex + 5},${ey + 1}" stroke="${ln}" stroke-width="2.6" fill="none" stroke-linecap="round"/>`).join('');
+    eyes = [-1, 1].map(s => { const x = cx + s * ex; return `<path d="M${x - 6},${ey + 0.5} Q${x},${ey - 4.5} ${x + 6},${ey + 0.5} Q${x},${ey + 4} ${x - 6},${ey + 0.5} Z" fill="#FFF"/><ellipse cx="${x}" cy="${ey + 0.6}" rx="3.3" ry="3.7" fill="${iris}"/><circle cx="${x}" cy="${ey + 0.8}" r="1.5" fill="#1A100C"/><circle cx="${x - 1.2}" cy="${ey - 0.8}" r="1.1" fill="#FFF"/><path d="M${x - 6.5},${ey + 0.8} Q${x},${ey - 5.2} ${x + 6.5},${ey + 0.2}" stroke="${ln}" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M${x + s * 6.2},${ey + 0.4} l${s * 2.2},-1.4" stroke="${ln}" stroke-width="1.3" stroke-linecap="round"/>`; }).join('');
+    brows = [-1, 1].map(s => `<path d="M${cx + s * ex - 5},${ey - 9} Q${cx + s * ex},${ey - 11} ${cx + s * ex + 5},${ey - 9.5}" stroke="${browC}" stroke-width="1.3" fill="none" stroke-linecap="round"/>`).join('');
+  } else if (a.eyes === 'big' || a.eyes === 'normal') {
+    const big = a.eyes === 'big', erx = big ? 6 : 4.6, ery = big ? 7.6 : 6;
+    eyes = [-1, 1].map(s => { const x = cx + s * ex; return `<ellipse cx="${x}" cy="${ey + 1}" rx="${erx}" ry="${ery}" fill="#FFF"/><ellipse cx="${x}" cy="${ey + 1.8}" rx="${erx - 0.9}" ry="${ery - 1}" fill="${iris}"/><ellipse cx="${x}" cy="${ey + 2.6}" rx="${erx * 0.45}" ry="${ery * 0.45}" fill="#1A100C"/><circle cx="${x - erx * 0.32}" cy="${ey - ery * 0.25}" r="${big ? 2.3 : 1.7}" fill="#FFF"/><circle cx="${x + erx * 0.35}" cy="${ey + ery * 0.5}" r="${big ? 1.1 : 0.8}" fill="#FFF"/><path d="M${x - erx - 1},${ey - ery * 0.45} Q${x},${ey - ery - 3} ${x + erx + 1},${ey - ery * 0.45}" stroke="${ln}" stroke-width="${big ? 2.6 : 2.2}" fill="none" stroke-linecap="round"/>${big ? `<path d="M${x + s * (erx + 0.5)},${ey - ery * 0.5} l${s * 3},-2.6 M${x + s * (erx - 1.5)},${ey - ery * 0.8} l${s * 2.4},-3" stroke="${ln}" stroke-width="1.4" stroke-linecap="round"/><path d="M${x - erx + 1.5},${ey + ery + 0.6} Q${x},${ey + ery + 2} ${x + erx - 1.5},${ey + ery + 0.6}" stroke="${ln}" stroke-width="0.8" fill="none" opacity="0.5"/>` : ''}`; }).join('');
+    brows = [-1, 1].map(s => `<path d="M${cx + s * ex - 5},${ey - (big ? 13 : 11)} Q${cx + s * ex},${ey - (big ? 15 : 13)} ${cx + s * ex + 5},${ey - (big ? 13 : 11)}" stroke="${browC}" stroke-width="1.4" fill="none" stroke-linecap="round"/>`).join('');
   } else {
-    eyes = [-1, 1].map(s => `<ellipse cx="${cx + s * ex}" cy="${ey + 1}" rx="3.8" ry="5" fill="${ln}"/><circle cx="${cx + s * ex - 1.2}" cy="${ey - 1}" r="1.4" fill="#FFF"/>`).join('');
+    eyes = [-1, 1].map(s => `<path d="M${cx + s * ex - 5},${ey + 1} Q${cx + s * ex},${ey - 5} ${cx + s * ex + 5},${ey + 1}" stroke="${ln}" stroke-width="2.6" fill="none" stroke-linecap="round"/>`).join('');
+    brows = [-1, 1].map(s => `<path d="M${cx + s * ex - 5},${ey - 10} Q${cx + s * ex},${ey - 12} ${cx + s * ex + 5},${ey - 10}" stroke="${browC}" stroke-width="1.3" fill="none" stroke-linecap="round"/>`).join('');
   }
-  const mouth = opt.open ? `<ellipse cx="${cx}" cy="${ey + 16}" rx="5.5" ry="5" fill="#C0505A"/><ellipse cx="${cx}" cy="${ey + 18}" rx="3.5" ry="2" fill="#FF9AA0"/>` : `<path d="M${cx - 4},${ey + 14} Q${cx},${ey + 18} ${cx + 4},${ey + 14}" stroke="#C0505A" stroke-width="2" fill="none" stroke-linecap="round"/>`;
-  const cheek = [-1, 1].map(s => `<ellipse cx="${cx + s * (ex + 7)}" cy="${ey + 10}" rx="${round ? 5.5 : 4}" ry="${round ? 3.4 : 2.6}" fill="#FF8FA0" opacity="${round ? 0.55 : 0.35}"/>`).join('');
-  // からだ
-  const tc = a.top, td = shade(tc, -0.18), bc = a.bottomColor, bd = shade(bc, -0.2);
-  let lower;
-  if (a.bottom === 'skirt') lower = `<path d="M40,128 L80,128 L88,152 L32,152 Z" fill="${bc}"/><path d="M48,130 L44,152 M60,130 L60,152 M72,130 L76,152" stroke="${bd}" stroke-width="1.4"/><rect x="45" y="151" width="9" height="30" rx="4" fill="${sk}"/><rect x="66" y="151" width="9" height="30" rx="4" fill="${sk}"/>`;
-  else if (a.bottom === 'shorts') lower = `<path d="M40,126 L80,126 L82,146 L62,146 L60,138 L58,146 L38,146 Z" fill="${bc}"/><rect x="44" y="145" width="10" height="36" rx="4" fill="${sk}"/><rect x="66" y="145" width="10" height="36" rx="4" fill="${sk}"/>`;
-  else lower = `<path d="M40,126 L80,126 L78,182 L64,182 L60,140 L56,182 L42,182 Z" fill="${bc}"/><path d="M60,130 L60,140" stroke="${bd}" stroke-width="1.4"/>`;
-  const shoes = `<ellipse cx="49" cy="184" rx="9" ry="5" fill="#FFFFFF" stroke="#C9D2DA" stroke-width="1.5"/><ellipse cx="71" cy="184" rx="9" ry="5" fill="#FFFFFF" stroke="#C9D2DA" stroke-width="1.5"/>`;
+  const nose = `<path d="M${cx - 0.6},${ey + 8} q1,1.6 2,0.4" stroke="${skd}" stroke-width="1.3" fill="none" stroke-linecap="round"/>`;
+  const mouth = opt.open ? `<path d="M${cx - 5},${ey + 13} Q${cx},${ey + 23} ${cx + 5},${ey + 13} Z" fill="#B8404A" stroke="${ln}" stroke-width="1"/><ellipse cx="${cx}" cy="${ey + 18}" rx="3" ry="1.8" fill="#FF9AA0"/>` : `<path d="M${cx - 4},${ey + 14} Q${cx},${ey + 18} ${cx + 4},${ey + 14}" stroke="#B8404A" stroke-width="1.8" fill="none" stroke-linecap="round"/>`;
+  const cheek = [-1, 1].map(s => `<ellipse cx="${cx + s * (ex + 7)}" cy="${ey + 10}" rx="${round ? 5.5 : 4.2}" ry="${round ? 3.4 : 2.6}" fill="#FF8FA0" opacity="${round ? 0.5 : 0.32}"/>`).join('');
+  const ears = [-1, 1].map(s => `<ellipse cx="${cx + s * (rx - 0.5)}" cy="${cy + 6}" rx="4" ry="6" fill="${sk}" stroke="${ln}" stroke-width="${LW}"/>`).join('');
+  // ---------- からだ ----------
+  const tc = a.top, td = shade(tc, -0.2), bc = a.bottomColor, bd = shade(bc, -0.25);
+  const O = `stroke="${ln}" stroke-width="${LW}" stroke-linejoin="round"`;
+  const leg = (x, y0, h, fill = sk) => `<rect x="${x}" y="${y0}" width="10" height="${h}" rx="4.5" fill="${fill}" ${O}/>`;
+  const shoes = `<path d="M40,182 q0,-7 9,-7 q9,0 9,7 q0,4 -9,4 q-9,0 -9,-4 Z" fill="#FF6A7A" ${O}/><path d="M62,182 q0,-7 9,-7 q9,0 9,7 q0,4 -9,4 q-9,0 -9,-4 Z" fill="#FF6A7A" ${O}/><path d="M41,184 h16 M63,184 h16" stroke="#FFF" stroke-width="2"/>`;
+  const outfit = a.outfit;
+  let lower = '';
+  if (outfit === 'wet') lower = leg(44, 126, 52, '#2A3446') + leg(66, 126, 52, '#2A3446');
+  else if (outfit === 'yukata' || outfit === 'mermaid') lower = '';
+  else if (a.bottom === 'skirt') lower = leg(45, 148, 30) + leg(65, 148, 30) + `<path d="M40,126 L80,126 L89,152 Q60,158 31,152 Z" fill="url(#${id}b)" ${O}/><path d="M50,128 L45,153 M60,128 L60,155 M70,128 L75,153" stroke="${bd}" stroke-width="1.3"/>`;
+  else if (a.bottom === 'shorts') lower = leg(44, 142, 36) + leg(66, 142, 36) + `<path d="M40,124 L80,124 L83,148 L62,148 L60,138 L58,148 L37,148 Z" fill="url(#${id}b)" ${O}/>`;
+  else lower = `<path d="M40,124 L80,124 L79,180 L64,180 L60,140 L56,180 L41,180 Z" fill="url(#${id}b)" ${O}/><path d="M60,128 L60,140" stroke="${bd}" stroke-width="1.3"/>`;
   const rod = opt.pose === 'rod';
-  const armR = rod ? `<path d="M76,100 Q90,104 92,114" stroke="${tc}" stroke-width="10" fill="none" stroke-linecap="round"/><circle cx="93" cy="116" r="5.5" fill="${sk}"/>` : `<path d="M77,100 Q86,112 84,124" stroke="${tc}" stroke-width="10" fill="none" stroke-linecap="round"/><circle cx="84" cy="127" r="5.5" fill="${sk}"/>`;
-  const armL = rod ? `<path d="M44,100 Q56,114 80,118" stroke="${td}" stroke-width="10" fill="none" stroke-linecap="round"/><circle cx="83" cy="119" r="5.5" fill="${sk}"/>` : `<path d="M43,100 Q34,112 36,124" stroke="${tc}" stroke-width="10" fill="none" stroke-linecap="round"/><circle cx="36" cy="127" r="5.5" fill="${sk}"/>`;
-  const body = `<rect x="55" y="84" width="10" height="10" fill="${skd}"/><path d="M40,96 Q60,88 80,96 L82,130 L38,130 Z" fill="${tc}"/><path d="M52,92 Q60,99 68,92" stroke="${td}" stroke-width="2.4" fill="none"/>`;
-  // ぼうし
+  const sleeve = outfit === 'wet' ? '#2A3446' : outfit === 'chef' ? '#FFFFFF' : tc;
+  const arm = (d, hx, hy) => `<path d="${d}" stroke="${ln}" stroke-width="11.5" fill="none" stroke-linecap="round"/><path d="${d}" stroke="${sleeve}" stroke-width="9" fill="none" stroke-linecap="round"/><circle cx="${hx}" cy="${hy}" r="5.6" fill="${sk}" ${O}/>`;
+  const armR = rod ? arm('M76,100 Q90,104 92,113', 93, 116) : arm('M77,100 Q86,112 84,123', 84, 127);
+  const armL = rod ? arm('M44,100 Q56,114 79,117', 83, 119) : arm('M43,100 Q34,112 36,123', 36, 127);
+  let body = `<rect x="55" y="83" width="10" height="12" fill="${skd}" ${O}/>`;
+  if (outfit === 'wet') body += `<path d="M39,96 Q60,88 81,96 L83,132 L37,132 Z" fill="#2A3446" ${O}/><path d="M40,110 L80,110" stroke="${tc}" stroke-width="4"/><path d="M60,92 L60,130" stroke="#5A6476" stroke-width="1.5"/>`;
+  else if (outfit === 'yukata') body += `<path d="M38,96 Q60,88 82,96 L88,182 L32,182 Z" fill="url(#${id}t)" ${O}/><path d="M52,92 L66,128 M68,92 L58,108" stroke="${td}" stroke-width="2.2" fill="none"/><rect x="38" y="120" width="44" height="12" fill="#FFD23F" ${O}/>${[0, 1, 2, 3, 4].map(i => `<circle cx="${44 + i * 9}" cy="${148 + (i % 2) * 14}" r="3.5" fill="#FFF" opacity="0.7"/>`).join('')}`;
+  else if (outfit === 'mermaid') body += `<path d="M40,96 Q60,88 80,96 L81,126 L39,126 Z" fill="url(#${id}t)" ${O}/><path d="M39,124 Q60,130 81,124 L72,170 Q80,178 88,186 L60,180 L32,186 Q40,178 48,170 Z" fill="#3CC4B0" ${O}/>${[0, 1, 2, 3].map(i => `<path d="M${46 + i * 8},${136 + i * 8} q4,4 8,0" stroke="#FFF" stroke-width="1.4" fill="none" opacity="0.6"/>`).join('')}<circle cx="52" cy="104" r="5" fill="#FFF" opacity="0.6"/><circle cx="68" cy="104" r="5" fill="#FFF" opacity="0.6"/>`;
+  else body += `<path d="M39,96 Q60,88 81,96 L82,130 L38,130 Z" fill="url(#${id}t)" ${O}/><path d="M51,91 Q60,100 69,91" stroke="${td}" stroke-width="2.4" fill="none"/><path d="M44,104 Q46,118 44,128" stroke="${td}" stroke-width="1.2" fill="none" opacity="0.6"/>`;
+  if (outfit === 'life') body += `<path d="M40,97 L52,94 L54,131 L39,131 Z M80,97 L68,94 L66,131 L81,131 Z" fill="#FF7A1A" ${O}/><path d="M40,112 L80,112" stroke="#2E3A59" stroke-width="3"/><rect x="56" y="109" width="8" height="6" fill="#C8C8C8" ${O}/>`;
+  if (outfit === 'chef') body += `<path d="M39,96 Q60,88 81,96 L83,140 L37,140 Z" fill="#FFFFFF" ${O}/>${[0, 1].map(i => [0, 1].map(j => `<circle cx="${54 + j * 12}" cy="${104 + i * 12}" r="1.8" fill="#9AB0C0"/>`).join('')).join('')}<path d="M52,92 L60,100 L68,92" fill="#F2545B" ${O}/>`;
+  // ---------- ぼうし・アクセ ----------
   let hat = '';
-  const hcol = a.hatColor;
-  if (a.hat === 'straw') hat = `<ellipse cx="${cx}" cy="${top + 12}" rx="${rx + 18}" ry="8" fill="#F2D27A" stroke="#C9A040" stroke-width="1.5"/><path d="M${cx - rx + 2},${top + 12} C${cx - rx + 2},${top - 16} ${cx + rx - 2},${top - 16} ${cx + rx - 2},${top + 12} Z" fill="#F6DC8A" stroke="#C9A040" stroke-width="1.5"/><path d="M${cx - rx + 3},${top + 6} L${cx + rx - 3},${top + 6} L${cx + rx - 2},${top + 11} L${cx - rx + 2},${top + 11} Z" fill="${hcol}"/>`;
-  if (a.hat === 'cap') hat = `<path d="M${cx - rx - 2},${top + 14} C${cx - rx},${top - 12} ${cx + rx},${top - 12} ${cx + rx + 2},${top + 14} Z" fill="${hcol}"/><path d="M${cx + 4},${top + 12} Q${cx + rx + 22},${top + 8} ${cx + rx + 24},${top + 16} L${cx + 4},${top + 16} Z" fill="${shade(hcol, -0.2)}"/><circle cx="${cx}" cy="${top - 6}" r="3" fill="${shade(hcol, -0.25)}"/>`;
-  if (a.hat === 'beanie') hat = `<path d="M${cx - rx - 2},${top + 14} C${cx - rx},${top - 14} ${cx + rx},${top - 14} ${cx + rx + 2},${top + 14} Z" fill="${hcol}"/><rect x="${cx - rx - 3}" y="${top + 8}" width="${rx * 2 + 6}" height="9" rx="4" fill="${shade(hcol, -0.15)}"/><circle cx="${cx}" cy="${top - 10}" r="7" fill="#FFF"/>`;
-  if (a.hat === 'ribbon') hat = `<g transform="translate(${cx + rx - 8},${top + 6}) rotate(20)"><path d="M0,0 L-14,-9 L-14,9 Z M0,0 L14,-9 L14,9 Z" fill="${hcol}" stroke="${shade(hcol, -0.25)}" stroke-width="1.2"/><circle r="4" fill="${shade(hcol, -0.15)}"/></g>`;
-  const inner = `${back}${lower}${shoes}${armL}${body}${armR}<path d="${face}" fill="${sk}"/>${extra}${front}${brows}${eyes}${cheek}${mouth}${hat}`;
-  return `<svg viewBox="0 -14 120 206" xmlns="http://www.w3.org/2000/svg">${inner}</svg>`;
+  const hcol = a.hatColor, hcd = shade(hcol, -0.25);
+  if (a.hat === 'straw') hat = `<ellipse cx="${cx}" cy="${top + 12}" rx="${rx + 18}" ry="8" fill="#F2D27A" ${O}/><path d="M${cx - rx + 2},${top + 12} C${cx - rx + 2},${top - 16} ${cx + rx - 2},${top - 16} ${cx + rx - 2},${top + 12} Z" fill="#F6DC8A" ${O}/><path d="M${cx - rx + 3},${top + 5} L${cx + rx - 3},${top + 5} L${cx + rx - 2},${top + 11} L${cx - rx + 2},${top + 11} Z" fill="${hcol}"/><path d="M${cx - 14},${top - 6} q14,-4 28,0" stroke="#FFF" stroke-width="2" opacity="0.5" fill="none"/>`;
+  if (a.hat === 'cap') hat = `<path d="M${cx - rx - 2},${top + 14} C${cx - rx},${top - 12} ${cx + rx},${top - 12} ${cx + rx + 2},${top + 14} Z" fill="${hcol}" ${O}/><path d="M${cx + 4},${top + 12} Q${cx + rx + 22},${top + 8} ${cx + rx + 24},${top + 16} L${cx + 4},${top + 16} Z" fill="${hcd}" ${O}/><circle cx="${cx}" cy="${top - 6}" r="3" fill="${hcd}"/>`;
+  if (a.hat === 'beanie') hat = `<path d="M${cx - rx - 2},${top + 14} C${cx - rx},${top - 14} ${cx + rx},${top - 14} ${cx + rx + 2},${top + 14} Z" fill="${hcol}" ${O}/><rect x="${cx - rx - 3}" y="${top + 8}" width="${rx * 2 + 6}" height="9" rx="4" fill="${shade(hcol, -0.15)}" ${O}/><circle cx="${cx}" cy="${top - 10}" r="7" fill="#FFF" ${O}/>`;
+  if (a.hat === 'ribbon') hat = `<g transform="translate(${cx + rx - 8},${top + 6}) rotate(20)"><path d="M0,0 L-15,-10 Q-18,0 -15,10 Z M0,0 L15,-10 Q18,0 15,10 Z" fill="${hcol}" ${O}/><circle r="4.5" fill="${shade(hcol, -0.15)}" ${O}/></g>`;
+  if (a.hat === 'pirate') hat = `<path d="M${cx - rx - 10},${top + 12} Q${cx},${top - 30} ${cx + rx + 10},${top + 12} Q${cx},${top + 4} ${cx - rx - 10},${top + 12} Z" fill="#2A2A30" ${O}/><circle cx="${cx}" cy="${top - 4}" r="5" fill="#FFF"/><path d="M${cx - 4},${top + 3} l8,-4 M${cx + 4},${top + 3} l-8,-4" stroke="#FFF" stroke-width="1.6"/><path d="M${cx - rx - 8},${top + 10} Q${cx},${top + 2} ${cx + rx + 8},${top + 10}" stroke="#FFD23F" stroke-width="1.6" fill="none"/>`;
+  if (a.hat === 'crown') hat = `<path d="M${cx - 18},${top + 8} L${cx - 20},${top - 12} L${cx - 9},${top - 2} L${cx},${top - 16} L${cx + 9},${top - 2} L${cx + 20},${top - 12} L${cx + 18},${top + 8} Z" fill="#FFD23F" ${O}/>${[-12, 0, 12].map(x => `<circle cx="${cx + x}" cy="${top + 3}" r="2.6" fill="${x ? '#F2545B' : '#2FA6F0'}"/>`).join('')}`;
+  if (a.hat === 'fish') hat = `<g transform="translate(${cx},${top - 4})"><path d="M-30,6 C-24,-18 18,-18 26,2 L40,-10 L38,16 L26,8 C18,24 -24,24 -30,6 Z" fill="${hcol}" ${O}/><circle cx="-18" cy="0" r="4" fill="#FFF" ${O}/><circle cx="-18" cy="0" r="2" fill="#1A100C"/><path d="M-4,-8 q4,8 0,16 M6,-8 q4,8 0,16" stroke="${hcd}" stroke-width="1.6" fill="none"/></g>`;
+  let acc = '';
+  if (a.acc === 'sun') acc = [-1, 1].map(s => `<rect x="${cx + s * ex - 7}" y="${ey - 5}" width="14" height="10" rx="4" fill="#1A1A22" opacity="0.92" ${O}/>`).join('') + `<path d="M${cx - 4},${ey - 1} h8" stroke="${ln}" stroke-width="1.6"/><path d="M${cx - ex - 5},${ey - 3} l4,0" stroke="#FFF" stroke-width="1.4" opacity="0.7"/>`;
+  if (a.acc === 'flower') acc = `<g transform="translate(${cx - rx + 4},${top + 14})">${[0, 72, 144, 216, 288].map(r => `<ellipse rx="4" ry="7" transform="rotate(${r}) translate(0,-5)" fill="#FF8FB1" ${O}/>`).join('')}<circle r="3.5" fill="#FFD23F" ${O}/></g>`;
+  if (a.acc === 'star') acc = `<path transform="translate(${cx - rx + 6},${top + 16}) scale(0.9)" d="M0,-9 L2.6,-2.8 L9,-2.8 L3.8,1.2 L5.8,8 L0,4 L-5.8,8 L-3.8,1.2 L-9,-2.8 L-2.6,-2.8 Z" fill="#FFD23F" ${O}/>`;
+  const defs = `<linearGradient id="${id}h" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${shade(hc, 0.12)}"/><stop offset="1" stop-color="${shade(hc, -0.2)}"/></linearGradient>
+<radialGradient id="${id}s" cx="0.45" cy="0.4" r="0.7"><stop offset="0" stop-color="${skl}"/><stop offset="0.7" stop-color="${sk}"/><stop offset="1" stop-color="${skd}"/></radialGradient>
+<radialGradient id="${id}i" cx="0.5" cy="0.7" r="0.7"><stop offset="0" stop-color="#B07A48"/><stop offset="0.6" stop-color="#5A341E"/><stop offset="1" stop-color="#2A1608"/></radialGradient>
+<linearGradient id="${id}t" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${shade(tc, 0.12)}"/><stop offset="1" stop-color="${td}"/></linearGradient>
+<linearGradient id="${id}b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${shade(bc, 0.1)}"/><stop offset="1" stop-color="${bd}"/></linearGradient>`;
+  const shadow = `<ellipse cx="60" cy="186" rx="30" ry="5" fill="#000" opacity="0.12"/>`;
+  const faceEl = `<path d="${face}" fill="url(#${id}s)" stroke="${ln}" stroke-width="${LW}"/>`;
+  const inner = `${shadow}${back}${lower}${outfit === 'mermaid' ? '' : shoes}${armL}${body}${armR}${ears}${faceEl}${extra}${front}${brows}${eyes}${nose}${cheek}${mouth}${acc}${hat}`;
+  return `<svg viewBox="0 -18 120 210" xmlns="http://www.w3.org/2000/svg"><defs>${defs}</defs>${inner}</svg>`;
 }
 function avatarURL(a, opt) { return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(drawAvatar(a, opt)); }
 
@@ -1661,6 +1725,7 @@ function renderHome() {
   $('home-stats').innerHTML = `<span class="chip">📖 ずかん ${n}/${SPECIES.length}</span><span class="chip">🧊 クーラー ${save.box.length}/${boxCap()}</span><span class="chip">🎣 ${RODS[save.rod].n}</span>`;
   $('easy-sw').classList.toggle('on', !!save.easy);
   $('mute-btn').textContent = isMuted ? '🔇 おと なし' : '🔈 おと あり';
+  renderTank();
 }
 $('home-back').onclick = () => { renderTitle(); show('title'); };
 $('home-partner').onclick = (e) => {
@@ -1692,8 +1757,9 @@ $('picker-close').onclick = () => $('picker').classList.remove('show');
 let selArea = 'seto', selMethod = 'uki';
 function poolFor(area, method) { return SPECIES.filter(s => s.a.includes(area) && s.m.includes(method)); }
 function renderMap() {
-  const now = NOW(), m = now.getMonth() + 1;
-  $('map-season').textContent = `${{ はる: '🌸', なつ: '🌻', あき: '🍁', ふゆ: '⛄' }[seasonOf(m)]} ${seasonOf(m)}・${timeOfDay(now.getHours())}`;
+  const m = curMonth();
+  $('map-season').textContent = `${SEASON_ICON[seasonOf(m)]} ${seasonOf(m)}・${timeOfDay(curHour())}`;
+  renderTripOpts();
   if (!save.areas.includes(selArea)) selArea = 'seto';
   $('area-list').innerHTML = AREAS.map(a => {
     const have = save.areas.includes(a.k);
@@ -1729,8 +1795,8 @@ let rafId = 0, lastT = 0;
 function geo() {
   const sc = $('scene'), W = sc.clientWidth, H = sc.clientHeight;
   const surf = H * 0.36, bot = H * 0.93;
-  const ah = Math.min(H * 0.19, W * 0.32, 230), aw = ah * 120 / 206, al = W * 0.07, at = surf - ah - H * 0.004;
-  const handX = al + aw * 93 / 120, handY = at + ah * 130 / 206;
+  const ah = Math.min(H * 0.19, W * 0.32, 230), aw = ah * 120 / 210, al = W * 0.07, at = surf - ah * 0.985;
+  const handX = al + aw * 93 / 120, handY = at + ah * 134 / 210;
   return { W, H, surf, bot, pier: 0.2, ah, aw, al, at, handX, handY, tipX: handX + Math.max(W * 0.1, 70), tipY: handY - H * 0.15, unit: Math.min(W, H * 1.1) };
 }
 const dpx = (g, d) => g.surf + d * (g.bot - g.surf);
@@ -1763,7 +1829,7 @@ function pierSvg(area) {
 }
 
 function buildScene(area) {
-  const a = AREA_BY[area], now = NOW(), tod = timeOfDay(now.getHours());
+  const a = AREA_BY[area], tod = timeOfDay(curHour());
   const skyCols = tod === 'よる' ? ['#0E1A3A', '#2A3A6A'] : tod === 'ゆうがた' ? ['#FF9E7A', '#FFD9A8'] : tod === 'あさ' ? ['#FFC8A8', a.sky[1]] : a.sky;
   const weedKind = area === 'kawa' ? 'reed' : area === 'hokkai' ? 'kelp' : 'weed';
   let weeds = ''; for (let i = 0; i < 7; i++) weeds += `<div class="weed" style="left:${8 + i * 13 + Math.random() * 6}%;animation-delay:${-Math.random() * 3}s">${weedSvg(weedKind, 60 + Math.random() * 60)}</div>`;
@@ -1826,12 +1892,13 @@ function splashAt(x, y, big) {
 // ---------- さかなを だす ----------
 function weightOf(sp, month, night) {
   let w = [0, 10, 6, 3, 1.4, 0.5][sp.rare];
+  if (typeof G !== 'undefined' && G.bait && sp.rare >= 3) w *= 4;
   if (sp.shun && sp.shun.includes(month)) w *= 2.2;
   if (sp.t === 'night') w *= night ? 2 : 0.35;
   return w;
 }
 function spawnFish(g) {
-  const now = NOW(), month = now.getMonth() + 1, night = timeOfDay(now.getHours()) === 'よる';
+  const month = curMonth(), night = timeOfDay(curHour()) === 'よる';
   const pool = poolFor(G.area, G.method);
   const tot = pool.reduce((s, sp) => s + weightOf(sp, month, night), 0);
   let r = Math.random() * tot, sp = pool[0];
@@ -1858,7 +1925,8 @@ function removeFish(f) { f.el.remove(); G.fishes = G.fishes.filter(x => x !== f)
 
 // ---------- はじめる ----------
 function startFishing(area, method) {
-  Object.assign(G, { on: true, area, method, phase: 'idle', fishes: [], bx: 0.5, bd: 0, t: 0, waitT: 0, reel: 0, reelAcc: 0, held: false, knob: 0, tickAcc: 0, fallT: 0, dip: 0, sink: 0, fight: null, hookFish: null, power: 0, aimT: 0, fly: null, biteT: 0, lastLine: 0 });
+  startTrip(area, method);
+  Object.assign(G, { on: true, area, method, bait: useBait(), phase: 'idle', fishes: [], bx: 0.5, bd: 0, t: 0, waitT: 0, reel: 0, reelAcc: 0, held: false, knob: 0, tickAcc: 0, fallT: 0, dip: 0, sink: 0, fight: null, hookFish: null, power: 0, aimT: 0, fly: null, biteT: 0, lastLine: 0 });
   show('fish');
   buildScene(area);
   $('fish-where').textContent = `${AREA_BY[area].icon} ${AREA_BY[area].n}・${METHOD_BY[method].n}`;
@@ -1879,7 +1947,7 @@ function startFishing(area, method) {
 }
 function stopLoop() { G.on = false; cancelAnimationFrame(rafId); }
 function updateCool() { $('fish-cool').textContent = `🧊 ${save.box.length}/${boxCap()}`; }
-$('fish-back').onclick = () => { stopLoop(); renderMap(); show('map'); };
+$('fish-back').onclick = () => endTrip();
 window.addEventListener('resize', () => { if (G.on) { layoutPartner(); const g = geo(); G.fishes.forEach(f => { f.w = fishPx(g, f.sp, f.size); f.el.style.width = f.w + 'px'; f.el.style.height = f.w / 2 + 'px'; }); } });
 
 function setAct(label, cls, glow) {
@@ -2226,7 +2294,7 @@ function drawLines(g) {
 // ---------- けっか ----------
 let lastCatch = null;
 function showResult(f) {
-  const sp = f.sp, month = NOW().getMonth() + 1;
+  const sp = f.sp, month = curMonth();
   const name = displayName(sp, f.size);
   const rec = save.zukan[sp.k];
   const isNew = !rec, isRec = rec && f.size > rec.max;
@@ -2237,6 +2305,7 @@ function showResult(f) {
   const ikura = sp.ikura && Math.random() < 0.5;
   const price = priceOf(sp, f.size, month);
   lastCatch = { k: sp.k, size: f.size, price, ikura };
+  TRIP.list.push({ k: sp.k, size: f.size, isNew, isRec });
   store();
   const shun = sp.shun && sp.shun.includes(month);
   const [mn, mx] = sp.sz;
@@ -2267,6 +2336,7 @@ function showResult(f) {
 }
 function closeResult(msg) {
   $('result').classList.remove('show');
+  if (tripDone()) { setTimeout(() => endTrip(true), 400); return; }
   toast(msg); updateCool(); updateMoney();
   G.phase = 'idle'; G.hookFish = null;
   setAct('なげる', 'blue'); $('act').classList.remove('hide');
@@ -2321,16 +2391,29 @@ function renderShop() {
     L.innerHTML = `<button class="btn sun" id="sell-all">💰 ぜんぶ うる（${sum.toLocaleString()}えん）</button>` + save.box.map((b, i) => {
       const nm = b.k === 'ikura' ? 'いくら' : displayName(SP_BY[b.k], b.size);
       const ico = b.k === 'ikura' ? '🟠' : `<img class="fishimg" src="${fishImg(b.k)}" alt="">`;
-      return `<div class="item"><span class="ico">${ico}</span><span class="txt">${nm}<small>${b.k === 'ikura' ? 'シロザケの たまご' : b.size + 'cm'}</small></span><button class="btn sun" data-i="${i}">${b.price.toLocaleString()}えん</button></div>`;
+      const canTank = tankCap() > 0 && b.k !== 'ikura' && (save.tank || []).length < tankCap();
+      return `<div class="item"><span class="ico">${ico}</span><span class="txt">${nm}<small>${b.k === 'ikura' ? 'シロザケの たまご' : b.size + 'cm'}</small></span>${canTank ? `<button class="btn tankbtn" data-t="${i}">🐠 かざる</button>` : ''}<button class="btn sun" data-i="${i}">${b.price.toLocaleString()}えん</button></div>`;
     }).join('');
     $('sell-all').onclick = () => { setMoney(save.money + sum); save.box = []; store(); snd('coin'); toast(`${sum.toLocaleString()}えん に なった！`); speak(`${sum}えん に なったよ！`); renderShop(); };
-    L.querySelectorAll('.item .btn').forEach(b => b.onclick = () => { const it = save.box.splice(+b.dataset.i, 1)[0]; setMoney(save.money + it.price); store(); snd('coin'); renderShop(); });
+    L.querySelectorAll('.item .btn[data-i]').forEach(b => b.onclick = () => { const it = save.box.splice(+b.dataset.i, 1)[0]; setMoney(save.money + it.price); store(); snd('coin'); renderShop(); });
+    L.querySelectorAll('.item .tankbtn').forEach(b => b.onclick = () => { const it = save.box.splice(+b.dataset.t, 1)[0]; save.tank = (save.tank || []).concat({ k: it.k, size: it.size }); store(); snd('splash'); toast('すいそうに いれたよ！'); speak(`${SP_BY[it.k].n}を すいそうに いれたよ`); renderShop(); });
     return;
   }
   const rows = [];
-  if (shopTab === 'tool') {
+  if (shopTab === 'clothes') {
+    Object.entries(AV_SHOP).forEach(([key, price]) => {
+      const [k, v] = key.split(':'), label = AV_OPTS[k].find(o => o[0] === v)[1];
+      const prev = { ...myAvatar(), [k]: v, ...(k === 'hat' ? { hatColor: myAvatar().hatColor } : {}) };
+      rows.push({ ico: `<img class="fishimg av-ico" src="${avImg(prev)}" alt="">`, n: label, d: { outfit: 'とくべつな ふく', hat: 'ぼうし', acc: 'アクセサリー' }[k], price, have: (save.owned || []).includes(key), buy: () => { save.owned = (save.owned || []).concat(key); save.avatar = { ...save.avatar, [k]: v }; } });
+    });
+  } else if (shopTab === 'special') {
+    rows.push({ ico: '✨', n: 'きらきら えさ ×3', d: `めずらしい さかなが でやすく なる（いま ${save.bait || 0}こ）`, price: 500, have: false, buy: () => { save.bait = (save.bait || 0) + 3; tripOpts().bait = true; } });
+    rows.push({ ico: '🐠', n: 'すいそう', d: 'つった さかなを みなとに かざれる（5ひき）', price: 4000, have: tankCap() > 0, buy: () => { save.tankCap = 5; save.tank = save.tank || []; } });
+    if (tankCap() > 0 && tankCap() < 15) rows.push({ ico: '🐠', n: 'すいそうを おおきく', d: `${tankCap()}ひき → ${tankCap() + 5}ひき`, price: 3000, have: false, buy: () => { save.tankCap += 5; } });
+    rows.push({ ico: '🏆', n: 'きんの さお', d: 'さいきょうの ピカピカ さお', price: 50000, have: save.rod >= 4, lock: save.rod < 3, buy: () => { save.rod = 4; } });
+  } else if (shopTab === 'tool') {
     METHODS.filter(m => m.price).forEach(m => rows.push({ ico: m.icon, n: m.n + 'セット', d: m.desc, price: m.price, have: save.methods.includes(m.k), buy: () => save.methods.push(m.k) }));
-    RODS.forEach((r, i) => { if (i) rows.push({ ico: '🎣', n: r.n, d: `まく ちから ×${r.power}・いとが きれにくい`, price: r.price, have: save.rod >= i, lock: save.rod < i - 1, buy: () => { save.rod = i; } }); });
+    RODS.forEach((r, i) => { if (i && i < 4) rows.push({ ico: '🎣', n: r.n, d: `まく ちから ×${r.power}・いとが きれにくい`, price: r.price, have: save.rod >= i, lock: save.rod < i - 1, buy: () => { save.rod = i; } }); });
     rows.push({ ico: '🦪', n: 'いけす', d: 'さかなや かいを そだてられる（2つ）', price: 1500, have: (save.pens || 0) > 0, buy: () => { save.pens = 2; save.farm = save.farm || []; } });
     if ((save.pens || 0) > 0 && save.pens < 6) rows.push({ ico: '🦪', n: 'いけすを ふやす', d: `いま ${save.pens}つ → ${save.pens + 1}つ`, price: 2000, have: false, buy: () => { save.pens++; } });
     COOLERS.forEach((c, i) => { if (i) rows.push({ ico: '🧊', n: c.n, d: `さかなが ${c.cap}ひき はいる`, price: c.price, have: save.cooler >= i, lock: save.cooler < i - 1, buy: () => { save.cooler = i; } }); });
@@ -2355,20 +2438,21 @@ const AV_CACHE = {};
 function avImg(a, opt = {}) { const key = JSON.stringify([a, opt]); if (!AV_CACHE[key]) AV_CACHE[key] = avatarURL(a, opt); return AV_CACHE[key]; }
 const DRESS_GROUPS = [
   ['hair', 'かみがた'], ['hairColor', 'かみの いろ'], ['face', 'かおの かたち'], ['eyes', 'め'], ['skin', 'はだの いろ'],
-  ['top', 'ふく'], ['bottom', 'した'], ['bottomColor', 'したの いろ'], ['hat', 'ぼうし'], ['hatColor', 'ぼうしの いろ'],
+  ['top', 'ふく'], ['bottom', 'した'], ['bottomColor', 'したの いろ'], ['outfit', 'とくべつな ふく'], ['hat', 'ぼうし'], ['hatColor', 'ぼうしの いろ'], ['acc', 'アクセサリー'],
 ];
+const ownsAv = (k, v) => !AV_SHOP[k + ':' + v] || (save.owned || []).includes(k + ':' + v);
 function renderDress() {
-  const a = save.avatar;
+  const a = { outfit: 'none', acc: 'none', ...save.avatar };
   $('dress-img').src = avImg(a);
   $('dress-opts').innerHTML = DRESS_GROUPS.map(([k, label]) => {
-    const opts = AV_OPTS[k];
-    const chips = opts.map(o => Array.isArray(o)
-      ? `<button class="${a[k] === o[0] ? 'on' : ''}" data-k="${k}" data-v="${o[0]}">${o[1]}</button>`
+    const chips = AV_OPTS[k].map(o => Array.isArray(o)
+      ? (ownsAv(k, o[0]) ? `<button class="${a[k] === o[0] ? 'on' : ''}" data-k="${k}" data-v="${o[0]}">${o[1]}</button>` : `<button class="lock" data-k="${k}" data-v="${o[0]}">🔒 ${o[1]}</button>`)
       : `<button class="sw ${a[k] === o ? 'on' : ''}" data-k="${k}" data-v="${o}" style="background:${o}" aria-label="いろ"></button>`).join('');
     return `<div class="dgroup"><b>${label}</b><div class="dchips">${chips}</div></div>`;
   }).join('');
   $('dress-opts').querySelectorAll('button').forEach(b => b.onclick = () => {
-    save.avatar = { ...save.avatar, [b.dataset.k]: b.dataset.v }; store(); snd('tap');
+    if (b.classList.contains('lock')) { const p = AV_SHOP[b.dataset.k + ':' + b.dataset.v]; toast(`おみせの「ふく」で ${p.toLocaleString()}えんで かえるよ`); speak('おみせで かえるよ'); return; }
+    save.avatar = { ...a, [b.dataset.k]: b.dataset.v }; store(); snd('tap');
     const y = $('dress').scrollTop; renderDress(); $('dress').scrollTop = y;
   });
 }
@@ -2389,7 +2473,7 @@ function recordCatch(k, size) {
   return { isNew, isRec };
 }
 function showMulti(items, title, onClose) {
-  const month = NOW().getMonth() + 1;
+  const month = curMonth();
   const before = Object.keys(save.zukan).length;
   multiList = items.map(it => {
     const sp = SP_BY[it.k];
@@ -2426,7 +2510,7 @@ function showMulti(items, title, onClose) {
 }
 function randSize(k, area) { const [mn, mx] = sizeRange(SP_BY[k], area); return Math.round((mn + (mx - mn) * Math.pow(Math.random(), 1.5)) * 10) / 10; }
 function pickWeighted(pool) {
-  const month = NOW().getMonth() + 1, night = timeOfDay(NOW().getHours()) === 'よる';
+  const month = curMonth(), night = timeOfDay(curHour()) === 'よる';
   const tot = pool.reduce((s, sp) => s + weightOf(sp, month, night), 0);
   let r = Math.random() * tot;
   for (const s of pool) { r -= weightOf(s, month, night); if (r <= 0) return s; }
@@ -2495,7 +2579,8 @@ function netPull() {
     N.caught.forEach(f => removeFish(f));
     G.net = null; G.phase = 'idle'; $('act').classList.add('hide');
     const g = geo(); splashAt(N.x * g.W, g.surf, true);
-    showMulti(items, 'あみを あげた！', () => { if (G.on) { G.phase = 'idle'; setAct('なげる', 'blue'); $('act').classList.remove('hide'); } });
+    TRIP.hauls++; items.forEach(it => TRIP.list.push({ k: it.k, size: it.size }));
+    showMulti(items, 'あみを あげた！', () => { if (tripDone()) { endTrip(true); return; } if (G.on) { G.phase = 'idle'; setAct('なげる', 'blue'); $('act').classList.remove('hide'); } });
   }
 }
 function drawNet(g) {
@@ -2512,6 +2597,7 @@ function drawNet(g) {
 // =========================================================
 const D = { on: false };
 function startDig(area) {
+  startTrip(area, 'hori');
   const pool = poolFor(area, 'hori');
   Object.assign(D, { on: true, area, pool, holes: [], got: [], time: save.easy ? 75 : 60, left: save.easy ? 75 : 60, salt: false, spawnT: 0 });
   show('dig');
@@ -2584,9 +2670,10 @@ function digLoop(now) {
 }
 function endDig() {
   D.on = false;
-  showMulti(D.got, 'しおひがり おしまい！', () => { renderMap(); show('map'); });
+  D.got.forEach(it => TRIP.list.push(it));
+  showMulti(D.got, 'しおひがり おしまい！', () => endTrip(true));
 }
-$('dig-back').onclick = () => { if (D.got.length) endDig(); else { D.on = false; renderMap(); show('map'); } };
+$('dig-back').onclick = () => { if (D.got.length) endDig(); else { D.on = false; endTrip(); } };
 
 // =========================================================
 // ▼▼ もぐり ▼▼
@@ -2594,6 +2681,7 @@ $('dig-back').onclick = () => { if (D.got.length) endDig(); else { D.on = false;
 const V = { on: false };
 const ROCK_SVG = (c) => `<svg viewBox="0 0 100 60" preserveAspectRatio="none"><path d="M4,58 C0,30 20,6 48,4 C78,2 98,26 96,58 Z" fill="${c}" stroke="rgba(0,0,0,0.25)" stroke-width="2"/><path d="M20,30 Q40,18 60,22" stroke="rgba(255,255,255,0.25)" stroke-width="4" fill="none"/></svg>`;
 function startDive(area) {
+  startTrip(area, 'moguri');
   const pool = poolFor(area, 'moguri');
   Object.assign(V, { on: true, area, pool, got: [], time: save.easy ? 60 : 45, left: save.easy ? 60 : 45, last: performance.now() });
   show('dive');
@@ -2660,8 +2748,8 @@ function diveLoop(now) {
   if (V.left <= 0) { endDive(); return; }
   requestAnimationFrame(diveLoop);
 }
-function endDive() { V.on = false; V.warned = false; showMulti(V.got, 'ぷはーっ！ あがったよ', () => { renderMap(); show('map'); }); }
-$('dive-back').onclick = () => { if (V.got.length) endDive(); else { V.on = false; renderMap(); show('map'); } };
+function endDive() { V.on = false; V.warned = false; V.got.forEach(it => TRIP.list.push(it)); showMulti(V.got, 'ぷはーっ！ あがったよ', () => endTrip(true)); }
+$('dive-back').onclick = () => { if (V.got.length) endDive(); else { V.on = false; endTrip(); } };
 
 // =========================================================
 // ▼▼ いけす（ほんとうの じかんで そだつ）▼▼
@@ -3076,12 +3164,83 @@ function startEat(name) {
 }
 $('cook-back').onclick = () => { if (confirm('りょうりを やめる？ ざいりょうは なくならないよ')) { renderKitchen(); show('kitchen'); } };
 
+// =========================================================
+// ▼▼ きせつ・じかん・なんびきで かえる・かえる ときの おはなし ▼▼
+// =========================================================
+const SEASON_ICON = { はる: '🌸', なつ: '🌻', あき: '🍁', ふゆ: '⛄' };
+const SEASON_MONTH = { はる: 4, なつ: 7, あき: 10, ふゆ: 1 };
+const TOD_HOUR = { あさ: 7, ひる: 12, ゆうがた: 17, よる: 21 };
+const TOD_ICON = { あさ: '🌅', ひる: '☀️', ゆうがた: '🌇', よる: '🌙' };
+function tripOpts() { save.trip = Object.assign({ season: 'now', tod: 'now', limit: 5, bait: false }, save.trip || {}); return save.trip; }
+function curMonth() { const t = save ? tripOpts() : {}; return t.season && t.season !== 'now' ? SEASON_MONTH[t.season] : NOW().getMonth() + 1; }
+function curHour() { const t = save ? tripOpts() : {}; return t.tod && t.tod !== 'now' ? TOD_HOUR[t.tod] : NOW().getHours(); }
+function renderTripOpts() {
+  const t = tripOpts();
+  const row = (key, opts) => opts.map(([v, label]) => `<button class="${t[key] === v ? 'on' : ''}" data-k="${key}" data-v="${v}">${label}</button>`).join('');
+  $('trip-opts').innerHTML = `
+    <div class="dgroup"><b>きせつ</b><div class="dchips">${row('season', [['now', '📅 いま'], ...Object.keys(SEASON_ICON).map(k => [k, SEASON_ICON[k] + ' ' + k])])}</div></div>
+    <div class="dgroup"><b>じかん</b><div class="dchips">${row('tod', [['now', '🕐 いま'], ...Object.keys(TOD_ICON).map(k => [k, TOD_ICON[k] + ' ' + k])])}</div></div>
+    <div class="dgroup"><b>なんびき つったら かえる？</b><div class="dchips">${row('limit', [[3, '3びき'], [5, '5ひき'], [10, '10ぴき'], [0, 'じゆう']])}</div><small class="sub">あみは なんかい あげたか、しおひがり・もぐりは じかんで おわるよ</small></div>
+    ${(save.bait || 0) > 0 ? `<div class="dgroup"><b>✨ きらきら えさ（のこり ${save.bait}）</b><div class="dchips">${row('bait', [[false, 'つかわない'], [true, 'つかう！ めずらしい さかなが でやすい']])}</div></div>` : ''}`;
+  $('trip-opts').querySelectorAll('button').forEach(b => b.onclick = () => {
+    let v = b.dataset.v; if (b.dataset.k === 'limit') v = +v; if (b.dataset.k === 'bait') v = v === 'true';
+    t[b.dataset.k] = v; store(); snd('tap'); renderMap();
+  });
+}
+let TRIP = { list: [], hauls: 0, limit: 0, method: 'uki', area: 'seto', money0: 0 };
+function startTrip(area, method) { TRIP = { list: [], hauls: 0, limit: tripOpts().limit, method, area, money0: save.money }; }
+function useBait() { const t = tripOpts(); if (t.bait && (save.bait || 0) > 0) { save.bait--; if (!save.bait) t.bait = false; store(); toast('✨ きらきら えさを つかったよ'); return true; } return false; }
+function tripDone() {
+  if (!TRIP.limit) return false;
+  return (TRIP.method === 'ami' ? TRIP.hauls : TRIP.list.length) >= TRIP.limit;
+}
+function endTrip(auto) {
+  stopLoop(); D.on = false; V.on = false;
+  const n = TRIP.list.length, p = partnerOf();
+  const news = TRIP.list.filter(x => x.isNew).length, recs = TRIP.list.filter(x => x.isRec).length;
+  const big = TRIP.list.slice().sort((a, b) => (b.size / SP_BY[b.k].sz[1]) - (a.size / SP_BY[a.k].sz[1]))[0];
+  const earned = save.money - TRIP.money0;
+  let lines = [];
+  if (!n) lines = ['きょうは つれなかったけど、たのしかったね！', 'つぎは きっと つれるよ！'];
+  else {
+    lines.push(n >= 8 ? `すごい！ ${n}こも とれたね！` : n >= 4 ? `たくさん とれたね！ ${n}こ！` : `がんばったね！ ${n}こ とれたよ！`);
+    if (big) lines.push(`${displayName(SP_BY[big.k], big.size)}、${Math.round(big.size)}センチ！ おおきかったね！`);
+    if (news) lines.push(`あたらしい いきものを ${news}しゅるい みつけたね！`);
+    if (recs) lines.push('しんきろくも でたよ！');
+    if (earned > 0) lines.push(`${earned.toLocaleString()}えん かせいだね！`);
+  }
+  if (auto && TRIP.limit) lines.unshift(`${TRIP.limit}${TRIP.method === 'ami' ? 'かい' : 'ひき'} とれたから かえろう！`);
+  $('trip-box').innerHTML = `<div class="trip-scene"><img class="trip-av" src="${avImg({ ...myAvatar(), eyes: 'smile' })}" alt=""><img class="trip-pk" id="trip-pk" src="${getPokemonImageUrl(p.id)}" alt=""><div class="trip-say">${lines[0]}</div></div>
+    <p class="res-name">${n ? 'おつかれさま！' : 'また こんど！'}</p>
+    <div class="trip-lines">${lines.slice(1).map(l => `<p>${l}</p>`).join('')}</div>
+    ${n ? `<div class="mgrid small">${TRIP.list.slice(0, 18).map(x => `<div class="mi">${x.isNew ? '<span class="nw">NEW</span>' : ''}<img src="${fishImg(x.k)}" alt="">${displayName(SP_BY[x.k], x.size)}<small>${x.size}cm</small></div>`).join('')}</div>` : ''}
+    <button class="btn primary" id="trip-home">🏠 みなとに かえる</button>`;
+  $('trip').classList.add('show');
+  playCry(p.id, 0.45); if (n) confetti();
+  setTimeout(() => { const pk = $('trip-pk'); if (pk) pokeMove(pk, 'hop', 900); }, 300);
+  speakSequence(lines.map((t, i) => ({ text: t, lang: 'ja', pauseAfter: 300 })));
+  $('trip-home').onclick = () => { $('trip').classList.remove('show'); stopSpeech(); renderHome(); show('home'); };
+}
+
+// =========================================================
+// ▼▼ すいそう（つった さかなを かざる）▼▼
+// =========================================================
+function tankCap() { return save.tankCap || 0; }
+function renderTank() {
+  const t = $('home-tank'); if (!t) return;
+  if (!tankCap()) { t.style.display = 'none'; return; }
+  t.style.display = '';
+  const list = save.tank || [];
+  t.innerHTML = `<div class="tank-water">${list.map((f, i) => `<img class="tank-fish" src="${fishImg(f.k)}" data-i="${i}" alt="" style="top:${12 + (i * 37) % 60}%;width:${Math.min(42, 14 + f.size / 4)}%;animation-duration:${9 + (i % 4) * 2}s;animation-delay:${-i * 2.3}s">`).join('')}<div class="tank-sand"></div></div><span class="tank-lbl">🐠 すいそう ${list.length}/${tankCap()}</span>`;
+  t.querySelectorAll('.tank-fish').forEach(img => img.onclick = () => { const f = list[+img.dataset.i]; speak(`${displayName(SP_BY[f.k], f.size)}、${Math.round(f.size)}センチ`); toast(`${displayName(SP_BY[f.k], f.size)} ${f.size}cm`); });
+}
+
 // ---------- スタート ----------
 function setMuted() {}
 // ==== EMOJI-3D START ====
 // もんだいの なかの えもじを、どの スマホでも おなじに みえる 3Dの え（Microsoft Fluent Emoji, MIT ライセンス）に おきかえる
 const EMOJI_BASE = 'https://raw.githubusercontent.com/microsoft/fluentui-emoji/1ffb34c752ecf5d402f04cfb4b392c77f57c54bc/';
-const EMOJI_IMG = {"♨️": "assets/Hot springs/3D/hot_springs_3d.png","❄️": "assets/Snowflake/3D/snowflake_3d.png","🏞️": "assets/National park/3D/national_park_3d.png","🏝️": "assets/Desert island/3D/desert_island_3d.png","🍽️": "assets/Fork and knife with plate/3D/fork_and_knife_with_plate_3d.png","⛴️": "assets/Ferry/3D/ferry_3d.png","🕸️": "assets/Spider web/3D/spider_web_3d.png","⛄": "assets/Snowman without snow/3D/snowman_without_snow_3d.png","📖": "assets/Open book/3D/open_book_3d.png","✊": "assets/Raised fist/Default/3D/raised_fist_3d_default.png","👕": "assets/T-shirt/3D/t-shirt_3d.png","🍣": "assets/Sushi/3D/sushi_3d.png","🏪": "assets/Convenience store/3D/convenience_store_3d.png","🔄": "assets/Counterclockwise arrows button/3D/counterclockwise_arrows_button_3d.png","🏆": "assets/Trophy/3D/trophy_3d.png","🔈": "assets/Speaker low volume/3D/speaker_low_volume_3d.png","🍤": "assets/Fried shrimp/3D/fried_shrimp_3d.png","🥣": "assets/Bowl with spoon/3D/bowl_with_spoon_3d.png","🎉": "assets/Party popper/3D/party_popper_3d.png","🌸": "assets/Cherry blossom/3D/cherry_blossom_3d.png","🔒": "assets/Locked/3D/locked_3d.png","♨": "assets/Hot springs/3D/hot_springs_3d.png","🍁": "assets/Maple leaf/3D/maple_leaf_3d.png","📒": "assets/Ledger/3D/ledger_3d.png","🐚": "assets/Spiral shell/3D/spiral_shell_3d.png","❄": "assets/Snowflake/3D/snowflake_3d.png","🟠": "assets/Orange circle/3D/orange_circle_3d.png","✅": "assets/Check mark button/3D/check_mark_button_3d.png","🧺": "assets/Basket/3D/basket_3d.png","💰": "assets/Money bag/3D/money_bag_3d.png","🌊": "assets/Water wave/3D/water_wave_3d.png","🏞": "assets/National park/3D/national_park_3d.png","🐙": "assets/Octopus/3D/octopus_3d.png","😋": "assets/Face savoring food/3D/face_savoring_food_3d.png","🍱": "assets/Bento box/3D/bento_box_3d.png","🐳": "assets/Spouting whale/3D/spouting_whale_3d.png","👧": "assets/Girl/Default/3D/girl_3d_default.png","✨": "assets/Sparkles/3D/sparkles_3d.png","🔨": "assets/Hammer/3D/hammer_3d.png","🎣": "assets/Fishing pole/3D/fishing_pole_3d.png","🌻": "assets/Sunflower/3D/sunflower_3d.png","🧈": "assets/Butter/3D/butter_3d.png","🏝": "assets/Desert island/3D/desert_island_3d.png","🦪": "assets/Oyster/3D/oyster_3d.png","🍗": "assets/Poultry leg/3D/poultry_leg_3d.png","🧂": "assets/Salt/3D/salt_3d.png","🍽": "assets/Fork and knife with plate/3D/fork_and_knife_with_plate_3d.png","🧯": "assets/Fire extinguisher/3D/fire_extinguisher_3d.png","🥢": "assets/Chopsticks/3D/chopsticks_3d.png","🪣": "assets/Bucket/3D/bucket_3d.png","🦑": "assets/Squid/3D/squid_3d.png","🍚": "assets/Cooked rice/3D/cooked_rice_3d.png","🔇": "assets/Muted speaker/3D/muted_speaker_3d.png","🍳": "assets/Cooking/3D/cooking_3d.png","⛴": "assets/Ferry/3D/ferry_3d.png","🕸": "assets/Spider web/3D/spider_web_3d.png","🧊": "assets/Ice/3D/ice_3d.png","⭐": "assets/Star/3D/star_3d.png","🔥": "assets/Fire/3D/fire_3d.png","🤿": "assets/Diving mask/3D/diving_mask_3d.png","🐟": "assets/Fish/3D/fish_3d.png"};
+const EMOJI_IMG = {"♨️": "assets/Hot springs/3D/hot_springs_3d.png","❄️": "assets/Snowflake/3D/snowflake_3d.png","🏞️": "assets/National park/3D/national_park_3d.png","🏝️": "assets/Desert island/3D/desert_island_3d.png","🍽️": "assets/Fork and knife with plate/3D/fork_and_knife_with_plate_3d.png","⛴️": "assets/Ferry/3D/ferry_3d.png","🕸️": "assets/Spider web/3D/spider_web_3d.png","☀️": "assets/Sun/3D/sun_3d.png","⛄": "assets/Snowman without snow/3D/snowman_without_snow_3d.png","📖": "assets/Open book/3D/open_book_3d.png","✊": "assets/Raised fist/Default/3D/raised_fist_3d_default.png","📅": "assets/Calendar/3D/calendar_3d.png","👕": "assets/T-shirt/3D/t-shirt_3d.png","🍣": "assets/Sushi/3D/sushi_3d.png","🏪": "assets/Convenience store/3D/convenience_store_3d.png","🔄": "assets/Counterclockwise arrows button/3D/counterclockwise_arrows_button_3d.png","🌅": "assets/Sunrise/3D/sunrise_3d.png","🐠": "assets/Tropical fish/3D/tropical_fish_3d.png","🏆": "assets/Trophy/3D/trophy_3d.png","🔈": "assets/Speaker low volume/3D/speaker_low_volume_3d.png","🍤": "assets/Fried shrimp/3D/fried_shrimp_3d.png","🥣": "assets/Bowl with spoon/3D/bowl_with_spoon_3d.png","🎉": "assets/Party popper/3D/party_popper_3d.png","🌸": "assets/Cherry blossom/3D/cherry_blossom_3d.png","🔒": "assets/Locked/3D/locked_3d.png","♨": "assets/Hot springs/3D/hot_springs_3d.png","🍁": "assets/Maple leaf/3D/maple_leaf_3d.png","📒": "assets/Ledger/3D/ledger_3d.png","🐚": "assets/Spiral shell/3D/spiral_shell_3d.png","❄": "assets/Snowflake/3D/snowflake_3d.png","🟠": "assets/Orange circle/3D/orange_circle_3d.png","✅": "assets/Check mark button/3D/check_mark_button_3d.png","🧺": "assets/Basket/3D/basket_3d.png","💰": "assets/Money bag/3D/money_bag_3d.png","🌊": "assets/Water wave/3D/water_wave_3d.png","🏞": "assets/National park/3D/national_park_3d.png","🐙": "assets/Octopus/3D/octopus_3d.png","😋": "assets/Face savoring food/3D/face_savoring_food_3d.png","🍱": "assets/Bento box/3D/bento_box_3d.png","🐳": "assets/Spouting whale/3D/spouting_whale_3d.png","👧": "assets/Girl/Default/3D/girl_3d_default.png","✨": "assets/Sparkles/3D/sparkles_3d.png","🔨": "assets/Hammer/3D/hammer_3d.png","🎣": "assets/Fishing pole/3D/fishing_pole_3d.png","🌻": "assets/Sunflower/3D/sunflower_3d.png","🌙": "assets/Crescent moon/3D/crescent_moon_3d.png","🧈": "assets/Butter/3D/butter_3d.png","🏝": "assets/Desert island/3D/desert_island_3d.png","🏠": "assets/House/3D/house_3d.png","🦪": "assets/Oyster/3D/oyster_3d.png","🍗": "assets/Poultry leg/3D/poultry_leg_3d.png","🧂": "assets/Salt/3D/salt_3d.png","🍽": "assets/Fork and knife with plate/3D/fork_and_knife_with_plate_3d.png","🧯": "assets/Fire extinguisher/3D/fire_extinguisher_3d.png","🥢": "assets/Chopsticks/3D/chopsticks_3d.png","🪣": "assets/Bucket/3D/bucket_3d.png","🦑": "assets/Squid/3D/squid_3d.png","🍚": "assets/Cooked rice/3D/cooked_rice_3d.png","🔇": "assets/Muted speaker/3D/muted_speaker_3d.png","🍳": "assets/Cooking/3D/cooking_3d.png","👗": "assets/Dress/3D/dress_3d.png","⛴": "assets/Ferry/3D/ferry_3d.png","🕸": "assets/Spider web/3D/spider_web_3d.png","🧊": "assets/Ice/3D/ice_3d.png","⭐": "assets/Star/3D/star_3d.png","🕐": "assets/One oclock/3D/one_oclock_3d.png","🔥": "assets/Fire/3D/fire_3d.png","☀": "assets/Sun/3D/sun_3d.png","🤿": "assets/Diving mask/3D/diving_mask_3d.png","🌇": "assets/Sunset/3D/sunset_3d.png","🐟": "assets/Fish/3D/fish_3d.png"};
 const EMOJI_RE = /(?:\p{Extended_Pictographic}|\p{Regional_Indicator}{2}|[0-9#*]\uFE0F?\u20E3)(?:\uFE0F|\u200D\p{Extended_Pictographic}|[\u{1F3FB}-\u{1F3FF}])*/gu;
 function emojiSrc(e) {
   const p = EMOJI_IMG[e] || EMOJI_IMG[e.replace(/\uFE0F/g, '')] || EMOJI_IMG[e + '\uFE0F'];
