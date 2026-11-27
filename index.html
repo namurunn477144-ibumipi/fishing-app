@@ -216,6 +216,9 @@
     .tank-lbl { position: absolute; left: 1rem; top: 0.8rem; padding: 0.2rem 0.6rem; border-radius: 999px; background: rgba(255,255,255,0.85); font-weight: 900; font-size: 0.85rem; }
     .tankbtn { padding: 0.6rem 0.7rem; font-size: 0.9rem; }
     .av-ico { width: 3.4rem !important; }
+    .harbor .deco { position: absolute; line-height: 1; cursor: pointer; z-index: 1; }
+    .harbor .boat-emo { position: absolute; right: 6%; top: 30%; font-size: 6rem; line-height: 1; animation: bob 4s ease-in-out infinite; }
+    .harbor .avatar, .harbor .partner, .harbor .bubble { z-index: 2; }
     .toast { position: fixed; left: 50%; bottom: 2rem; z-index: 80; transform: translateX(-50%); padding: 0.7rem 1.2rem; border-radius: 999px; background: #12324A; color: #FFF; font-weight: 900; opacity: 0; transition: opacity 0.25s; pointer-events: none; white-space: nowrap; }
     .toast.show { opacity: 1; }
     .switch { display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 900; }
@@ -348,6 +351,12 @@
     .dish-done .res-actions { width: 100%; }
     .dish-done .res-actions .btn { font-size: 1.3rem; padding: 1rem; }
     .floaty { position: absolute; left: 25%; top: 30%; width: 50%; opacity: 0.85; }
+    .spot { position: absolute; padding: 0; border: none; background: none; overflow: hidden; }
+    .spot .peek { position: absolute; left: 12%; bottom: 30%; width: 76%; transform: translateY(105%); pointer-events: none; }
+    .spot .cover { position: absolute; left: 0; right: 0; bottom: 0; height: 50%; pointer-events: none; }
+    .spot .cover svg { width: 100%; height: 100%; display: block; }
+    .swim-pk { position: absolute; top: 14%; left: 0; height: 13vmin; animation: pkswim 14s ease-in-out infinite; pointer-events: none; }
+    @keyframes pkswim { 0% { transform: translate(5vw, 0) scaleX(-1); } 45% { transform: translate(80vw, 6vh) scaleX(-1); } 50% { transform: translate(80vw, 6vh) scaleX(1); } 95% { transform: translate(5vw, 0) scaleX(1); } 100% { transform: translate(5vw, 0) scaleX(-1); } }
     /* 3Dの えもじ */
     .emo { display: inline-block; width: 1.2em; height: 1.2em; object-fit: contain; vertical-align: -0.25em; -webkit-user-drag: none; }
     .question-emoji .emo, .opt-emoji .emo { width: 1.1em; height: 1.1em; vertical-align: middle; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.12)); }
@@ -442,7 +451,7 @@
 <section id="shop" class="screen">
   <div class="wrap">
     <div class="topbar"><button class="round-btn" id="shop-back" aria-label="もどる">←</button><h2>おみせ</h2><span class="chip money" id="shop-money"></span></div>
-    <div class="tabs" id="shop-tabs"><button data-t="sell" class="on">🐟 うる</button><button data-t="tool">🎣 どうぐ</button><button data-t="ticket">⛴️ ふねの きっぷ</button><button data-t="clothes">👗 ふく</button><button data-t="special">✨ とくべつ</button></div>
+    <div class="tabs" id="shop-tabs"><button data-t="sell" class="on">🐟 うる</button><button data-t="tool">🎣 どうぐ</button><button data-t="ticket">⛴️ ふねの きっぷ</button><button data-t="deco">🎏 みなと</button><button data-t="clothes">👗 ふく</button><button data-t="special">✨ とくべつ</button></div>
     <div class="shop-list" id="shop-list"></div>
   </div>
 </section>
@@ -1163,31 +1172,31 @@ const SPECIES = [
     art: { kind: 'clam', w: 170, h: 120, grad: ['#8A7A68', '#5E4E3E', '#3A2E24'], line: '#2A201A', seed: 3 } },
 
   // ---------------- もぐり ----------------
-  { k: 'sazae', n: 'サザエ', a: ['seto', 'nihon', 'taihei'], m: ['moguri'], sz: [7, 12], p: 250, shun: [3, 4, 5, 6], pow: 1, rare: 1,
+  { k: 'sazae', n: 'サザエ', a: ['seto', 'nihon', 'taihei'], m: ['moguri'], sz: [7, 12], p: 120, shun: [3, 4, 5, 6], pow: 1, rare: 1,
     info: 'トゲトゲの かい。いわに くっついて かいそうを たべるよ', eat: 'つぼやき',
     art: { kind: 'sazae', grad: ['#8A9A7A', '#6A7A5A', '#4A5640'], line: '#2E3628' } },
-  { k: 'murasakiuni', n: 'ムラサキウニ', a: ['seto', 'nihon', 'taihei'], m: ['moguri'], sz: [5, 8], p: 300, shun: [5, 6, 7], pow: 1, rare: 2,
+  { k: 'murasakiuni', n: 'ムラサキウニ', a: ['seto', 'nihon', 'taihei'], m: ['moguri'], sz: [5, 8], p: 150, shun: [5, 6, 7], pow: 1, rare: 2,
     info: 'ながい トゲが むらさきいろ。なかの オレンジの ところを たべるよ', eat: 'うにどん・おすし',
     art: { kind: 'uni', long: true, grad: ['#3A2246', '#5A3A6A', '#2A1A34'], line: '#1A0E22' } },
-  { k: 'bafununi', n: 'バフンウニ', a: ['hokkai'], m: ['moguri'], sz: [3, 5], p: 600, shun: [6, 7, 8], pow: 1, rare: 3,
+  { k: 'bafununi', n: 'バフンウニ', a: ['hokkai'], m: ['moguri'], sz: [3, 5], p: 250, shun: [6, 7, 8], pow: 1, rare: 3,
     info: 'みじかい トゲの ちいさい ウニ。なかみが こい オレンジで あまい', eat: 'うにどん・おすし',
     art: { kind: 'uni', grad: ['#5A6A3A', '#7A8A4A', '#3E4A28'], line: '#2A3418', seed: 9 } },
-  { k: 'kaki', n: 'マガキ', a: ['seto', 'hokkai'], m: ['moguri'], sz: [8, 15], p: 150, shun: [11, 12, 1, 2], pow: 1, rare: 1,
+  { k: 'kaki', n: 'マガキ', a: ['seto', 'hokkai'], m: ['moguri'], sz: [8, 15], p: 80, shun: [11, 12, 1, 2], pow: 1, rare: 1,
     info: 'ひろしまの めいぶつ！ いわに くっついて そだつ「うみの ミルク」', eat: 'カキフライ・どてなべ・やきがき',
     art: { kind: 'oyster', grad: ['#C8C4B4', '#9A9488', '#6E6A60'], line: '#3E3A34' } },
-  { k: 'namako', n: 'マナマコ', a: ['seto', 'hokkai'], m: ['moguri'], sz: [15, 30], p: 300, shun: [12, 1, 2], pow: 1, rare: 2,
+  { k: 'namako', n: 'マナマコ', a: ['seto', 'hokkai'], m: ['moguri'], sz: [15, 30], p: 120, shun: [12, 1, 2], pow: 1, rare: 2,
     info: 'ふにゃふにゃの いきもの。ほねが なくて、すなを たべて いきてるよ', eat: 'なまこす',
     art: { kind: 'namako', grad: ['#6A5A3A', '#4E4228', '#8A7A5A'], line: '#2E2616', seed: 11 } },
-  { k: 'awabi', n: 'クロアワビ', a: ['nihon', 'taihei'], m: ['moguri'], sz: [10, 20], p: 2500, shun: [6, 7, 8], pow: 1, rare: 4,
+  { k: 'awabi', n: 'クロアワビ', a: ['nihon', 'taihei'], m: ['moguri'], sz: [10, 20], p: 800, shun: [6, 7, 8], pow: 1, rare: 4,
     info: 'いわに ぴったり くっつく まきがい。あなが ならんでいるよ', eat: 'ステーキ・さしみ',
     art: { kind: 'awabi', grad: ['#6A7A70', '#4A5A52', '#3A463E'], line: '#1E2620' } },
-  { k: 'iseebi', n: 'イセエビ', a: ['taihei'], m: ['moguri'], sz: [20, 35], p: 4000, shun: [10, 11, 12], pow: 1, rare: 4,
+  { k: 'iseebi', n: 'イセエビ', a: ['taihei'], m: ['moguri'], sz: [20, 35], p: 1200, shun: [10, 11, 12], pow: 1, rare: 4,
     info: 'いわの すきまに かくれてる おおきな エビ。おいわいの ごちそう', eat: 'さしみ・ぐそくに',
     art: { kind: 'lobster', grad: ['#A8402A', '#C85A3A', '#8A2E1C'], line: '#4A1A10' } },
-  { k: 'hotate', n: 'ホタテ', a: ['hokkai'], m: ['moguri'], sz: [10, 18], p: 300, shun: [12, 1, 2, 3], pow: 1, rare: 2,
+  { k: 'hotate', n: 'ホタテ', a: ['hokkai'], m: ['moguri'], sz: [10, 18], p: 150, shun: [12, 1, 2, 3], pow: 1, rare: 2,
     info: 'かいがらを パクパク して およぐ ことが できる かい', eat: 'バターやき・おすし',
     art: { kind: 'clam', w: 160, h: 130, ribs: 18, ears: true, grad: ['#F2C8A0', '#D89A6A', '#A86A40'], line: '#5A3A20' } },
-  { k: 'kegani', n: 'ケガニ', a: ['hokkai'], m: ['moguri'], sz: [8, 12], p: 3000, shun: [2, 3, 4], pow: 1, rare: 3,
+  { k: 'kegani', n: 'ケガニ', a: ['hokkai'], m: ['moguri'], sz: [8, 12], p: 1000, shun: [2, 3, 4], pow: 1, rare: 3,
     info: 'からだが みじかい けで おおわれた カニ。カニみそが おいしい', eat: 'ゆでがに',
     art: { kind: 'crab', grad: ['#B8603A', '#9A4A2A', '#7A3A1E'], line: '#3A1A0C' } },
   { k: 'kurumaebi', n: 'クルマエビ', a: ['seto'], m: ['farm'], sz: [12, 20], p: 400, shun: [6, 7, 8], pow: 1, rare: 2,
@@ -1725,7 +1734,7 @@ function renderHome() {
   $('home-stats').innerHTML = `<span class="chip">📖 ずかん ${n}/${SPECIES.length}</span><span class="chip">🧊 クーラー ${save.box.length}/${boxCap()}</span><span class="chip">🎣 ${RODS[save.rod].n}</span>`;
   $('easy-sw').classList.toggle('on', !!save.easy);
   $('mute-btn').textContent = isMuted ? '🔇 おと なし' : '🔈 おと あり';
-  renderTank();
+  renderTank(); renderHarborDeco();
 }
 $('home-back').onclick = () => { renderTitle(); show('title'); };
 $('home-partner').onclick = (e) => {
@@ -2046,9 +2055,9 @@ function loop(now) {
   $('knob').style.transform = `rotate(${G.knob}rad)`;
 
   if (G.phase === 'aim') {
-    G.aimT += dt; G.power = (Math.sin(G.aimT * 2.6 - Math.PI / 2) + 1) / 2;
+    G.aimT += dt; G.power = (Math.sin(G.aimT * (Math.PI * 2 / 1.5) - Math.PI / 2) + 1) / 2;
     $('power-bar').style.width = (G.power * 100) + '%';
-    if (G.aimT > 3.2) doCast();
+    if (G.aimT > 7.5) doCast();
   } else if (G.phase === 'fly') {
     G.fly.t += dt / 0.7;
     if (G.fly.t >= 1) landed();
@@ -2400,7 +2409,11 @@ function renderShop() {
     return;
   }
   const rows = [];
-  if (shopTab === 'clothes') {
+  if (shopTab === 'deco') {
+    BOATS.forEach(bt => { if (bt.price) rows.push({ ico: bt.k, n: bt.n, d: 'みなとの ふねを のりかえる', price: bt.price, have: (save.boats || []).includes(bt.k), buy: () => { save.boats = (save.boats || []).concat(bt.k); save.boat = bt.k; }, use: (save.boats || []).includes(bt.k) && save.boat !== bt.k ? () => { save.boat = bt.k; } : null }); });
+    if ((save.boats || []).length) rows.unshift({ ico: '🚢', n: 'あかい ふね', d: 'さいしょの ふね', price: 0, have: true, use: save.boat && save.boat !== 'red' ? () => { save.boat = 'red'; } : null });
+    DECOS.forEach(d => rows.push({ ico: d.e, n: d.n, d: 'みなとに かざる', price: d.price, have: (save.deco || []).includes(d.k), buy: () => { save.deco = (save.deco || []).concat(d.k); } }));
+  } else if (shopTab === 'clothes') {
     Object.entries(AV_SHOP).forEach(([key, price]) => {
       const [k, v] = key.split(':'), label = AV_OPTS[k].find(o => o[0] === v)[1];
       const prev = { ...myAvatar(), [k]: v, ...(k === 'hat' ? { hatColor: myAvatar().hatColor } : {}) };
@@ -2420,8 +2433,9 @@ function renderShop() {
   } else {
     AREAS.filter(a => a.price).forEach(a => rows.push({ ico: a.icon, n: a.n + 'への きっぷ', d: a.desc, price: a.price, have: save.areas.includes(a.k), buy: () => save.areas.push(a.k) }));
   }
-  L.innerHTML = rows.map((r, i) => `<div class="item"><span class="ico">${r.ico}</span><span class="txt">${r.n}<small>${r.d}</small></span>${r.have ? '<span class="owned">✅ もってる</span>' : r.lock ? '<span class="owned" style="color:#9AB0C0">🔒 まえの を かってね</span>' : `<button class="btn ${save.money >= r.price ? 'sun' : ''}" data-i="${i}" ${save.money >= r.price ? '' : 'disabled'}>${r.price.toLocaleString()}えん</button>`}</div>`).join('');
-  L.querySelectorAll('.item .btn').forEach(b => b.onclick = () => {
+  L.innerHTML = rows.map((r, i) => `<div class="item"><span class="ico">${r.ico}</span><span class="txt">${r.n}<small>${r.d}</small></span>${r.use ? `<button class="btn" data-use="${i}">のる</button>` : r.have ? '<span class="owned">✅ もってる</span>' : r.lock ? '<span class="owned" style="color:#9AB0C0">🔒 まえの を かってね</span>' : `<button class="btn ${save.money >= r.price ? 'sun' : ''}" data-i="${i}" ${save.money >= r.price ? '' : 'disabled'}>${r.price.toLocaleString()}えん</button>`}</div>`).join('');
+  L.querySelectorAll('.item .btn[data-use]').forEach(b => b.onclick = () => { rows[+b.dataset.use].use(); store(); snd('tap'); toast('ふねを のりかえたよ'); renderShop(); });
+  L.querySelectorAll('.item .btn[data-i]').forEach(b => b.onclick = () => {
     const r = rows[+b.dataset.i];
     if (save.money < r.price) return;
     save.money -= r.price; r.buy(); store(); snd('coin'); confetti();
@@ -2563,7 +2577,7 @@ function updateNet(g, dt) {
   else if (G.phase === 'netsink') {
     N.d = Math.min(0.55, N.d + dt * 0.5);
     if (N.d >= 0.55) {
-      N.caught = G.fishes.filter(f => Math.abs(f.x - N.x) < 0.13 && f.d < N.d + 0.05);
+      N.caught = G.fishes.filter(f => Math.abs(f.x - N.x) < 0.12 && f.d < N.d + 0.05).sort((p, q) => Math.abs(p.x - N.x) - Math.abs(q.x - N.x)).slice(0, save.easy ? 6 : 5);
       N.caught.forEach(f => { f.st = 'net'; });
       G.phase = 'netpull'; setAct('ひっぱる！', '', true); $('act').classList.remove('hide');
       say(N.caught.length ? 'はいった！ ひっぱって！' : 'ひっぱって あげてみよう！');
@@ -2676,73 +2690,74 @@ function endDig() {
 $('dig-back').onclick = () => { if (D.got.length) endDig(); else { D.on = false; endTrip(); } };
 
 // =========================================================
-// ▼▼ もぐり ▼▼
+// ▼▼ もぐり（かくれんぼ：ちらっと かおを だした ところを タップ）▼▼
 // =========================================================
 const V = { on: false };
-const ROCK_SVG = (c) => `<svg viewBox="0 0 100 60" preserveAspectRatio="none"><path d="M4,58 C0,30 20,6 48,4 C78,2 98,26 96,58 Z" fill="${c}" stroke="rgba(0,0,0,0.25)" stroke-width="2"/><path d="M20,30 Q40,18 60,22" stroke="rgba(255,255,255,0.25)" stroke-width="4" fill="none"/></svg>`;
+const COVER = {
+  rock: (c) => `<svg viewBox="0 0 100 60" preserveAspectRatio="none"><path d="M2,60 C0,28 22,4 50,3 C80,2 100,28 98,60 Z" fill="${c}" stroke="rgba(0,0,0,0.3)" stroke-width="2"/><path d="M20,26 Q40,14 62,18" stroke="rgba(255,255,255,0.25)" stroke-width="4" fill="none"/></svg>`,
+  weed: () => `<svg viewBox="0 0 100 60" preserveAspectRatio="none">${[8, 22, 36, 50, 64, 78, 92].map((x, i) => `<path d="M${x},60 Q${x - 8},${30 - i % 3 * 6} ${x + 3},${2 + i % 2 * 8}" stroke="${i % 2 ? '#3E9A5A' : '#2E7A48'}" stroke-width="9" fill="none" stroke-linecap="round"/>`).join('')}</svg>`,
+  sand: () => `<svg viewBox="0 0 100 60" preserveAspectRatio="none"><path d="M0,60 Q10,14 50,10 Q90,14 100,60 Z" fill="#D8C49A"/><path d="M20,40 q8,-4 16,0 M56,30 q8,-4 16,0" stroke="#B8A478" stroke-width="2" fill="none"/></svg>`,
+};
 function startDive(area) {
   startTrip(area, 'moguri');
   const pool = poolFor(area, 'moguri');
-  Object.assign(V, { on: true, area, pool, got: [], time: save.easy ? 60 : 45, left: save.easy ? 60 : 45, last: performance.now() });
+  Object.assign(V, { on: true, area, pool, got: [], spots: [], time: save.easy ? 55 : 45, left: save.easy ? 55 : 45, last: performance.now(), next: 1.2, real: 0, rare: 0, maxReal: save.easy ? 9 : 8, warned: false });
   show('dive');
   const f = $('dive-field');
-  let rays = `<svg style="position:absolute;inset:0" viewBox="0 0 100 100" preserveAspectRatio="none" width="100%" height="100%"><path d="M15 0 L25 0 L45 100 L28 100 Z M55 0 L62 0 L80 100 L66 100 Z" fill="#FFF" opacity="0.08"/></svg>`;
-  let weeds = ''; for (let i = 0; i < 8; i++) weeds += `<div class="weed" style="left:${i * 12 + Math.random() * 6}%;animation-delay:${-Math.random() * 3}s">${weedSvg(area === 'hokkai' ? 'kelp' : 'weed', 80 + Math.random() * 90)}</div>`;
+  const rays = `<svg style="position:absolute;inset:0" viewBox="0 0 100 100" preserveAspectRatio="none" width="100%" height="100%"><path d="M15 0 L25 0 L45 100 L28 100 Z M55 0 L62 0 L80 100 L66 100 Z" fill="#FFF" opacity="0.08"/></svg>`;
+  let weeds = ''; for (let i = 0; i < 6; i++) weeds += `<div class="weed" style="left:${i * 17 + Math.random() * 6}%;animation-delay:${-Math.random() * 3}s">${weedSvg(area === 'hokkai' ? 'kelp' : 'weed', 70 + Math.random() * 80)}</div>`;
   let bubbles = ''; for (let i = 0; i < 10; i++) bubbles += `<div class="bubble-dot" style="left:${Math.random() * 100}%;bottom:${Math.random() * 30}%;animation-duration:${4 + Math.random() * 4}s;animation-delay:${-Math.random() * 6}s"></div>`;
-  f.innerHTML = `${rays}<div class="seabed" style="height:22%">${bedSvg(area === 'kawa' ? 'seto' : area)}</div>${weeds}${bubbles}<img class="diver" id="dive-av" src="${avImg(myAvatar())}" style="left:4%;top:12%;height:20%;transform:rotate(-70deg)"><img class="diver" src="${getPokemonImageUrl(partnerOf().id)}" style="left:22%;top:16%;height:10%">`;
-  // いわ
-  const spots = [];
-  for (let i = 0; i < 9; i++) spots.push({ x: 6 + (i % 5) * 19 + rand(-3, 3), y: i < 5 ? rand(74, 84) : rand(52, 64) });
-  spots.forEach((s, i) => {
-    const rock = document.createElement('button'); rock.className = 'rock';
-    const w = rand(14, 22);
-    rock.style.cssText = `left:${s.x}%;top:${s.y}%;width:${w}vmin;height:${w * 0.6}vmin;`;
-    rock.innerHTML = ROCK_SVG(pick(['#6E6A60', '#7E786C', '#5E5A52', '#8A8274']));
-    const hidden = Math.random() < 0.75 ? pickWeighted(pool) : null;
-    const R = { el: rock, sp: hidden, open: false, x: s.x, y: s.y, w };
-    rock.onpointerdown = (e) => { e.preventDefault(); flipRock(R, e); };
-    f.appendChild(rock);
-    // いわの うえに みえている もの（サザエ・ウニ・カキ）
-    if (Math.random() < 0.5) {
-      const vis = pickWeighted(pool.filter(p => ['sazae', 'murasakiuni', 'bafununi', 'kaki'].includes(p.k)).length ? pool.filter(p => ['sazae', 'murasakiuni', 'bafununi', 'kaki'].includes(p.k)) : pool);
-      addDiveItem(vis, s.x, s.y - 9, w * 0.95);
-    }
+  f.innerHTML = `${rays}<div class="seabed" style="height:22%">${bedSvg(area === 'kawa' ? 'seto' : area)}</div>${weeds}${bubbles}<img class="swim-pk" src="${getPokemonImageUrl(partnerOf().id)}" alt="">`;
+  // かくれる ばしょ
+  const pos = [[6, 76], [28, 80], [52, 77], [74, 80], [16, 56], [40, 58], [64, 55], [84, 60]];
+  pos.forEach(([x, y], i) => {
+    const kind = i % 3 === 0 ? 'weed' : i % 3 === 1 ? 'rock' : 'sand';
+    const w = 18 + (i % 2) * 4;
+    const el = document.createElement('button'); el.className = 'spot';
+    el.style.cssText = `left:${x}%;top:${y - w * 0.55}%;width:${w}vmin;height:${w * 0.95}vmin;`;
+    el.innerHTML = `<img class="peek" alt=""><div class="cover">${COVER[kind](pick(['#6E6A60', '#7E786C', '#5E5A52']))}</div>`;
+    const S = { el, img: el.querySelector('.peek'), busy: false, sp: null, up: false };
+    el.onpointerdown = (e) => { e.preventDefault(); tapSpot(S, e); };
+    f.appendChild(el); V.spots.push(S);
   });
   $('dive-count').textContent = '🧺 0';
-  say2('いわを タップして めくってみよう！');
+  say2('かくれんぼ！ ちらっと かおを だしたら タップしてね');
   requestAnimationFrame(diveLoop);
 }
-function addDiveItem(sp, xPct, yPct, wv, pulls) {
-  const it = document.createElement('button'); it.className = 'item-in';
-  it.style.cssText = `left:${xPct}%;top:${yPct}%;width:${Math.max(16, wv)}vmin;z-index:5;`;
-  it.innerHTML = `<img src="${fishImg(sp.k)}" alt="">`;
-  let need = sp.k === 'iseebi' ? (save.easy ? 2 : 4) : 1;
-  it.onpointerdown = (e) => {
-    e.preventDefault(); if (!V.on) return;
-    need--; vib(20);
-    if (need > 0) { snd('swish'); it.animate([{ transform: 'translateX(0)' }, { transform: 'translateX(-10px)' }, { transform: 'translateX(8px)' }, { transform: 'translateX(0)' }], { duration: 250 }); toast('もっと ひっぱって！'); return; }
-    const size = randSize(sp.k, V.area);
-    V.got.push({ k: sp.k, size }); $('dive-count').textContent = `🧺 ${V.got.length}`;
-    snd('coin'); burst(e.clientX, e.clientY, { count: 8, spread: 50 });
-    if (V.got.length === 1 || Math.random() < 0.35) speak(sp.n + '！');
-    it.onpointerdown = null;
-    it.animate([{ transform: 'translateY(0)', opacity: 1 }, { transform: 'translateY(-120px) scale(0.5)', opacity: 0 }], { duration: 600, easing: 'ease-in' }).onfinish = () => it.remove();
-  };
-  $('dive-field').appendChild(it);
-  it.animate([{ transform: 'scale(0)' }, { transform: 'scale(1)' }], { duration: 300 });
+function peekOut() {
+  const free = V.spots.filter(s => !s.busy); if (!free.length) return;
+  const S = pick(free);
+  const decoy = V.real >= V.maxReal || Math.random() < 0.22;
+  let sp = decoy ? null : pickWeighted(V.pool);
+  // たかい もの（アワビ・イセエビ・ケガニ など）は 1かいの もぐりで 1ぴき まで
+  if (sp && sp.rare >= 3) { if (V.rare >= 1) { const cheap = V.pool.filter(p => p.rare < 3); sp = cheap.length ? pickWeighted(cheap) : sp; } else V.rare = 1; }
+  S.sp = sp; S.decoy = decoy;
+  if (!decoy) V.real++;
+  S.img.src = fishImg(decoy ? 'kusafugu' : S.sp.k);
+  S.busy = true; S.up = true;
+  const dur = (save.easy ? 2.2 : 1.5) * 1000;
+  S.anim = S.img.animate([{ transform: 'translateY(105%)' }, { transform: 'translateY(8%)', offset: 0.2 }, { transform: 'translateY(14%)', offset: 0.5 }, { transform: 'translateY(8%)', offset: 0.8 }, { transform: 'translateY(105%)' }], { duration: dur, easing: 'ease-in-out' });
+  S.anim.onfinish = () => { S.up = false; S.busy = false; };
 }
-function flipRock(R, e) {
-  if (!V.on || R.open) return;
-  R.open = true; snd('swish');
-  R.el.animate([{ transform: 'rotate(0)' }, { transform: 'rotate(-35deg) translateX(-20%)' }], { duration: 400, fill: 'forwards', easing: 'ease-out' });
-  burst(e.clientX, e.clientY, { count: 6, spread: 40, shapes: [''], colors: ['#D8C8A0', '#FFFFFF'] });
-  if (R.sp) setTimeout(() => addDiveItem(R.sp, R.x - 2, R.y - 2, R.w * 1.05), 250);
-  else toast('なにも いなかった');
+function tapSpot(S, e) {
+  if (!V.on) return;
+  if (!S.up) { burst(e.clientX, e.clientY, { count: 4, spread: 25, shapes: [''], colors: ['#FFFFFF', '#CDEBFF'] }); return; }
+  S.up = false; if (S.anim) S.anim.cancel();
+  if (S.decoy) {
+    snd('nibble'); toast('ぷくーっ！ フグだった〜'); S.img.animate([{ transform: 'translateY(8%) scale(1)' }, { transform: 'translateY(8%) scale(1.4)' }, { transform: 'translateY(105%) scale(1)' }], { duration: 600 }).onfinish = () => { S.busy = false; };
+    return;
+  }
+  const size = randSize(S.sp.k, V.area);
+  V.got.push({ k: S.sp.k, size }); $('dive-count').textContent = `🧺 ${V.got.length}`;
+  snd('coin'); vib(30); burst(e.clientX, e.clientY, { count: 10, spread: 60 });
+  speak(S.sp.n + '！');
+  S.img.animate([{ transform: 'translateY(8%) scale(1)', opacity: 1 }, { transform: 'translateY(-120%) scale(1.2)', opacity: 1, offset: 0.6 }, { transform: 'translateY(-200%) scale(0.5)', opacity: 0 }], { duration: 700, easing: 'ease-out' }).onfinish = () => { S.img.style.transform = 'translateY(105%)'; S.busy = false; };
 }
 function diveLoop(now) {
   if (!V.on) return;
   const dt = Math.min(0.05, (now - V.last) / 1000); V.last = now;
-  V.left -= dt;
+  V.left -= dt; V.next -= dt;
+  if (V.next <= 0) { V.next = rand(1.2, 2.0); peekOut(); }
   $('breath-bar').style.width = Math.max(0, V.left / V.time * 100) + '%';
   if (V.left < 8 && !V.warned) { V.warned = true; say2('いきが くるしい！ もうすぐ あがるよ'); }
   if (V.left <= 0) { endDive(); return; }
@@ -3235,12 +3250,50 @@ function renderTank() {
   t.querySelectorAll('.tank-fish').forEach(img => img.onclick = () => { const f = list[+img.dataset.i]; speak(`${displayName(SP_BY[f.k], f.size)}、${Math.round(f.size)}センチ`); toast(`${displayName(SP_BY[f.k], f.size)} ${f.size}cm`); });
 }
 
+// =========================================================
+// ▼▼ みなとの かざり と ふね ▼▼
+// =========================================================
+const DECOS = [
+  { k: 'buoy', e: '🛟', n: 'うきわ', price: 500, x: 47, y: 62, s: 2.6 },
+  { k: 'lantern', e: '🏮', n: 'ちょうちん', price: 600, x: 8, y: 30, s: 2.6 },
+  { k: 'kite', e: '🪁', n: 'たこ', price: 700, x: 38, y: 6, s: 2.6 },
+  { k: 'parasol', e: '⛱️', n: 'パラソル', price: 800, x: 34, y: 34, s: 3.4 },
+  { k: 'anchor', e: '⚓', n: 'いかり', price: 1000, x: 40, y: 74, s: 2.4 },
+  { k: 'koinobori', e: '🎏', n: 'こいのぼり', price: 1200, x: 46, y: 18, s: 3.2 },
+  { k: 'palm', e: '🌴', n: 'ヤシの き', price: 1500, x: 54, y: 24, s: 4 },
+  { k: 'coral', e: '🪸', n: 'さんご', price: 1800, x: 70, y: 80, s: 3 },
+  { k: 'penguin', e: '🐧', n: 'ペンギン', price: 2500, x: 22, y: 44, s: 2.4 },
+  { k: 'seal', e: '🦭', n: 'アザラシ', price: 3500, x: 86, y: 64, s: 3 },
+  { k: 'moai', e: '🗿', n: 'モアイ', price: 5000, x: 2, y: 36, s: 3.2 },
+  { k: 'rainbow', e: '🌈', n: 'にじ', price: 10000, x: 58, y: -2, s: 6 },
+  { k: 'wheel', e: '🎡', n: 'かんらんしゃ', price: 20000, x: 76, y: 2, s: 5.5 },
+];
+const BOATS = [
+  { k: 'red', n: 'あかい ふね', price: 0 }, { k: '⛵', n: 'ヨット', price: 3000 }, { k: '🚤', n: 'スピードボート', price: 6000 },
+  { k: '🛥️', n: 'クルーザー', price: 12000 }, { k: '🛳️', n: 'ごうかきゃくせん', price: 30000 },
+];
+function renderHarborDeco() {
+  const h = $('harbor'); if (!h) return;
+  h.querySelectorAll('.deco').forEach(d => d.remove());
+  (save.deco || []).forEach(k => {
+    const d = DECOS.find(x => x.k === k); if (!d) return;
+    const el = document.createElement('span'); el.className = 'deco'; el.textContent = d.e;
+    el.style.cssText = `left:${d.x}%;top:${d.y}%;font-size:${d.s}rem;`;
+    el.onclick = () => { speak(d.n); el.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.3) rotate(-8deg)' }, { transform: 'scale(1)' }], { duration: 400 }); };
+    h.appendChild(el);
+  });
+  const boat = save.boat || 'red', svgBoat = h.querySelector('svg.boat');
+  let eb = h.querySelector('.boat-emo');
+  if (boat === 'red') { svgBoat.style.display = ''; if (eb) eb.remove(); }
+  else { svgBoat.style.display = 'none'; if (!eb) { eb = document.createElement('span'); eb.className = 'boat-emo'; h.appendChild(eb); } eb.textContent = boat; }
+}
+
 // ---------- スタート ----------
 function setMuted() {}
 // ==== EMOJI-3D START ====
 // もんだいの なかの えもじを、どの スマホでも おなじに みえる 3Dの え（Microsoft Fluent Emoji, MIT ライセンス）に おきかえる
 const EMOJI_BASE = 'https://raw.githubusercontent.com/microsoft/fluentui-emoji/1ffb34c752ecf5d402f04cfb4b392c77f57c54bc/';
-const EMOJI_IMG = {"♨️": "assets/Hot springs/3D/hot_springs_3d.png","❄️": "assets/Snowflake/3D/snowflake_3d.png","🏞️": "assets/National park/3D/national_park_3d.png","🏝️": "assets/Desert island/3D/desert_island_3d.png","🍽️": "assets/Fork and knife with plate/3D/fork_and_knife_with_plate_3d.png","⛴️": "assets/Ferry/3D/ferry_3d.png","🕸️": "assets/Spider web/3D/spider_web_3d.png","☀️": "assets/Sun/3D/sun_3d.png","⛄": "assets/Snowman without snow/3D/snowman_without_snow_3d.png","📖": "assets/Open book/3D/open_book_3d.png","✊": "assets/Raised fist/Default/3D/raised_fist_3d_default.png","📅": "assets/Calendar/3D/calendar_3d.png","👕": "assets/T-shirt/3D/t-shirt_3d.png","🍣": "assets/Sushi/3D/sushi_3d.png","🏪": "assets/Convenience store/3D/convenience_store_3d.png","🔄": "assets/Counterclockwise arrows button/3D/counterclockwise_arrows_button_3d.png","🌅": "assets/Sunrise/3D/sunrise_3d.png","🐠": "assets/Tropical fish/3D/tropical_fish_3d.png","🏆": "assets/Trophy/3D/trophy_3d.png","🔈": "assets/Speaker low volume/3D/speaker_low_volume_3d.png","🍤": "assets/Fried shrimp/3D/fried_shrimp_3d.png","🥣": "assets/Bowl with spoon/3D/bowl_with_spoon_3d.png","🎉": "assets/Party popper/3D/party_popper_3d.png","🌸": "assets/Cherry blossom/3D/cherry_blossom_3d.png","🔒": "assets/Locked/3D/locked_3d.png","♨": "assets/Hot springs/3D/hot_springs_3d.png","🍁": "assets/Maple leaf/3D/maple_leaf_3d.png","📒": "assets/Ledger/3D/ledger_3d.png","🐚": "assets/Spiral shell/3D/spiral_shell_3d.png","❄": "assets/Snowflake/3D/snowflake_3d.png","🟠": "assets/Orange circle/3D/orange_circle_3d.png","✅": "assets/Check mark button/3D/check_mark_button_3d.png","🧺": "assets/Basket/3D/basket_3d.png","💰": "assets/Money bag/3D/money_bag_3d.png","🌊": "assets/Water wave/3D/water_wave_3d.png","🏞": "assets/National park/3D/national_park_3d.png","🐙": "assets/Octopus/3D/octopus_3d.png","😋": "assets/Face savoring food/3D/face_savoring_food_3d.png","🍱": "assets/Bento box/3D/bento_box_3d.png","🐳": "assets/Spouting whale/3D/spouting_whale_3d.png","👧": "assets/Girl/Default/3D/girl_3d_default.png","✨": "assets/Sparkles/3D/sparkles_3d.png","🔨": "assets/Hammer/3D/hammer_3d.png","🎣": "assets/Fishing pole/3D/fishing_pole_3d.png","🌻": "assets/Sunflower/3D/sunflower_3d.png","🌙": "assets/Crescent moon/3D/crescent_moon_3d.png","🧈": "assets/Butter/3D/butter_3d.png","🏝": "assets/Desert island/3D/desert_island_3d.png","🏠": "assets/House/3D/house_3d.png","🦪": "assets/Oyster/3D/oyster_3d.png","🍗": "assets/Poultry leg/3D/poultry_leg_3d.png","🧂": "assets/Salt/3D/salt_3d.png","🍽": "assets/Fork and knife with plate/3D/fork_and_knife_with_plate_3d.png","🧯": "assets/Fire extinguisher/3D/fire_extinguisher_3d.png","🥢": "assets/Chopsticks/3D/chopsticks_3d.png","🪣": "assets/Bucket/3D/bucket_3d.png","🦑": "assets/Squid/3D/squid_3d.png","🍚": "assets/Cooked rice/3D/cooked_rice_3d.png","🔇": "assets/Muted speaker/3D/muted_speaker_3d.png","🍳": "assets/Cooking/3D/cooking_3d.png","👗": "assets/Dress/3D/dress_3d.png","⛴": "assets/Ferry/3D/ferry_3d.png","🕸": "assets/Spider web/3D/spider_web_3d.png","🧊": "assets/Ice/3D/ice_3d.png","⭐": "assets/Star/3D/star_3d.png","🕐": "assets/One oclock/3D/one_oclock_3d.png","🔥": "assets/Fire/3D/fire_3d.png","☀": "assets/Sun/3D/sun_3d.png","🤿": "assets/Diving mask/3D/diving_mask_3d.png","🌇": "assets/Sunset/3D/sunset_3d.png","🐟": "assets/Fish/3D/fish_3d.png"};
+const EMOJI_IMG = {"♨️": "assets/Hot springs/3D/hot_springs_3d.png","❄️": "assets/Snowflake/3D/snowflake_3d.png","🛳️": "assets/Passenger ship/3D/passenger_ship_3d.png","🏞️": "assets/National park/3D/national_park_3d.png","🏝️": "assets/Desert island/3D/desert_island_3d.png","🛥️": "assets/Motor boat/3D/motor_boat_3d.png","🍽️": "assets/Fork and knife with plate/3D/fork_and_knife_with_plate_3d.png","⛴️": "assets/Ferry/3D/ferry_3d.png","🕸️": "assets/Spider web/3D/spider_web_3d.png","⛱️": "assets/Umbrella on ground/3D/umbrella_on_ground_3d.png","☀️": "assets/Sun/3D/sun_3d.png","⛄": "assets/Snowman without snow/3D/snowman_without_snow_3d.png","📖": "assets/Open book/3D/open_book_3d.png","🚢": "assets/Ship/3D/ship_3d.png","✊": "assets/Raised fist/Default/3D/raised_fist_3d_default.png","📅": "assets/Calendar/3D/calendar_3d.png","👕": "assets/T-shirt/3D/t-shirt_3d.png","🍣": "assets/Sushi/3D/sushi_3d.png","🎏": "assets/Carp streamer/3D/carp_streamer_3d.png","🏪": "assets/Convenience store/3D/convenience_store_3d.png","🔄": "assets/Counterclockwise arrows button/3D/counterclockwise_arrows_button_3d.png","🪸": "assets/Coral/3D/coral_3d.png","🌅": "assets/Sunrise/3D/sunrise_3d.png","🐠": "assets/Tropical fish/3D/tropical_fish_3d.png","🏆": "assets/Trophy/3D/trophy_3d.png","🔈": "assets/Speaker low volume/3D/speaker_low_volume_3d.png","🍤": "assets/Fried shrimp/3D/fried_shrimp_3d.png","🎡": "assets/Ferris wheel/3D/ferris_wheel_3d.png","🥣": "assets/Bowl with spoon/3D/bowl_with_spoon_3d.png","🗿": "assets/Moai/3D/moai_3d.png","🎉": "assets/Party popper/3D/party_popper_3d.png","🌸": "assets/Cherry blossom/3D/cherry_blossom_3d.png","🔒": "assets/Locked/3D/locked_3d.png","♨": "assets/Hot springs/3D/hot_springs_3d.png","🍁": "assets/Maple leaf/3D/maple_leaf_3d.png","📒": "assets/Ledger/3D/ledger_3d.png","🐚": "assets/Spiral shell/3D/spiral_shell_3d.png","🪁": "assets/Kite/3D/kite_3d.png","🛟": "assets/Ring buoy/3D/ring_buoy_3d.png","❄": "assets/Snowflake/3D/snowflake_3d.png","🟠": "assets/Orange circle/3D/orange_circle_3d.png","🛳": "assets/Passenger ship/3D/passenger_ship_3d.png","✅": "assets/Check mark button/3D/check_mark_button_3d.png","🧺": "assets/Basket/3D/basket_3d.png","💰": "assets/Money bag/3D/money_bag_3d.png","⚓": "assets/Anchor/3D/anchor_3d.png","🌊": "assets/Water wave/3D/water_wave_3d.png","🏮": "assets/Red paper lantern/3D/red_paper_lantern_3d.png","🏞": "assets/National park/3D/national_park_3d.png","⛵": "assets/Sailboat/3D/sailboat_3d.png","🐙": "assets/Octopus/3D/octopus_3d.png","😋": "assets/Face savoring food/3D/face_savoring_food_3d.png","🍱": "assets/Bento box/3D/bento_box_3d.png","🐧": "assets/Penguin/3D/penguin_3d.png","🐳": "assets/Spouting whale/3D/spouting_whale_3d.png","👧": "assets/Girl/Default/3D/girl_3d_default.png","✨": "assets/Sparkles/3D/sparkles_3d.png","🔨": "assets/Hammer/3D/hammer_3d.png","🎣": "assets/Fishing pole/3D/fishing_pole_3d.png","🌻": "assets/Sunflower/3D/sunflower_3d.png","🌴": "assets/Palm tree/3D/palm_tree_3d.png","🌙": "assets/Crescent moon/3D/crescent_moon_3d.png","🧈": "assets/Butter/3D/butter_3d.png","🏝": "assets/Desert island/3D/desert_island_3d.png","🏠": "assets/House/3D/house_3d.png","🦪": "assets/Oyster/3D/oyster_3d.png","🛥": "assets/Motor boat/3D/motor_boat_3d.png","🍗": "assets/Poultry leg/3D/poultry_leg_3d.png","🦭": "assets/Seal/3D/seal_3d.png","🧂": "assets/Salt/3D/salt_3d.png","🍽": "assets/Fork and knife with plate/3D/fork_and_knife_with_plate_3d.png","🧯": "assets/Fire extinguisher/3D/fire_extinguisher_3d.png","🥢": "assets/Chopsticks/3D/chopsticks_3d.png","🪣": "assets/Bucket/3D/bucket_3d.png","🚤": "assets/Speedboat/3D/speedboat_3d.png","🦑": "assets/Squid/3D/squid_3d.png","🍚": "assets/Cooked rice/3D/cooked_rice_3d.png","🔇": "assets/Muted speaker/3D/muted_speaker_3d.png","🍳": "assets/Cooking/3D/cooking_3d.png","👗": "assets/Dress/3D/dress_3d.png","⛴": "assets/Ferry/3D/ferry_3d.png","🕸": "assets/Spider web/3D/spider_web_3d.png","🧊": "assets/Ice/3D/ice_3d.png","⭐": "assets/Star/3D/star_3d.png","🕐": "assets/One oclock/3D/one_oclock_3d.png","⛱": "assets/Umbrella on ground/3D/umbrella_on_ground_3d.png","🌈": "assets/Rainbow/3D/rainbow_3d.png","🔥": "assets/Fire/3D/fire_3d.png","☀": "assets/Sun/3D/sun_3d.png","🤿": "assets/Diving mask/3D/diving_mask_3d.png","🌇": "assets/Sunset/3D/sunset_3d.png","🐟": "assets/Fish/3D/fish_3d.png"};
 const EMOJI_RE = /(?:\p{Extended_Pictographic}|\p{Regional_Indicator}{2}|[0-9#*]\uFE0F?\u20E3)(?:\uFE0F|\u200D\p{Extended_Pictographic}|[\u{1F3FB}-\u{1F3FF}])*/gu;
 function emojiSrc(e) {
   const p = EMOJI_IMG[e] || EMOJI_IMG[e.replace(/\uFE0F/g, '')] || EMOJI_IMG[e + '\uFE0F'];
