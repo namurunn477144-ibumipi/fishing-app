@@ -123,6 +123,7 @@
     .act { min-width: 11rem; min-height: 5.2rem; border: none; border-radius: 2.6rem; font-size: 1.6rem; font-weight: 900; color: #FFF; background: linear-gradient(135deg, #FF9A76, #F2545B); box-shadow: 0 10px 0 #B8323A, 0 16px 26px rgba(0,0,0,0.25); }
     .act:active { transform: translateY(6px); box-shadow: 0 4px 0 #B8323A, 0 8px 16px rgba(0,0,0,0.25); }
     .act.blue { background: linear-gradient(135deg, #4CC2FF, #1272C4); box-shadow: 0 10px 0 #0B4E8A, 0 16px 26px rgba(0,0,0,0.25); }
+    .act.wait { background: linear-gradient(135deg, #B8C8D4, #8EA2B2); box-shadow: 0 10px 0 #6E8494, 0 16px 26px rgba(0,0,0,0.25); }
     .act.glow { animation: glow 0.5s ease-in-out infinite alternate; }
     @keyframes glow { from { transform: scale(1); } to { transform: scale(1.1); } }
     .act.hide { visibility: hidden; }
@@ -1790,7 +1791,7 @@ function startFishing(area, method) {
   setAct('なげる', 'blue');
   $('fight').classList.remove('show');
   const p = partnerOf();
-  setTimeout(() => say(method === 'ami' ? 'さかなの むれを ねらって あみを なげよう！' : method === 'egi' ? 'エギを なげて、しゃくって しずめてね！' : method === 'lure' ? 'なげたら ぐるぐる まいてね！' : 'なげて、うきが しずんだら あわせてね！'), 400);
+  setTimeout(() => say(method === 'ami' ? 'さかなの むれを ねらって あみを なげよう！' : method === 'egi' ? 'エギを なげて、うごかして しずめてね！' : method === 'lure' ? 'なげたら ぐるぐる まいてね！' : 'なげて、うきが しずんだら ひっぱってね！'), 400);
   playCry(p.id, 0.35);
   lastT = performance.now();
   cancelAnimationFrame(rafId);
@@ -1823,7 +1824,7 @@ function onAct() {
     if (G.method === 'egi') { shakuri(); return; }
     if (G.method === 'uki') {
       const nib = G.fishes.find(f => f.st === 'nibble');
-      if (nib && !save.easy) { nib.st = 'flee'; nib.cool = 4; snd('miss'); say('はやすぎた〜！ うきが しずむまで まってね'); }
+      if (nib && !save.easy) { nib.st = 'flee'; nib.cool = 4; snd('miss'); say('はやすぎた〜！ うきが しずむまで まってね'); setAct('まってね…', 'wait'); }
       else if (!nib) { G.dip = 0.6; say('うきが しずむまで まってね', false); }
       return;
     }
@@ -1842,10 +1843,10 @@ function landed() {
   const g = geo();
   G.bx = G.fly.tx; G.bd = 0; G.fly = null;
   splashAt(G.bx * g.W, g.surf, false); snd('splash');
-  G.phase = 'wait'; G.waitT = 0; G.dip = 0; G.sink = 0; G.fallT = G.method === 'egi' ? 4 : 0;
+  G.phase = 'wait'; G.waitT = 0; G.dip = 0; G.sink = 0; G.sinkTo = 0; G.fallT = G.method === 'egi' ? 4 : 0;
   $('act').classList.remove('hide');
-  if (G.method === 'uki') setAct('あわせる', '');
-  else if (G.method === 'egi') setAct('しゃくる', 'blue');
+  if (G.method === 'uki') setAct('まってね…', 'wait');
+  else if (G.method === 'egi') setAct('うごかす', 'blue');
   else setAct('まいてね →', 'blue');
   if (G.method === 'lure') $('act').classList.add('hide');
 }
@@ -1933,9 +1934,9 @@ function updateWait(g, dt) {
     if (G.biteT <= 0) {
       const f = G.hookFish; G.hookFish = null;
       if (f) { f.st = 'flee'; f.cool = 5; }
-      G.sink = 0; G.phase = 'wait'; snd('miss');
+      G.sinkTo = 0; G.phase = 'wait'; snd('miss');
       say(m === 'egi' ? 'はなれちゃった… もういちど しゃくってみよう' : 'えさを とられちゃった…');
-      setAct(m === 'egi' ? 'しゃくる' : 'あわせる', m === 'egi' ? 'blue' : '');
+      setAct(m === 'egi' ? 'うごかす' : 'まってね…', m === 'egi' ? 'blue' : 'wait');
       if (m === 'uki') { G.waitT = 0; }
     }
   }
@@ -1978,14 +1979,14 @@ function updateFishes(g, dt) {
           if (near) { f.st = 'nibble'; f.nib = 1 + Math.floor(Math.random() * (save.easy ? 2 : 3)); f.nibT = rand(0.5, 1.0); }
         } else if (G.method === 'egi') {
           if (G.fallT <= 0 && f.chaseT > 7) { f.st = 'swim'; f.cool = 2; }
-          else if (near && (G.fallT > 0 || Math.random() < dt * 0.5)) { f.st = 'hug'; startBite(f, 'グンッ！ あわせて！'); }
+          else if (near && (G.fallT > 0 || Math.random() < dt * 0.5)) { f.st = 'hug'; startBite(f, 'グンッ！ いまだ ひっぱって！'); }
         }
         if (f.chaseT > 9) { f.st = 'swim'; f.cool = 3; }
       } else if (f.st === 'nibble' && G.phase === 'wait') {
         f.nibT -= dt;
         if (f.nibT <= 0) {
           if (f.nib > 0) { f.nib--; f.nibT = rand(0.6, 1.1); G.dip = 0.5; snd('nibble'); }
-          else startBite(f, 'いまだ！ あわせて！');
+          else startBite(f, 'いまだ！ ひっぱって！');
         }
       }
     } else if (f.st === 'hooked') { continue; }
@@ -2005,9 +2006,9 @@ function placeFish(g, f, extra = '') {
   if (mark !== !!f.marked) { f.marked = mark; f.el.querySelector('img').style.opacity = mark ? 0.72 : 0.55; }
 }
 function startBite(f, msg) {
-  G.phase = 'bite'; G.hookFish = f; G.biteT = save.easy ? 3.2 : 2.2; G.sink = 1;
+  G.phase = 'bite'; G.hookFish = f; G.biteT = save.easy ? 3.2 : 2.2; G.sinkTo = 1;
   vib(200); snd('bite');
-  setAct('あわせる！', '', true);
+  setAct('ひっぱる！', '', true);
   bigMsg(G.method === 'egi' ? 'グンッ！' : 'いまだ！');
   say(msg, true);
 }
@@ -2020,7 +2021,8 @@ function startFight(f) {
   const sf = clamp((f.size - mn) / Math.max(1, mx - mn), 0, 1);
   const S = sp.pow * (0.65 + 0.35 * sf);
   const dist = 8 + (G.bx - 0.2) * 40 + S * 4;
-  G.fight = { f, S, dist, max: dist, stam: 1, run: true, phaseT: 0.8, tension: 0, danger: 0, sayCd: 0 };
+  G.fight = { f, S, dist, max: dist, stam: 1, run: true, phaseT: 0.8, tension: 0, danger: 0, sayCd: 0, x0: f.x, d0: f.d, floatX: G.bx };
+  G.sinkTo = 1;
   G.phase = 'fight';
   $('act').classList.add('hide');
   $('fight').classList.add('show');
@@ -2059,9 +2061,12 @@ function updateFight(g, dt) {
   $('dist-bar').style.width = (100 - clamp(F.dist / F.max, 0, 1) * 100) + '%';
   // さかなの いち
   const f = F.f, k = clamp(F.dist / F.max, 0, 1.4);
-  f.x = 0.24 + (G.bx - 0.2) * k + Math.sin(G.t * 9) * (F.run ? 0.01 : 0.004);
-  f.d = clamp(0.08 + (BANDS[f.sp.band][0] + 0.1) * k + Math.sin(G.t * 3) * 0.04, 0.04, 0.88);
-  f.dir = F.run ? 1 : -1;
+  // かかった ばしょから すこしずつ てまえ・うえに よってくる（いきなり とばない）
+  const tx = 0.25 + (F.x0 - 0.25) * k + Math.sin(G.t * 9) * (F.run ? 0.01 : 0.004);
+  const td = clamp(0.06 + (F.d0 - 0.06) * Math.min(1, k) + Math.sin(G.t * 3) * 0.03, 0.03, 0.88);
+  const ease = Math.min(1, dt * 2.5);
+  f.x += (tx - f.x) * ease; f.d += (td - f.d) * ease;
+  F.floatX += (f.x - F.floatX) * Math.min(1, dt * 1.5);
   f.t += dt;
   placeFish(g, f, ` rotate(${Math.sin(G.t * (F.run ? 22 : 8)) * (F.run ? 10 : 4)}deg)`);
   if (F.danger > 1.1) { lineBreak(); return; }
@@ -2084,7 +2089,8 @@ function landFish() {
   splashAt(f.x * g.W, g.surf, true); snd('splash');
   f.el.querySelector('img').src = fishImg(f.sp.k); f.el.querySelector('img').style.opacity = 1;
   const x0 = f.x * g.W - f.w / 2, y0 = dpx(g, f.d) - f.w / 4;
-  f.el.animate([{ transform: `translate(${x0}px, ${y0}px)` }, { transform: `translate(${g.W / 2 - f.w / 2}px, ${g.surf - g.H * 0.2}px) rotate(-12deg)` }], { duration: 650, easing: 'cubic-bezier(.2,.8,.3,1)', fill: 'forwards' }).onfinish = () => {
+  const fl = f.dir > 0 ? -1 : 1;
+  f.el.animate([{ transform: `translate(${x0}px, ${y0}px) scaleX(${fl})` }, { transform: `translate(${x0 - g.W * 0.04}px, ${g.surf - f.w * 0.6}px) scaleX(${fl}) rotate(10deg)`, offset: 0.45 }, { transform: `translate(${g.tipX - f.w * 0.5}px, ${g.tipY}px) scaleX(${fl}) rotate(-20deg)` }], { duration: 900, easing: 'cubic-bezier(.2,.8,.3,1)', fill: 'forwards' }).onfinish = () => {
     removeFish(f);
     showResult(f);
   };
@@ -2108,14 +2114,22 @@ function drawLines(g) {
   } else if (G.phase === 'wait' || G.phase === 'bite') {
     ex = G.bx * g.W; ey = G.method === 'uki' ? g.surf : dpx(g, G.bd);
   } else if (F) {
-    const f = F.f; ex = f.x * g.W - (f.dir > 0 ? -1 : 1) * f.w * 0.45; ey = dpx(g, f.d);
+    const f = F.f, tx = f.x * g.W + (f.dir > 0 ? 1 : -1) * f.w * 0.45, ty = dpx(g, f.d) - f.w * 0.04;
+    if (F.ex == null) { F.ex = G.bx * g.W; F.ey = dpx(g, G.method === 'uki' ? 0.5 : G.bd); }
+    F.ex += (tx - F.ex) * 0.12; F.ey += (ty - F.ey) * 0.12; ex = F.ex; ey = F.ey;
   }
+  G.sink = (G.sink || 0) + ((G.sinkTo || 0) - (G.sink || 0)) * 0.12;
   if (ex !== null) {
     const sag = F ? 0 : 30;
+    if (F && G.method === 'uki') {
+      const fx = F.floatX * g.W, fy = g.surf + G.sink * 30 + Math.sin(G.t * 14) * 3;
+      out += `<path d="M${tipX},${tipY} L${fx},${fy}" stroke="#FFF" stroke-width="2" opacity="0.9"/><path d="M${fx},${fy} L${ex},${ey}" stroke="#FFF" stroke-width="1.4" opacity="0.7"/>`;
+      out += `<g transform="translate(${fx},${fy})"><ellipse cx="0" cy="0" rx="7" ry="13" fill="#FFF" stroke="#333" stroke-width="1.2"/><path d="M-7,0 A7,13 0 0 1 7,0 Z" fill="#F2545B"/></g>`;
+    } else
     out += `<path d="M${tipX},${tipY} Q${(tipX + ex) / 2},${Math.max(tipY, ey) + sag} ${ex},${ey}" stroke="#FFFFFF" stroke-width="2" fill="none" opacity="0.9"/>`;
     if (G.method === 'uki' && !F) {
       G.dip = Math.max(0, G.dip - 0.03);
-      const fy = ey + G.dip * 14 + G.sink * 26 + Math.sin(G.t * 3) * 2;
+      const fy = ey + G.dip * 14 + G.sink * 40 + Math.sin(G.t * (G.sinkTo ? 12 : 3)) * (G.sinkTo ? 4 : 2);
       const hy = dpx(g, 0.5);
       if (G.phase !== 'fly') out += `<line x1="${ex}" y1="${fy}" x2="${ex}" y2="${hy}" stroke="#FFF" stroke-width="1.2" opacity="0.6"/><circle cx="${ex}" cy="${hy}" r="4" fill="#E8B87A"/>`;
       out += `<g transform="translate(${ex},${fy})"><ellipse cx="0" cy="0" rx="7" ry="13" fill="#FFF" stroke="#333" stroke-width="1.2"/><path d="M-7,0 A7,13 0 0 1 7,0 Z" transform="translate(0,-0.5)" fill="#F2545B"/><line x1="0" y1="-13" x2="0" y2="-22" stroke="#333" stroke-width="2"/></g>`;
