@@ -272,6 +272,64 @@
     .pbar i { display: block; height: 100%; background: linear-gradient(90deg, #5ED6A0, #FFD23F); }
     .pen.locked { background: linear-gradient(160deg, #9AB0C0, #6E8494); }
     .seed-list { display: flex; flex-direction: column; gap: 0.5rem; }
+
+    /* ---------- りょうり ---------- */
+    .zc.on { box-shadow: 0 0 0 4px var(--sun), 0 6px 14px var(--shadow); }
+    .recipes { display: grid; grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr)); gap: 0.7rem; }
+    .recipe { position: relative; border: none; border-radius: 1.3rem; background: #FFF; padding: 0.6rem; box-shadow: 0 8px 18px var(--shadow); display: flex; flex-direction: column; align-items: center; gap: 0.2rem; font-weight: 900; }
+    .recipe img { width: 100%; aspect-ratio: 400 / 250; }
+    .recipe b { font-size: 1.1rem; }
+    .recipe small { font-size: 0.72rem; color: var(--ink-soft); text-align: center; }
+    .recipe .made { position: absolute; right: 0.5rem; top: 0.4rem; font-size: 0.8rem; }
+    .csteps { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+    .csteps span { padding: 0.3rem 0.7rem; border-radius: 999px; background: #FFF; font-weight: 900; font-size: 0.85rem; color: #9AB0C0; box-shadow: 0 3px 8px var(--shadow); }
+    .csteps span.now { color: #FFF; background: var(--coral); }
+    .csteps span.done { color: #FFF; background: #1FA772; }
+    .cmsg { margin: 0; min-height: 1.6em; text-align: center; font-size: 1.25rem; font-weight: 900; }
+    .cstage { display: flex; flex-direction: column; align-items: center; gap: 0.8rem; touch-action: none; }
+    .board { position: relative; width: min(100%, 36rem); aspect-ratio: 2 / 1; border-radius: 1.4rem; background: linear-gradient(135deg, #F2D8A8, #E0BC80); box-shadow: inset 0 0 0 0.5rem #D8AE6A, 0 10px 22px var(--shadow); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .board.dark { background: linear-gradient(180deg, #4A4E58, #2A2E38); box-shadow: 0 10px 22px var(--shadow); }
+    .board.round { aspect-ratio: 1; width: min(80%, 24rem); border-radius: 50%; background: radial-gradient(circle, #F2F2F2, #C8C8C8); }
+    .cimg { width: 88%; pointer-events: none; position: relative; z-index: 1; }
+    .cimg.small { width: 60%; }
+    .fsvg { width: 100%; height: 100%; touch-action: none; }
+    .cbar { width: min(100%, 36rem); height: 1rem; border-radius: 999px; background: #DCEAF3; overflow: hidden; }
+    .cbar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #5ED6A0, #1FA772); transition: width 0.15s; }
+    .gauge { position: relative; width: min(100%, 36rem); height: 2rem; border-radius: 999px; background: linear-gradient(90deg, #FFF3C4, #F2C14E 50%, #8A4A1A); box-shadow: inset 0 0 0 3px #FFF; }
+    .gauge .zone { position: absolute; top: 0; bottom: 0; border-radius: 999px; background: rgba(31,167,114,0.55); box-shadow: inset 0 0 0 3px #1FA772; }
+    .gauge .needle { position: absolute; top: -0.4rem; bottom: -0.4rem; width: 0.6rem; margin-left: -0.3rem; border-radius: 0.3rem; background: #12324A; box-shadow: 0 0 0 2px #FFF; }
+    .cstage .act { min-width: 14rem; }
+    .grillbars { position: absolute; inset: 15% 6%; background: repeating-linear-gradient(90deg, transparent 0 1.6rem, #1A1A1E 1.6rem 2rem); opacity: 0.7; }
+    .fire { position: absolute; bottom: 0.4rem; font-size: 2rem; letter-spacing: 1rem; }
+    .oil { position: absolute; inset: 12% 8%; border-radius: 50%; background: radial-gradient(circle, #F8D870, #D8A030); box-shadow: inset 0 0 0 0.8rem #6A6E78; }
+    .pot { position: absolute; left: 50%; top: 50%; width: 70%; height: 70%; transform: translate(-50%, -50%); border-radius: 0 0 40% 40%; background: #6A6E78; overflow: hidden; }
+    .pot .bub { position: absolute; inset: 8% 6% 40%; border-radius: 50%; background: radial-gradient(circle, #CDEBFF, #8AC8E8); }
+    .pot.big { width: 86%; height: 86%; border-radius: 50%; background: #5A5E68; }
+    .pot .soup { position: absolute; inset: 8%; border-radius: 50%; background: radial-gradient(circle, #E0B878, #B8864A); }
+    .spoon { position: absolute; inset: 0; }
+    .spoon i { position: absolute; left: 50%; top: 50%; width: 42%; height: 0.8rem; margin-top: -0.4rem; border-radius: 0.4rem; background: #8A5A2A; transform-origin: 0 50%; }
+    .saltlayer { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+    .saltlayer i { position: absolute; width: 5px; height: 5px; border-radius: 50%; background: #FFF; box-shadow: 0 0 2px rgba(0,0,0,0.3); }
+    .rice { width: 40%; aspect-ratio: 1.4; background: radial-gradient(circle at 40% 35%, #FFFFFF, #ECECE4); border-radius: 50%; box-shadow: 0 6px 12px rgba(0,0,0,0.15); transition: all 0.2s; }
+    .bowls { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; width: min(100%, 36rem); }
+    .bowl { border: none; border-radius: 1.2rem; padding: 0.6rem; background: #FFF; font-weight: 900; font-size: 1.1rem; box-shadow: 0 6px 14px var(--shadow); display: flex; flex-direction: column; align-items: center; gap: 0.3rem; }
+    .bowl i { width: 4.5rem; height: 2.6rem; border-radius: 0 0 2.2rem 2.2rem; border: 4px solid #9CC8E8; border-top-width: 6px; }
+    .bowl.used { opacity: 0.45; }
+    .tako-pan { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; padding: 1rem; background: #2A2A30; border-radius: 1rem; }
+    .tball { width: 5rem; height: 5rem; border-radius: 50%; border: 4px solid #1A1A1E; }
+    .tball.ready { box-shadow: 0 0 0 4px #FFD23F, 0 0 16px #FFD23F; }
+    .tball.turned { transform: rotate(180deg); transition: transform 0.4s; }
+    .dish-done { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; width: min(100%, 34rem); }
+    .dish-done img { width: 100%; }
+    .stars { font-size: 2rem; letter-spacing: 0.2rem; }
+    .eat-scene { position: relative; height: 20rem; border-radius: 1.4rem; background: linear-gradient(180deg, #FFF3D8, #FFE0B0); overflow: hidden; }
+    .eat-av { position: absolute; left: 4%; bottom: 0; height: 92%; }
+    .eat-pk { position: absolute; right: 4%; bottom: 18%; height: 40%; }
+    .eat-table { position: absolute; left: 0; right: 0; bottom: 0; height: 26%; background: #C8864A; display: flex; justify-content: center; }
+    .eat-table img { width: 48%; margin-top: -12%; cursor: pointer; transition: clip-path 0.3s; }
+    .dish-done .res-actions { width: 100%; }
+    .dish-done .res-actions .btn { font-size: 1.3rem; padding: 1rem; }
+    .floaty { position: absolute; left: 25%; top: 30%; width: 50%; opacity: 0.85; }
     /* 3Dの えもじ */
     .emo { display: inline-block; width: 1.2em; height: 1.2em; object-fit: contain; vertical-align: -0.25em; -webkit-user-drag: none; }
     .question-emoji .emo, .opt-emoji .emo { width: 1.1em; height: 1.1em; vertical-align: middle; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.12)); }
@@ -310,6 +368,7 @@
       <button class="btn" id="shop-btn"><span class="big">🏪</span>おみせ</button>
       <button class="btn" id="farm-btn"><span class="big">🦪</span>いけす</button>
       <button class="btn" id="dress-btn"><span class="big">👕</span>きせかえ</button>
+      <button class="btn sun go" id="cook-btn"><span class="big">🍳</span>りょうり する！</button>
     </div>
     <div class="row">
       <button class="btn" id="partner-btn">🔄 パートナー</button>
@@ -403,6 +462,27 @@
   </div>
 </section>
 
+<!-- キッチン -->
+<section id="kitchen" class="screen">
+  <div class="wrap">
+    <div class="topbar"><button class="round-btn" id="kitchen-back" aria-label="もどる">←</button><h2>キッチン</h2><span class="chip" id="kitchen-count"></span></div>
+    <p class="hint">クーラーの ざいりょうを えらんでね</p>
+    <div class="zgrid" id="kitchen-list"></div>
+    <div class="recipes" id="kitchen-recipes"></div>
+  </div>
+</section>
+
+<!-- ちょうり -->
+<section id="cook" class="screen">
+  <div class="wrap">
+    <div class="topbar"><button class="round-btn" id="cook-back" aria-label="もどる">←</button><h2 id="cook-title">りょうり</h2></div>
+    <div class="csteps" id="cook-steps"></div>
+    <p class="cmsg" id="cook-msg"></p>
+    <div class="cstage" id="cook-stage"></div>
+  </div>
+</section>
+
+<div class="modal" id="eat"><div class="box" id="eat-box"></div></div>
 <div class="modal" id="multi"><div class="box" id="multi-box"></div></div>
 <div class="modal" id="result"><div class="box" id="result-box"></div></div>
 <div class="modal" id="zdetail"><div class="box" id="zdetail-box"></div></div>
@@ -1450,7 +1530,7 @@ function drawAvatar(a, opt = {}) {
   } else {
     eyes = [-1, 1].map(s => `<ellipse cx="${cx + s * ex}" cy="${ey + 1}" rx="3.8" ry="5" fill="${ln}"/><circle cx="${cx + s * ex - 1.2}" cy="${ey - 1}" r="1.4" fill="#FFF"/>`).join('');
   }
-  const mouth = `<path d="M${cx - 4},${ey + 14} Q${cx},${ey + 18} ${cx + 4},${ey + 14}" stroke="#C0505A" stroke-width="2" fill="${opt.open ? '#E86A70' : 'none'}" stroke-linecap="round"/>`;
+  const mouth = opt.open ? `<ellipse cx="${cx}" cy="${ey + 16}" rx="5.5" ry="5" fill="#C0505A"/><ellipse cx="${cx}" cy="${ey + 18}" rx="3.5" ry="2" fill="#FF9AA0"/>` : `<path d="M${cx - 4},${ey + 14} Q${cx},${ey + 18} ${cx + 4},${ey + 14}" stroke="#C0505A" stroke-width="2" fill="none" stroke-linecap="round"/>`;
   const cheek = [-1, 1].map(s => `<ellipse cx="${cx + s * (ex + 7)}" cy="${ey + 10}" rx="${round ? 5.5 : 4}" ry="${round ? 3.4 : 2.6}" fill="#FF8FA0" opacity="${round ? 0.55 : 0.35}"/>`).join('');
   // からだ
   const tc = a.top, td = shade(tc, -0.18), bc = a.bottomColor, bd = shade(bc, -0.2);
@@ -2631,12 +2711,377 @@ function openSeeds(i) {
 $('farm-btn').onclick = () => { snd('tap'); renderFarm(); show('farm'); clearInterval(farmTimer); farmTimer = setInterval(() => { if ($('farm').classList.contains('show') && !$('multi').classList.contains('show')) renderFarm(); }, 15000); };
 $('farm-back').onclick = () => { clearInterval(farmTimer); renderHome(); show('home'); };
 
+// =========================================================
+// ▼▼ りょうり ▼▼
+// =========================================================
+const RED = ['kuromaguro', 'kihada', 'katsuo'], SALMON = ['sake', 'karafuto', 'sakuramasu', 'nijimasu', 'hiroshima', 'itou'], AMBER = ['buri', 'hiramasa', 'kanpachi', 'shiira'];
+const SQUID = ['aoriika', 'kouika', 'yariika', 'surumeika'], OCTO = ['madako', 'mizudako'], SHRIMP = ['tenagaebi', 'kurumaebi', 'iseebi'];
+function meatColor(k) {
+  if (RED.includes(k)) return ['#C42E3E', '#E05866'];
+  if (SALMON.includes(k)) return ['#F07A58', '#FFB49A'];
+  if (AMBER.includes(k)) return ['#E8A08E', '#F6CFC2'];
+  if (['saba', 'aji', 'maiwashi', 'katakuchi', 'konoshiro', 'nishin', 'sawara'].includes(k)) return ['#D8988C', '#F0C8BE'];
+  if (SQUID.includes(k)) return ['#F4F2EA', '#FFFFFF'];
+  if (OCTO.includes(k)) return ['#F2E6E0', '#FFFFFF'];
+  if (SHRIMP.includes(k) || k === 'kegani') return ['#F06A4A', '#FFE2D6'];
+  return ['#F2E2D8', '#FFF8F4'];
+}
+const FISHY = SPECIES.filter(s => !s.art.kind || s.art.kind === undefined).map(s => s.k);
+const isFish = (k) => SP_BY[k] && !SP_BY[k].art.kind;
+const RECIPES = [
+  { k: 'sashimi', n: 'おさしみ', icon: '🍣', steps: ['scale', 'fillet', 'slice', 'plate'], ok: (k) => isFish(k) && !['kusafugu', 'koi', 'funa', 'namazu', 'bass', 'bluegill', 'ugui', 'oikawa', 'haze', 'kyusen', 'unagi', 'anago', 'hatahata', 'hokke'].includes(k) || SQUID.includes(k) || OCTO.includes(k) || ['iseebi', 'awabi', 'hotate'].includes(k), dish: 'sashimi' },
+  { k: 'sushi', n: 'おすし', icon: '🍣', steps: ['fillet', 'slice', 'nigiri'], ok: (k) => [...RED, ...AMBER, 'madai', 'hirame', 'aji', 'saba', 'konoshiro', 'kinmedai', 'nodoguro', 'hiroshima', 'sakuramasu', 'kurumaebi', 'hotate', 'aoriika', 'yariika', 'madako', 'hokkigai', 'sayori', 'kawahagi', 'isaki'].includes(k), dish: 'sushi' },
+  { k: 'shioyaki', n: 'しおやき', icon: '🔥', steps: ['scale', 'salt', 'grill'], ok: (k) => isFish(k) && !['kusafugu', 'unagi', 'anago', 'kuromaguro', 'kihada', 'tachiuo'].includes(k), dish: 'grill' },
+  { k: 'fry', n: 'フライ', icon: '🍤', steps: ['fillet', 'coat3', 'fry'], ok: (k) => ['aji', 'saba', 'maiwashi', 'kisu', 'hokke', 'shiira', 'madara', 'bass', 'ohyou', 'kaki', 'kurumaebi', 'tenagaebi', 'hotate', 'suzuki', 'sake'].includes(k), dish: 'fry' },
+  { k: 'karaage', n: 'からあげ', icon: '🍗', steps: ['coat1', 'fry'], ok: (k) => ['kasago', 'mebaru', 'haze', 'kurosoi', 'ainame', 'makogarei', 'tenagaebi', 'bluegill', 'oikawa', 'ugui', 'surumeika', 'madako', 'katakuchi', 'kyusen', 'hatahata', 'ayu', 'yamame', 'amago'].includes(k), dish: 'karaage' },
+  { k: 'tempura', n: 'てんぷら', icon: '🍤', steps: ['coat1', 'fry'], ok: (k) => ['kisu', 'haze', 'anago', 'kurumaebi', 'tenagaebi', 'katakuchi', 'sayori', 'kyusen', 'oikawa', 'aoriika', 'namazu'].includes(k), dish: 'tempura' },
+  { k: 'misoshiru', n: 'おみそしる', icon: '🥣', steps: ['wash', 'boil', 'stir'], ok: (k) => ['asari', 'hamaguri', 'kasago', 'kegani', 'tenagaebi'].includes(k), dish: 'soup' },
+  { k: 'tsuboyaki', n: 'つぼやき', icon: '🔥', steps: ['grill'], ok: (k) => k === 'sazae', dish: 'shellgrill' },
+  { k: 'butter', n: 'バターやき', icon: '🧈', steps: ['wash', 'grill'], ok: (k) => ['hotate', 'awabi', 'mategai', 'hokkigai', 'kaki'].includes(k), dish: 'shellgrill' },
+  { k: 'kakifry', n: 'カキフライ', icon: '🍤', steps: ['open', 'coat3', 'fry'], ok: (k) => k === 'kaki', dish: 'fry' },
+  { k: 'ikuradon', n: 'いくらどん', icon: '🍚', steps: ['hogusu', 'stir', 'plate'], ok: (k) => k === 'ikura', dish: 'don' },
+  { k: 'unidon', n: 'うにどん', icon: '🍚', steps: ['open', 'hogusu', 'plate'], ok: (k) => ['murasakiuni', 'bafununi'].includes(k), dish: 'don' },
+  { k: 'unaju', n: 'うなじゅう', icon: '🍱', steps: ['fillet', 'grill'], ok: (k) => ['unagi', 'anago'].includes(k), dish: 'don' },
+  { k: 'takoyaki', n: 'たこやき', icon: '🐙', steps: ['slice', 'takoyaki'], ok: (k) => OCTO.includes(k), dish: 'takoyaki' },
+  { k: 'yude', n: 'しおゆで', icon: '♨️', steps: ['wash', 'boil'], ok: (k) => ['kegani', 'iseebi', 'kurumaebi', 'hokkigai', 'namako', 'tenagaebi'].includes(k), dish: 'boiled' },
+];
+const RECIPE_BY = Object.fromEntries(RECIPES.map(r => [r.k, r]));
+const STEP_NAMES = { scale: 'うろこを とる', fillet: 'さばく', slice: 'きる', plate: 'もりつけ', nigiri: 'にぎる', salt: 'しおを ふる', grill: 'やく', coat3: 'ころもを つける', coat1: 'こなを つける', fry: 'あげる', wash: 'あらう', boil: 'にる', stir: 'まぜる', open: 'からを あける', hogusu: 'ほぐす', takoyaki: 'くるっと まわす' };
+function itemName(k) { return k === 'ikura' ? 'いくら' : SP_BY[k].n; }
+function itemImg(k) { return k === 'ikura' ? IKURA_IMG() : fishImg(k); }
+let _ikura = null;
+function IKURA_IMG() {
+  if (!_ikura) { let d = ''; const r = rnd(5); for (let i = 0; i < 40; i++) { const x = f1(140 + r() * 160), y = f1(70 + r() * 90); d += `<circle cx="${x}" cy="${y}" r="13" fill="#F26A1E" stroke="#B83A08" stroke-width="1.5"/><circle cx="${x - 4}" cy="${y - 4}" r="3" fill="#FFF" opacity="0.8"/>`; } _ikura = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgWrap(d)); }
+  return _ikura;
+}
+
+// ---------- りょうりの え ----------
+function drawDish(rk, k) {
+  const R = RECIPE_BY[rk], [m1, m2] = meatColor(k), img = itemImg(k);
+  const plate = (rx = 170, ry = 70, c = '#FFFFFF', rim = '#9CC8E8') => `<ellipse cx="200" cy="170" rx="${rx}" ry="${ry}" fill="${rim}"/><ellipse cx="200" cy="164" rx="${rx - 10}" ry="${ry - 8}" fill="${c}"/>`;
+  const steam = `<g stroke="#FFF" stroke-width="5" fill="none" stroke-linecap="round" opacity="0.8"><path d="M150 70 q-12 -18 0 -36 q12 -18 0 -36"/><path d="M200 60 q-12 -18 0 -36 q12 -18 0 -36"/><path d="M250 70 q-12 -18 0 -36 q12 -18 0 -36"/></g>`;
+  const defs = `<linearGradient id="mg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${m2}"/><stop offset="1" stop-color="${m1}"/></linearGradient><linearGradient id="gold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F6C25A"/><stop offset="1" stop-color="#C8862A"/></linearGradient>`;
+  let food = '';
+  const slice = (x, y, rot) => `<g transform="translate(${x},${y}) rotate(${rot})"><rect x="-26" y="-34" width="52" height="68" rx="12" fill="url(#mg)" stroke="${shade(m1, -0.2)}" stroke-width="1.5"/><path d="M-18,-20 q18,8 36,0 M-18,0 q18,8 36,0" stroke="#FFF" stroke-width="3" opacity="0.45" fill="none"/></g>`;
+  if (R.dish === 'sashimi') food = plate(175, 72, '#FFFFFF', '#2E3A59') + `<path d="M90 150 q20 -30 50 -10 q-20 30 -50 10 Z" fill="#4CAF50"/><g stroke="#FFF" stroke-width="3">${Array.from({ length: 10 }, (_, i) => `<line x1="${90 + i * 6}" y1="150" x2="${110 + i * 5}" y2="185"/>`).join('')}</g>` + [0, 1, 2, 3, 4].map(i => slice(160 + i * 34, 150 - i * 2, -18 + i * 3)).join('') + `<path d="M310 175 a14 14 0 1 1 28 0 Z" fill="#8BC34A"/>`;
+  else if (R.dish === 'sushi') food = `<rect x="40" y="150" width="320" height="50" rx="8" fill="#C8954A"/><rect x="60" y="196" width="40" height="22" fill="#A8743A"/><rect x="300" y="196" width="40" height="22" fill="#A8743A"/>` + [130, 270].map(x => `<ellipse cx="${x}" cy="138" rx="58" ry="26" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2"/><path d="M${x - 66},128 Q${x},88 ${x + 66},126 Q${x + 60},146 ${x},140 Q${x - 60},146 ${x - 66},128 Z" fill="url(#mg)" stroke="${shade(m1, -0.2)}" stroke-width="1.5"/><path d="M${x - 40},116 q40 -10 80 0" stroke="#FFF" stroke-width="3" opacity="0.5" fill="none"/>`).join('');
+  else if (R.dish === 'grill') food = plate(180, 70, '#FFF8EE', '#5A7AA0') + `<image href="${img}" x="40" y="60" width="300" height="150" style="filter:sepia(0.7) saturate(1.4) brightness(0.85)"/>` + `<g stroke="#3A2010" stroke-width="5" opacity="0.5" stroke-linecap="round">${[0, 1, 2, 3].map(i => `<line x1="${140 + i * 40}" y1="100" x2="${120 + i * 40}" y2="160"/>`).join('')}</g><path d="M300 170 a24 24 0 0 1 48 0 Z" fill="#FFE04A" stroke="#E0B020" stroke-width="2"/>`;
+  else if (R.dish === 'fry') food = plate() + `<g stroke="#8BC34A" stroke-width="3">${Array.from({ length: 14 }, (_, i) => `<line x1="${250 + i * 6}" y1="120" x2="${240 + i * 7}" y2="180"/>`).join('')}</g>` + [0, 1, 2].map(i => `<g transform="translate(${120 + i * 55},${150 - i * 8}) rotate(${-20 + i * 10})"><ellipse rx="48" ry="26" fill="url(#gold)" stroke="#9A6020" stroke-width="2"/>${Array.from({ length: 14 }, (_, j) => `<circle cx="${(j * 37 % 80) - 40}" cy="${(j * 23 % 40) - 20}" r="2.5" fill="#FFE0A0"/>`).join('')}</g>`).join('') + `<path d="M330 175 a16 16 0 0 1 32 0 Z" fill="#FFE04A"/>`;
+  else if (R.dish === 'karaage' || R.dish === 'tempura') food = plate(170, 70, '#FFFFFF', '#C8A060') + `<path d="M60 160 L200 100 L340 160 L200 200 Z" fill="#FFF8E8" stroke="#E0D0B0" stroke-width="2"/>` + Array.from({ length: 5 }, (_, i) => R.dish === 'tempura' ? `<g transform="translate(${110 + i * 45},${145 - (i % 2) * 14}) rotate(${-30 + i * 12})"><ellipse rx="40" ry="16" fill="#F8DC8A" stroke="#C8A040" stroke-width="2"/><path d="M36 0 l18 -10 l0 20 Z" fill="${SHRIMP.includes(k) ? '#F06A4A' : '#E8C070'}"/></g>` : `<path d="M${110 + i * 45},${150 - (i % 2) * 18} q-26 -10 -18 -30 q10 -22 34 -12 q26 8 16 32 q-10 18 -32 10 Z" fill="url(#gold)" stroke="#9A5A18" stroke-width="2"/>`).join('') + `<path d="M300 180 a16 16 0 0 1 32 0 Z" fill="#FFE04A"/>`;
+  else if (R.dish === 'soup') food = `<path d="M70 110 Q70 220 200 220 Q330 220 330 110 Z" fill="#B8302A" stroke="#7A1A14" stroke-width="3"/><ellipse cx="200" cy="110" rx="130" ry="34" fill="#C89A5A"/><ellipse cx="200" cy="110" rx="118" ry="27" fill="#D8AE6E"/>` + [0, 1, 2, 3].map(i => `<image href="${img}" x="${110 + i * 45}" y="${86 + (i % 2) * 10}" width="60" height="30"/>`).join('') + Array.from({ length: 8 }, (_, i) => `<circle cx="${140 + i * 16}" cy="${108 + (i % 3) * 6}" r="4" fill="#5CB85C"/>`).join('') + steam;
+  else if (R.dish === 'shellgrill') food = plate(170, 66, '#F2F2F2', '#6A6A6A') + `<image href="${img}" x="80" y="50" width="240" height="120"/>` + (rk === 'butter' ? `<rect x="180" y="96" width="40" height="22" rx="4" fill="#FFE27A" stroke="#E0B020" stroke-width="2"/><path d="M160 120 q40 20 80 0" stroke="#FFE27A" stroke-width="6" fill="none" opacity="0.8"/>` : '') + steam;
+  else if (R.dish === 'don') food = `<path d="M60 120 Q60 230 200 230 Q340 230 340 120 Z" fill="${rk === 'unaju' ? '#2A1A14' : '#2E3A59'}" stroke="#141A2A" stroke-width="3"/><ellipse cx="200" cy="120" rx="140" ry="36" fill="#FFFFFF" stroke="#E8E8E8" stroke-width="2"/>` + (rk === 'ikuradon' ? Array.from({ length: 46 }, (_, i) => `<circle cx="${f1(110 + (i * 53 % 180))}" cy="${f1(104 + (i * 31 % 30))}" r="10" fill="#F26A1E" stroke="#B83A08" stroke-width="1.2"/><circle cx="${f1(107 + (i * 53 % 180))}" cy="${f1(101 + (i * 31 % 30))}" r="2.5" fill="#FFF" opacity="0.8"/>`).join('') : rk === 'unidon' ? Array.from({ length: 12 }, (_, i) => `<ellipse cx="${120 + (i % 6) * 32}" cy="${106 + Math.floor(i / 6) * 18}" rx="20" ry="10" fill="#F2A83A" stroke="#C87A10" stroke-width="1.5"/>`).join('') : [0, 1, 2].map(i => `<rect x="${100 + i * 70}" y="92" width="64" height="36" rx="6" fill="#7A3E1A" stroke="#4A2208" stroke-width="2"/><path d="M${104 + i * 70},110 h56" stroke="#3A1A08" stroke-width="3" opacity="0.6"/>`).join('')) + `<path d="M300 110 q14 -14 26 0" fill="#4CAF50"/>`;
+  else if (R.dish === 'takoyaki') food = `<rect x="70" y="100" width="260" height="110" rx="14" fill="#E8D8B0" stroke="#B8A070" stroke-width="3"/>` + Array.from({ length: 6 }, (_, i) => { const x = 120 + (i % 3) * 80, y = 130 + Math.floor(i / 3) * 50; return `<circle cx="${x}" cy="${y}" r="30" fill="url(#gold)" stroke="#9A5A18" stroke-width="2"/><path d="M${x - 22},${y - 6} q22 -16 44 0" stroke="#5A2A10" stroke-width="10" fill="none" stroke-linecap="round"/><path d="M${x - 18},${y - 4} q18 -10 36 0" stroke="#FFF" stroke-width="3" fill="none"/>${[0, 1, 2].map(j => `<circle cx="${x - 10 + j * 9}" cy="${y - 16 + (j % 2) * 4}" r="2.5" fill="#4CAF50"/>`).join('')}`; }).join('');
+  else if (R.dish === 'boiled') food = plate(175, 72, '#FFFFFF', '#3A6A9A') + `<image href="${img}" x="60" y="40" width="280" height="140" style="filter:hue-rotate(-20deg) saturate(1.6) brightness(1.05)"/>` + steam;
+  return `<svg viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg"><defs>${defs}</defs>${food}</svg>`;
+}
+function dishURL(rk, k) { return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(drawDish(rk, k)); }
+
+// ---------- キッチン ----------
+let kitchenSel = null;
+function renderKitchen() {
+  const box = save.box;
+  const made = save.dishes || {};
+  $('kitchen-list').innerHTML = box.length ? box.map((b, i) => `<button class="zc ${kitchenSel === i ? 'on' : ''}" data-i="${i}"><div class="pic"><img src="${itemImg(b.k)}" alt=""></div>${b.k === 'ikura' ? 'いくら' : displayName(SP_BY[b.k], b.size)}<small>${b.k === 'ikura' ? '' : b.size + 'cm'}</small></button>`).join('')
+    : `<p class="hint">クーラーが からっぽ。つった さかなを「もちかえる」と りょうり できるよ</p>`;
+  $('kitchen-list').querySelectorAll('.zc').forEach(b => b.onclick = () => { kitchenSel = +b.dataset.i; snd('tap'); renderKitchen(); const it = save.box[kitchenSel]; speak(`${itemName(it.k)}で なにを つくる？`); });
+  const it = kitchenSel != null ? box[kitchenSel] : null;
+  if (!it) { $('kitchen-recipes').innerHTML = `<p class="hint">ざいりょうを えらんでね</p>`; }
+  else {
+    const rs = RECIPES.filter(r => r.ok(it.k));
+    $('kitchen-recipes').innerHTML = rs.length ? rs.map(r => `<button class="recipe" data-r="${r.k}"><img src="${dishURL(r.k, it.k)}" alt=""><b>${itemName(it.k)}の ${r.n}</b><small>${r.steps.map(s => STEP_NAMES[s]).join(' → ')}</small>${made[r.k + ':' + it.k] ? `<span class="made">${'⭐'.repeat(made[r.k + ':' + it.k].stars)}</span>` : ''}</button>`).join('')
+      : `<p class="hint">これは りょうり できないみたい</p>`;
+    $('kitchen-recipes').querySelectorAll('.recipe').forEach(b => b.onclick = () => { snd('tap'); startCook(b.dataset.r, kitchenSel); });
+  }
+  const n = Object.keys(made).length;
+  $('kitchen-count').textContent = `📒 ${n}しゅ つくった`;
+}
+$('cook-btn').onclick = () => { snd('tap'); kitchenSel = save.box.length ? 0 : null; renderKitchen(); show('kitchen'); speak('なにを つくろうかな？'); };
+$('kitchen-back').onclick = () => { renderHome(); show('home'); };
+
+// ---------- ちょうり（ミニゲーム）----------
+const C = {};
+function startCook(rk, idx) {
+  const it = save.box[idx];
+  Object.assign(C, { rk, it, idx, step: 0, scores: [], R: RECIPE_BY[rk] });
+  show('cook');
+  $('cook-title').textContent = `${itemName(it.k)}の ${C.R.n}`;
+  nextStep();
+}
+function renderSteps() {
+  $('cook-steps').innerHTML = C.R.steps.map((s, i) => `<span class="${i < C.step ? 'done' : i === C.step ? 'now' : ''}">${i + 1}. ${STEP_NAMES[s]}</span>`).join('');
+}
+function nextStep() {
+  renderSteps();
+  const st = $('cook-stage'); st.innerHTML = ''; st.onpointerdown = st.onpointermove = st.onpointerup = null; st._done = false; st._v = 0;
+  if (C.step >= C.R.steps.length) { finishCook(); return; }
+  const s = C.R.steps[C.step];
+  speak(STEP_NAMES[s] + '！');
+  STEPS[s](st, (score) => { C.scores.push(score); C.step++; snd('coin'); setTimeout(nextStep, 700); });
+}
+function cookMsg(t) { $('cook-msg').textContent = t; }
+function board(inner, cls = '') { return `<div class="board ${cls}">${inner}</div>`; }
+function progressBar(id) { return `<div class="cbar"><i id="${id}"></i></div>`; }
+
+// ゆびで こする（うろこ・あらう・ほぐす）
+function rubStep(st, done, img, label, fx) {
+  cookMsg(label);
+  st.innerHTML = board(`<img class="cimg" src="${img}" alt="" draggable="false"><div class="sparkles" id="spk"></div>`) + progressBar('rb');
+  const cells = new Set(); let last = 0;
+  st.onpointermove = (e) => {
+    if (e.buttons === 0 && e.pointerType === 'mouse') return;
+    const r = st.querySelector('.board').getBoundingClientRect();
+    if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) return;
+    cells.add(Math.floor((e.clientX - r.left) / r.width * 10) + ',' + Math.floor((e.clientY - r.top) / r.height * 5));
+    const now = performance.now();
+    if (now - last > 90) { last = now; burst(e.clientX, e.clientY, { count: 2, spread: 30, shapes: fx.shapes || [''], colors: fx.colors }); if (Math.random() < 0.3) snd('tick'); }
+    const p = Math.min(1, cells.size / 26); $('rb').style.width = p * 100 + '%';
+    if (p >= 1 && !st._done) { st._done = true; done(1); }
+  };
+}
+// タイミング（やく・あげる・にる）
+function timingStep(st, done, opts) {
+  cookMsg(opts.msg);
+  st.innerHTML = board(opts.scene, 'dark') + `<div class="gauge"><i class="zone" style="left:${opts.z0 * 100}%;width:${(opts.z1 - opts.z0) * 100}%"></i><i class="needle" id="needle"></i></div><button class="act" id="tbtn">${opts.btn}</button>`;
+  let t = 0, last = performance.now(), times = opts.times || 1, results = [], live = true;
+  const speed = save.easy ? 0.32 : 0.45;
+  const tick = (now) => {
+    if (!live) return;
+    t += (now - last) / 1000 * speed; last = now;
+    const v = t % 2 < 1 ? t % 1 : 1 - (t % 1);
+    $('needle').style.left = v * 100 + '%'; st._v = v;
+    if (opts.onTick) opts.onTick(v);
+    requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+  $('tbtn').onpointerdown = (e) => {
+    e.preventDefault(); if (!live) return;
+    const v = st._v, mid = (opts.z0 + opts.z1) / 2, w = (opts.z1 - opts.z0) / 2;
+    const sc = v >= opts.z0 && v <= opts.z1 ? 1 : clamp(1 - (Math.abs(v - mid) - w) * 3, 0.3, 0.9);
+    results.push(sc);
+    cookMsg(sc >= 1 ? 'ばっちり！' : v < opts.z0 ? 'ちょっと はやかった' : 'ちょっと こげちゃった');
+    snd(sc >= 1 ? 'hit' : 'tap'); burst(e.clientX, e.clientY, { count: sc >= 1 ? 12 : 5, spread: 60 });
+    if (opts.onHit) opts.onHit(results.length);
+    if (results.length >= times) { live = false; setTimeout(() => done(results.reduce((a, b) => a + b, 0) / results.length), 500); }
+    else t = 0;
+  };
+}
+// ゆびで ぐるぐる（まぜる）
+function circleStep(st, done, scene, label) {
+  cookMsg(label);
+  st.innerHTML = board(scene, 'round') + progressBar('cb');
+  const b = st.querySelector('.board'); let lastA = null, acc = 0;
+  const ang = (e) => { const r = b.getBoundingClientRect(); return Math.atan2(e.clientY - r.top - r.height / 2, e.clientX - r.left - r.width / 2); };
+  st.onpointerdown = (e) => { lastA = ang(e); };
+  st.onpointermove = (e) => {
+    if (lastA === null) return;
+    const a = ang(e); let d = a - lastA; if (d > Math.PI) d -= Math.PI * 2; if (d < -Math.PI) d += Math.PI * 2; lastA = a; acc += Math.abs(d);
+    const spoon = $('spoon'); if (spoon) spoon.style.transform = `rotate(${a}rad)`;
+    const p = Math.min(1, acc / (Math.PI * 2 * 3)); $('cb').style.width = p * 100 + '%';
+    if (Math.random() < 0.1) snd('tick');
+    if (p >= 1 && !st._done) { st._done = true; done(1); }
+  };
+  st.onpointerup = () => { lastA = null; };
+}
+// なぞる（さばく）
+function filletStep(st, done) {
+  const k = C.it.k, img = itemImg(k), [m1, m2] = meatColor(k);
+  const fishy = isFish(k);
+  cookMsg('てんせんを ゆびで なぞってね');
+  const guides = fishy ? [[[110, 52], [110, 168]], [[112, 92], [200, 84], [330, 104]], [[112, 140], [220, 140], [330, 116]]] : [[[100, 110], [340, 110]]];
+  st.innerHTML = board(`<svg class="fsvg" viewBox="0 0 440 220"><image href="${img}" x="0" y="0" width="440" height="220"/><g id="cuts"></g>${guides.map((g, i) => `<polyline id="g${i}" points="${g.map(p => p.join(',')).join(' ')}" fill="none" stroke="#FFF" stroke-width="5" stroke-dasharray="10 10" stroke-linecap="round" opacity="0.95"/>`).join('')}</svg>`) + progressBar('fb');
+  const svg = st.querySelector('svg');
+  const samples = guides.map(g => { const pts = []; for (let i = 0; i < g.length - 1; i++) for (let t = 0; t < 1; t += 0.1) pts.push([g[i][0] + (g[i + 1][0] - g[i][0]) * t, g[i][1] + (g[i + 1][1] - g[i][1]) * t, false]); return pts; });
+  let doneLines = 0, down = false;
+  const toV = (e) => { const r = svg.getBoundingClientRect(); return [(e.clientX - r.left) / r.width * 440, (e.clientY - r.top) / r.height * 220]; };
+  st.onpointerdown = (e) => { down = true; };
+  st.onpointerup = () => { down = false; };
+  st.onpointermove = (e) => {
+    if (!down && e.pointerType === 'mouse' && e.buttons === 0) return;
+    const [x, y] = toV(e);
+    samples.forEach((pts, gi) => {
+      if (pts.done) return;
+      pts.forEach(p => { if (!p[2] && Math.hypot(p[0] - x, p[1] - y) < 26) p[2] = true; });
+      const c = pts.filter(p => p[2]).length / pts.length;
+      if (c >= 0.75) {
+        pts.done = true; doneLines++; snd('swish'); vib(30);
+        const g = svg.querySelector('#g' + gi); g.setAttribute('stroke-dasharray', ''); g.setAttribute('stroke', '#FFFFFF'); g.setAttribute('stroke-width', '3');
+        $('fb').style.width = (doneLines / guides.length * 100) + '%';
+        if (doneLines === guides.length && !st._done) {
+          st._done = true;
+          setTimeout(() => {
+            svg.innerHTML = fishy
+              ? `<defs><clipPath id="hd"><rect x="0" y="0" width="110" height="220"/></clipPath></defs><g clip-path="url(#hd)"><image href="${img}" x="-30" y="0" width="440" height="220"/></g>
+                 <path d="M150,70 C230,56 320,74 370,96 C320,120 230,122 150,112 Z" fill="${m1}" stroke="${shade(m1, -0.2)}" stroke-width="2"/><path d="M160,86 q90,-10 190,12" stroke="${m2}" stroke-width="5" fill="none" opacity="0.7"/>
+                 <path d="M150,130 C230,120 320,130 370,140 C320,160 230,174 150,170 Z" fill="${m1}" stroke="${shade(m1, -0.2)}" stroke-width="2"/>
+                 <g stroke="#F4F0E8" stroke-width="3" stroke-linecap="round"><line x1="140" y1="196" x2="360" y2="196"/>${Array.from({ length: 9 }, (_, i) => `<line x1="${160 + i * 22}" y1="184" x2="${166 + i * 22}" y2="208"/>`).join('')}</g>`
+              : `<path d="M60,70 C160,50 300,56 390,90 C300,150 160,160 60,140 Z" fill="${m1}" stroke="${shade(m1, -0.2)}" stroke-width="2"/><path d="M80,92 q140,-24 290,6" stroke="${m2}" stroke-width="6" fill="none" opacity="0.7"/>`;
+            cookMsg('きれいに さばけた！'); confetti();
+            setTimeout(() => done(1), 900);
+          }, 300);
+        }
+      }
+    });
+  };
+}
+// きる
+function sliceStep(st, done) {
+  const k = C.it.k, [m1, m2] = meatColor(k), n = 5;
+  cookMsg('てんせんの ところを うえから したへ スーッと なぞってね');
+  const lines = Array.from({ length: n }, (_, i) => 90 + i * 55);
+  st.innerHTML = board(`<svg class="fsvg" viewBox="0 0 440 220"><rect x="40" y="40" width="360" height="200" rx="18" fill="#E8C890"/><g id="pcs">${lines.concat([400]).map((x, i) => `<rect class="pc" data-i="${i}" x="${i ? lines[i - 1] : 60}" y="70" width="${(i ? x - lines[i - 1] : x - 60)}" height="110" fill="url(#sg)" stroke="${shade(m1, -0.2)}" stroke-width="1.5"/>`).join('')}</g>${lines.map((x, i) => `<line id="l${i}" x1="${x}" y1="56" x2="${x}" y2="194" stroke="#FFF" stroke-width="4" stroke-dasharray="8 8"/>`).join('')}<defs><linearGradient id="sg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${m2}"/><stop offset="1" stop-color="${m1}"/></linearGradient></defs></svg>`.replace('<rect x="40" y="40" width="360" height="200" rx="18" fill="#E8C890"/>', '')) + progressBar('sb');
+  const svg = st.querySelector('svg'); const cut = new Set(); let start = null;
+  const toV = (e) => { const r = svg.getBoundingClientRect(); return [(e.clientX - r.left) / r.width * 440, (e.clientY - r.top) / r.height * 220]; };
+  st.onpointerdown = (e) => { start = toV(e); };
+  st.onpointermove = (e) => {
+    if (!start) return;
+    const [x, y] = toV(e);
+    lines.forEach((lx, i) => {
+      if (cut.has(i)) return;
+      if (Math.abs(x - lx) < 26 && Math.abs(start[0] - lx) < 40 && y - start[1] > 60) {
+        cut.add(i); snd('swish'); vib(25);
+        svg.querySelector('#l' + i).remove();
+        svg.querySelectorAll('.pc').forEach(p => { const pi = +p.dataset.i; p.style.transition = 'transform 0.3s'; p.style.transform = `translateX(${(pi - n / 2) * 4 * cut.size / n}px)`; });
+        $('sb').style.width = cut.size / n * 100 + '%';
+        if (cut.size === n && !st._done) { st._done = true; cookMsg('きれいに きれた！'); setTimeout(() => done(1), 600); }
+      }
+    });
+  };
+  st.onpointerup = () => { start = null; };
+}
+// じゅんばんに タップ（ころも）
+function coatStep(st, done, order) {
+  const all = order.length === 3 ? order : order.concat(['たまご', 'パンこ']).slice(0, 3);
+  const shuffled = all.slice().sort(() => Math.random() - 0.5);
+  let i = 0, miss = 0;
+  cookMsg(order.length === 3 ? `じゅんばんに つけてね：${order.join(' → ')}` : `${order[0]}を つけてね`);
+  const bowlCol = { 'こむぎこ': '#FFFFFF', 'たまご': '#FFD23F', 'パンこ': '#F2C878', 'かたくりこ': '#FFFFFF', 'てんぷらこ': '#FFF0C8' };
+  st.innerHTML = board(`<img class="cimg small" src="${pieceImg()}" alt="" id="coat-fish">`) + `<div class="bowls">${shuffled.map(b => `<button class="bowl" data-b="${b}"><i style="background:${bowlCol[b]}"></i>${b}</button>`).join('')}</div>`;
+  st.querySelectorAll('.bowl').forEach(btn => btn.onpointerdown = (e) => {
+    e.preventDefault();
+    if (btn.dataset.b === order[i]) {
+      i++; snd('hit'); btn.classList.add('used'); burst(e.clientX, e.clientY, { count: 8, spread: 40, shapes: [''], colors: [bowlCol[btn.dataset.b], '#FFF'] });
+      $('coat-fish').style.filter = `sepia(${i * 0.25}) brightness(${1 + i * 0.05})`;
+      if (i >= order.length && !st._done) { st._done = true; cookMsg('ころもが ついた！'); setTimeout(() => done(Math.max(0.5, 1 - miss * 0.2)), 600); }
+      else cookMsg(`つぎは ${order[i]}！`);
+    } else if (!btn.classList.contains('used')) { miss++; snd('miss'); btn.animate([{ transform: 'translateX(0)' }, { transform: 'translateX(-8px)' }, { transform: 'translateX(8px)' }, { transform: 'translateX(0)' }], { duration: 300 }); cookMsg(`ちがうよ、${order[i]}だよ`); }
+  });
+}
+// タップの かいすう（しお・にぎる・からを あける・もりつけ）
+function tapStep(st, done, opts) {
+  let n = 0;
+  cookMsg(opts.msg);
+  st.innerHTML = board(opts.scene) + `<button class="act" id="tapbtn">${opts.btn}</button>` + progressBar('tb');
+  $('tapbtn').onpointerdown = (e) => {
+    e.preventDefault(); if (st._done) return;
+    n++; snd(opts.sound || 'tap'); vib(15); $('tb').style.width = n / opts.n * 100 + '%';
+    if (opts.onTap) opts.onTap(n, e);
+    if (n >= opts.n) { st._done = true; setTimeout(() => done(1), 500); }
+  };
+}
+// さばいた あとは きりみ、それまでは まるごと
+function pieceImg() {
+  const fi = C.R.steps.indexOf('fillet');
+  if (fi < 0 || fi >= C.step) return itemImg(C.it.k);
+  const [m1, m2] = meatColor(C.it.k);
+  return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgWrap(`<path d="M70,80 C170,52 300,60 380,104 C300,150 170,160 70,136 Z" fill="${m1}" stroke="${shade(m1, -0.25)}" stroke-width="3"/><path d="M90,100 q140,-26 270,8" stroke="${m2}" stroke-width="7" fill="none" opacity="0.7"/><path d="M90,124 q140,8 260,-6" stroke="${m2}" stroke-width="4" fill="none" opacity="0.5"/>`));
+}
+const fishBoard = (filter = '') => `<img class="cimg" src="${pieceImg()}" alt="" id="cfish" style="${filter}">`;
+const STEPS = {
+  scale: (st, done) => rubStep(st, done, itemImg(C.it.k), 'ゆびで ごしごし こすって うろこを とってね', { colors: ['#E8F4FF', '#FFFFFF', '#C8D8E8'], shapes: ['star'] }),
+  wash: (st, done) => rubStep(st, done, itemImg(C.it.k), 'ゆびで ごしごし こすって きれいに あらってね', { colors: ['#9AD8FF', '#FFFFFF'] }),
+  hogusu: (st, done) => rubStep(st, done, itemImg(C.it.k), 'ゆびで やさしく ほぐしてね', { colors: ['#F26A1E', '#FFB060'] }),
+  fillet: filletStep,
+  slice: sliceStep,
+  salt: (st, done) => tapStep(st, done, { msg: 'しおを パラパラ ふってね', btn: '🧂 パラパラ', n: 5, scene: fishBoard() + '<div id="salt" class="saltlayer"></div>', onTap: () => { const s = $('salt'); for (let i = 0; i < 12; i++) { const d = document.createElement('i'); d.style.left = rand(15, 85) + '%'; d.style.top = rand(30, 70) + '%'; s.appendChild(d); } } }),
+  nigiri: (st, done) => tapStep(st, done, { msg: 'ごはんを ぎゅっぎゅっ と にぎってね', btn: '✊ ぎゅっ', n: 4, scene: `<div class="rice" id="rice"></div>`, onTap: (n) => { $('rice').style.borderRadius = `${50 - n * 8}% / ${50 - n * 5}%`; $('rice').style.transform = `scaleX(${1 + n * 0.15}) scaleY(${1 - n * 0.08})`; } }),
+  open: (st, done) => tapStep(st, done, { msg: 'からを トントン たたいて あけてね', btn: '🔨 トントン', n: 4, sound: 'nibble', scene: fishBoard(), onTap: (n) => { $('cfish').animate([{ transform: 'rotate(0)' }, { transform: 'rotate(-6deg)' }, { transform: 'rotate(5deg)' }, { transform: 'rotate(0)' }], { duration: 250 }); } }),
+  plate: (st, done) => tapStep(st, done, { msg: 'おさらに きれいに もりつけてね', btn: '✨ もりつけ', n: 3, scene: `<img class="cimg" src="${dishURL(C.rk, C.it.k)}" alt="" id="cfish" style="opacity:0.35">`, onTap: (n) => { $('cfish').style.opacity = 0.35 + n * 0.22; } }),
+  coat3: (st, done) => coatStep(st, done, ['こむぎこ', 'たまご', 'パンこ']),
+  coat1: (st, done) => coatStep(st, done, [C.rk === 'tempura' ? 'てんぷらこ' : 'かたくりこ']),
+  grill: (st, done) => timingStep(st, done, { msg: 'いい いろに なったら ひっくりかえそう（2かい）', btn: '🔄 ひっくりかえす', times: 2, z0: 0.55, z1: 0.78,
+    scene: `<div class="grillbars"></div>${fishBoard()}<div class="fire">🔥🔥🔥</div>`, onTick: (v) => { const f = $('cfish'); if (f) f.style.filter = `sepia(${v * 0.9}) brightness(${1 - v * 0.35})`; }, onHit: () => { const f = $('cfish'); if (f) f.animate([{ transform: 'scaleY(1)' }, { transform: 'scaleY(-1)' }, { transform: 'scaleY(1)' }], { duration: 400 }); } }),
+  fry: (st, done) => timingStep(st, done, { msg: 'きつねいろに なったら あげよう！', btn: '🥢 あげる', z0: 0.58, z1: 0.8,
+    scene: `<div class="oil"></div>${fishBoard('filter:sepia(0.5)')}`, onTick: (v) => { const f = $('cfish'); if (f) f.style.filter = `sepia(${0.4 + v * 0.6}) saturate(${1 + v}) brightness(${1.05 - v * 0.4})`; } }),
+  boil: (st, done) => timingStep(st, done, { msg: 'グツグツ…ちょうど いい ところで ひを とめよう', btn: '🧯 ひを とめる', z0: 0.5, z1: 0.75,
+    scene: `<div class="pot"><div class="bub"></div></div>${fishBoard('width:40%')}` }),
+  stir: (st, done) => circleStep(st, done, `<div class="pot big"><div class="soup"></div><div class="spoon" id="spoon"><i></i></div></div>`, 'ゆびで ぐるぐる まぜてね（3しゅう）'),
+  takoyaki: (st, done) => takoStep(st, done),
+};
+// たこやき：きつねいろの ときに タップで くるっ
+function takoStep(st, done) {
+  cookMsg('きつねいろに なった たこやきを タップで くるっと まわしてね');
+  st.innerHTML = board(`<div class="tako-pan">${Array.from({ length: 6 }, (_, i) => `<button class="tball" data-i="${i}"></button>`).join('')}</div>`, 'dark');
+  const balls = [...st.querySelectorAll('.tball')].map(el => ({ el, t: -rand(0, 2), done: false }));
+  let last = performance.now(), live = true, score = 0;
+  const tick = (now) => {
+    if (!live) return;
+    const dt = (now - last) / 1000; last = now;
+    balls.forEach(b => { if (b.done) return; b.t += dt * (save.easy ? 0.22 : 0.3); const v = clamp(b.t, 0, 1.4); b.el.style.background = v < 0.6 ? `radial-gradient(circle at 35% 35%, #FFF8E0, #F2E2A0)` : v < 1 ? `radial-gradient(circle at 35% 35%, #F8D88A, #C8862A)` : `radial-gradient(circle at 35% 35%, #8A5A2A, #3A2010)`; b.el.classList.toggle('ready', v >= 0.6 && v < 1); });
+    requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+  balls.forEach(b => b.el.onpointerdown = (e) => {
+    e.preventDefault(); if (b.done || b.t < 0.2) return;
+    b.done = true; const v = b.t; const sc = v >= 0.6 && v < 1 ? 1 : 0.5; score += sc;
+    b.el.classList.remove('ready'); b.el.classList.add('turned'); snd(sc === 1 ? 'hit' : 'tap'); burst(e.clientX, e.clientY, { count: 6, spread: 40 });
+    if (balls.every(x => x.done)) { live = false; setTimeout(() => done(score / balls.length), 500); }
+  });
+}
+
+// ---------- できあがり・たべる ----------
+function finishCook() {
+  const avg = C.scores.reduce((a, b) => a + b, 0) / Math.max(1, C.scores.length);
+  const stars = avg >= 0.85 ? 3 : avg >= 0.6 ? 2 : 1;
+  save.box.splice(C.idx, 1);
+  save.dishes = save.dishes || {};
+  const key = C.rk + ':' + C.it.k, prev = save.dishes[key];
+  save.dishes[key] = { n: (prev ? prev.n : 0) + 1, stars: Math.max(stars, prev ? prev.stars : 0) };
+  store();
+  const base = C.it.price || 50, price = Math.round(base * (1.3 + stars * 0.25) / 10) * 10;
+  C.stars = stars; C.price = price;
+  const name = `${itemName(C.it.k)}の ${C.R.n}`;
+  $('cook-stage').innerHTML = `<div class="dish-done"><img src="${dishURL(C.rk, C.it.k)}" alt=""><p class="res-name">${name}</p><div class="stars">${'⭐'.repeat(stars)}${'☆'.repeat(3 - stars)}</div>${!prev ? '<span class="badge new">✨ あたらしい りょうり！</span>' : ''}
+    <div class="res-actions" style="grid-template-columns:1fr 1fr"><button class="btn green" id="eat-btn">😋 たべる</button><button class="btn sun" id="sell-dish">💰 うる<small>${price}えん</small></button></div></div>`;
+  cookMsg('できあがり！'); renderSteps(); snd('catch'); confetti();
+  speak(`${name}、できあがり！ ${['', 'まあまあ', 'じょうず', 'さいこう'][stars]}！`);
+  $('eat-btn').onclick = () => startEat(name);
+  $('sell-dish').onclick = () => { setMoney(save.money + price); snd('coin'); toast(`${price}えんで うれた！`); kitchenSel = null; renderKitchen(); show('kitchen'); };
+}
+function startEat(name) {
+  const a = myAvatar();
+  $('eat-box').innerHTML = `<div class="eat-scene"><img class="eat-av" id="eat-av" src="${avImg(a)}" alt=""><div class="eat-table" id="eat-table"><img id="eat-dish" src="${dishURL(C.rk, C.it.k)}" alt=""></div><img class="eat-pk" id="eat-pk" src="${getPokemonImageUrl(partnerOf().id)}" alt=""></div><p class="res-name" id="eat-msg">いただきます！</p><p class="hint">りょうりを タップして たべよう</p>`;
+  $('eat').classList.add('show'); speak('いただきます！');
+  let bites = 0;
+  $('eat-table').onclick = (e) => {
+    bites++; snd('nibble'); vib(30);
+    $('eat-av').src = avImg({ ...a, eyes: 'smile' }, { open: true });
+    setTimeout(() => { $('eat-av').src = avImg(a); }, 350);
+    burst(e.clientX, e.clientY, { count: 6, spread: 40, shapes: ['heart'] });
+    $('eat-dish').style.clipPath = `inset(0 ${bites * 28}% 0 0)`;
+    $('eat-msg').textContent = ['もぐもぐ…', 'おいしい〜！', 'ほっぺが おちそう！'][Math.min(2, bites - 1)];
+    if (bites === 2) { const p = partnerOf(); playCry(p.id, 0.4); pokeMove($('eat-pk'), 'hop', 900); }
+    if (bites >= 3) {
+      $('eat-table').onclick = null;
+      setTimeout(() => {
+        $('eat-av').src = avImg({ ...a, eyes: 'smile' });
+        $('eat-msg').textContent = 'ごちそうさまでした！';
+        speak(`${name}、おいしかった！ ごちそうさまでした！`); confetti();
+        const btn = document.createElement('button'); btn.className = 'btn primary'; btn.textContent = 'キッチンに もどる';
+        btn.onclick = () => { $('eat').classList.remove('show'); kitchenSel = null; renderKitchen(); show('kitchen'); };
+        $('eat-box').appendChild(btn);
+      }, 600);
+    }
+  };
+}
+$('cook-back').onclick = () => { if (confirm('りょうりを やめる？ ざいりょうは なくならないよ')) { renderKitchen(); show('kitchen'); } };
+
 // ---------- スタート ----------
 function setMuted() {}
 // ==== EMOJI-3D START ====
 // もんだいの なかの えもじを、どの スマホでも おなじに みえる 3Dの え（Microsoft Fluent Emoji, MIT ライセンス）に おきかえる
 const EMOJI_BASE = 'https://raw.githubusercontent.com/microsoft/fluentui-emoji/1ffb34c752ecf5d402f04cfb4b392c77f57c54bc/';
-const EMOJI_IMG = {"❄️": "assets/Snowflake/3D/snowflake_3d.png","🏞️": "assets/National park/3D/national_park_3d.png","🏝️": "assets/Desert island/3D/desert_island_3d.png","🍽️": "assets/Fork and knife with plate/3D/fork_and_knife_with_plate_3d.png","⛴️": "assets/Ferry/3D/ferry_3d.png","🕸️": "assets/Spider web/3D/spider_web_3d.png","⛄": "assets/Snowman without snow/3D/snowman_without_snow_3d.png","📖": "assets/Open book/3D/open_book_3d.png","👕": "assets/T-shirt/3D/t-shirt_3d.png","🏪": "assets/Convenience store/3D/convenience_store_3d.png","🔄": "assets/Counterclockwise arrows button/3D/counterclockwise_arrows_button_3d.png","🏆": "assets/Trophy/3D/trophy_3d.png","🔈": "assets/Speaker low volume/3D/speaker_low_volume_3d.png","🍤": "assets/Fried shrimp/3D/fried_shrimp_3d.png","🎉": "assets/Party popper/3D/party_popper_3d.png","🌸": "assets/Cherry blossom/3D/cherry_blossom_3d.png","🔒": "assets/Locked/3D/locked_3d.png","🍁": "assets/Maple leaf/3D/maple_leaf_3d.png","🐚": "assets/Spiral shell/3D/spiral_shell_3d.png","❄": "assets/Snowflake/3D/snowflake_3d.png","🟠": "assets/Orange circle/3D/orange_circle_3d.png","✅": "assets/Check mark button/3D/check_mark_button_3d.png","🧺": "assets/Basket/3D/basket_3d.png","💰": "assets/Money bag/3D/money_bag_3d.png","🌊": "assets/Water wave/3D/water_wave_3d.png","🏞": "assets/National park/3D/national_park_3d.png","🐳": "assets/Spouting whale/3D/spouting_whale_3d.png","👧": "assets/Girl/Default/3D/girl_3d_default.png","✨": "assets/Sparkles/3D/sparkles_3d.png","🎣": "assets/Fishing pole/3D/fishing_pole_3d.png","🌻": "assets/Sunflower/3D/sunflower_3d.png","🏝": "assets/Desert island/3D/desert_island_3d.png","🦪": "assets/Oyster/3D/oyster_3d.png","🧂": "assets/Salt/3D/salt_3d.png","🍽": "assets/Fork and knife with plate/3D/fork_and_knife_with_plate_3d.png","🪣": "assets/Bucket/3D/bucket_3d.png","🦑": "assets/Squid/3D/squid_3d.png","🔇": "assets/Muted speaker/3D/muted_speaker_3d.png","⛴": "assets/Ferry/3D/ferry_3d.png","🕸": "assets/Spider web/3D/spider_web_3d.png","🧊": "assets/Ice/3D/ice_3d.png","🤿": "assets/Diving mask/3D/diving_mask_3d.png","🐟": "assets/Fish/3D/fish_3d.png"};
+const EMOJI_IMG = {"♨️": "assets/Hot springs/3D/hot_springs_3d.png","❄️": "assets/Snowflake/3D/snowflake_3d.png","🏞️": "assets/National park/3D/national_park_3d.png","🏝️": "assets/Desert island/3D/desert_island_3d.png","🍽️": "assets/Fork and knife with plate/3D/fork_and_knife_with_plate_3d.png","⛴️": "assets/Ferry/3D/ferry_3d.png","🕸️": "assets/Spider web/3D/spider_web_3d.png","⛄": "assets/Snowman without snow/3D/snowman_without_snow_3d.png","📖": "assets/Open book/3D/open_book_3d.png","✊": "assets/Raised fist/Default/3D/raised_fist_3d_default.png","👕": "assets/T-shirt/3D/t-shirt_3d.png","🍣": "assets/Sushi/3D/sushi_3d.png","🏪": "assets/Convenience store/3D/convenience_store_3d.png","🔄": "assets/Counterclockwise arrows button/3D/counterclockwise_arrows_button_3d.png","🏆": "assets/Trophy/3D/trophy_3d.png","🔈": "assets/Speaker low volume/3D/speaker_low_volume_3d.png","🍤": "assets/Fried shrimp/3D/fried_shrimp_3d.png","🥣": "assets/Bowl with spoon/3D/bowl_with_spoon_3d.png","🎉": "assets/Party popper/3D/party_popper_3d.png","🌸": "assets/Cherry blossom/3D/cherry_blossom_3d.png","🔒": "assets/Locked/3D/locked_3d.png","♨": "assets/Hot springs/3D/hot_springs_3d.png","🍁": "assets/Maple leaf/3D/maple_leaf_3d.png","📒": "assets/Ledger/3D/ledger_3d.png","🐚": "assets/Spiral shell/3D/spiral_shell_3d.png","❄": "assets/Snowflake/3D/snowflake_3d.png","🟠": "assets/Orange circle/3D/orange_circle_3d.png","✅": "assets/Check mark button/3D/check_mark_button_3d.png","🧺": "assets/Basket/3D/basket_3d.png","💰": "assets/Money bag/3D/money_bag_3d.png","🌊": "assets/Water wave/3D/water_wave_3d.png","🏞": "assets/National park/3D/national_park_3d.png","🐙": "assets/Octopus/3D/octopus_3d.png","😋": "assets/Face savoring food/3D/face_savoring_food_3d.png","🍱": "assets/Bento box/3D/bento_box_3d.png","🐳": "assets/Spouting whale/3D/spouting_whale_3d.png","👧": "assets/Girl/Default/3D/girl_3d_default.png","✨": "assets/Sparkles/3D/sparkles_3d.png","🔨": "assets/Hammer/3D/hammer_3d.png","🎣": "assets/Fishing pole/3D/fishing_pole_3d.png","🌻": "assets/Sunflower/3D/sunflower_3d.png","🧈": "assets/Butter/3D/butter_3d.png","🏝": "assets/Desert island/3D/desert_island_3d.png","🦪": "assets/Oyster/3D/oyster_3d.png","🍗": "assets/Poultry leg/3D/poultry_leg_3d.png","🧂": "assets/Salt/3D/salt_3d.png","🍽": "assets/Fork and knife with plate/3D/fork_and_knife_with_plate_3d.png","🧯": "assets/Fire extinguisher/3D/fire_extinguisher_3d.png","🥢": "assets/Chopsticks/3D/chopsticks_3d.png","🪣": "assets/Bucket/3D/bucket_3d.png","🦑": "assets/Squid/3D/squid_3d.png","🍚": "assets/Cooked rice/3D/cooked_rice_3d.png","🔇": "assets/Muted speaker/3D/muted_speaker_3d.png","🍳": "assets/Cooking/3D/cooking_3d.png","⛴": "assets/Ferry/3D/ferry_3d.png","🕸": "assets/Spider web/3D/spider_web_3d.png","🧊": "assets/Ice/3D/ice_3d.png","⭐": "assets/Star/3D/star_3d.png","🔥": "assets/Fire/3D/fire_3d.png","🤿": "assets/Diving mask/3D/diving_mask_3d.png","🐟": "assets/Fish/3D/fish_3d.png"};
 const EMOJI_RE = /(?:\p{Extended_Pictographic}|\p{Regional_Indicator}{2}|[0-9#*]\uFE0F?\u20E3)(?:\uFE0F|\u200D\p{Extended_Pictographic}|[\u{1F3FB}-\u{1F3FF}])*/gu;
 function emojiSrc(e) {
   const p = EMOJI_IMG[e] || EMOJI_IMG[e.replace(/\uFE0F/g, '')] || EMOJI_IMG[e + '\uFE0F'];
