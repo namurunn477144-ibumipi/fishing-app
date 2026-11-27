@@ -232,6 +232,8 @@
     .cloud-st { margin: 0; font-weight: 900; color: var(--ink-soft); }
     .cloud-btns { display: flex; flex-direction: column; gap: 0.5rem; }
     .cloud-btn { background: linear-gradient(135deg, #FFFFFF, #E2F2FF) !important; }
+    .cl-more { text-align: left; font-weight: 900; color: var(--ink-soft); }
+    .cl-more summary { cursor: pointer; padding: 0.4rem 0; }
     .toast { position: fixed; left: 50%; bottom: 2rem; z-index: 80; transform: translateX(-50%); padding: 0.7rem 1.2rem; border-radius: 999px; background: #12324A; color: #FFF; font-weight: 900; opacity: 0; transition: opacity 0.25s; pointer-events: none; white-space: nowrap; }
     .toast.show { opacity: 1; }
     .switch { display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 900; }
@@ -474,7 +476,7 @@
     <h1>いぶみー フィッシング</h1>
     <div class="title-fish" id="title-fish"></div>
     <div class="players" id="players"></div>
-    <div class="backup"><button class="btn cloud-btn" id="bk-cloud">☁️ クラウド（おとな よう）</button><button class="btn" id="bk-save">💾 データを ファイルに ほぞん</button><button class="btn" id="bk-share">📤 LINEなどに おくる</button><button class="btn" id="bk-load">📂 ファイルから もどす</button><input type="file" id="bk-file" accept=".json,application/json" hidden></div>
+    <div class="backup"><button class="btn cloud-btn" id="bk-cloud">☁️ クラウド（おとな よう）</button><span hidden><button class="btn" id="bk-save">💾 データを ファイルに ほぞん</button><button class="btn" id="bk-share">📤 LINEなどに おくる</button><button class="btn" id="bk-load">📂 ファイルから もどす</button><input type="file" id="bk-file" accept=".json,application/json"></span></div>
   </div>
 </section>
 
@@ -3897,7 +3899,10 @@ function openCloud() {
       <button class="btn sun" id="cl-pull" ${c.token ? '' : 'disabled'}>⬇️ クラウドから もどす</button>
       <button class="btn" id="cl-off" ${c.token ? '' : 'disabled'}>🗑️ この たんまつの せっていを けす</button>
       <button class="btn" id="cl-close">とじる</button>
-    </div>`;
+    </div>
+    <details class="cl-more"><summary>ほかの ほうほう（もしもの とき）</summary>
+      <div class="cloud-btns"><button class="btn" id="cl-file">💾 ファイルに ほぞん</button><button class="btn" id="cl-share">📤 LINEなどに おくる</button><button class="btn" id="cl-load">📂 ファイルから もどす</button></div>
+    </details>`;
   $('multi').classList.add('show');
   const st = (t) => { $('cl-st').textContent = t; };
   $('cl-save').onclick = async () => {
@@ -3927,6 +3932,7 @@ function openCloud() {
   };
   $('cl-off').onclick = () => { if (confirm('この たんまつの クラウド せっていを けす？（クラウドの データは のこるよ）')) { localStorage.removeItem(CLOUD_KEY); openCloud(); } };
   $('cl-close').onclick = () => $('multi').classList.remove('show');
+  $('cl-file').onclick = () => $('bk-save').click(); $('cl-share').onclick = () => $('bk-share').click(); $('cl-load').onclick = () => { $('multi').classList.remove('show'); $('bk-file').click(); };
 }
 $('bk-cloud').onclick = () => openCloud();
 setTimeout(cloudCheckOnOpen, 800);
