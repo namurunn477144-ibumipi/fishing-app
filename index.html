@@ -416,6 +416,33 @@
     .rack { position: relative; width: 80%; height: 6rem; border-radius: 1rem; background: repeating-linear-gradient(90deg, #C8CED4 0 4px, transparent 4px 18px), repeating-linear-gradient(0deg, #C8CED4 0 4px, transparent 4px 18px), #F4F6F8; display: flex; align-items: flex-end; justify-content: center; font-weight: 900; color: #9AA2AA; }
     .onrack { position: absolute; bottom: 0.5rem; width: 28%; filter: sepia(1) saturate(2) brightness(0.9); }
     .snd-row { border: none; width: 100%; text-align: left; font-family: inherit; color: inherit; cursor: pointer; }
+    /* ---------- しあげ：がめんの おおきさ ごとの ちょうせい ---------- */
+    .home-go, .hud .chip { white-space: nowrap; }
+    #fish-where { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+    .topbar h2 { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+    .pen .btn { color: var(--ink); }
+    .pen .btn.sun { color: #5A3A00; } .pen .btn.green { color: #FFF; }
+    #map .wrap { padding-bottom: 6rem; }
+    #start-btn { position: sticky; bottom: 0.8rem; z-index: 5; }
+    @media (max-width: 520px) {
+      .hud { gap: 0.3rem; padding: 0.5rem; }
+      .hud .chip { padding: 0.3rem 0.55rem; font-size: 0.85rem; }
+      .home-go { padding: 0.4rem 0.7rem; font-size: 0.95rem; }
+      #fish-money { display: none; }
+      .topbar .chip { font-size: 0.8rem; padding: 0.3rem 0.55rem; }
+      .fight { top: 3.6rem; }
+    }
+    /* よこながの タブレット：みなとを 2れつに */
+    @media (min-width: 1000px) and (min-aspect-ratio: 4/3) {
+      #home .wrap { width: min(100%, 72rem); display: grid; grid-template-columns: 1.15fr 1fr; grid-template-rows: auto auto auto 1fr; column-gap: 1.2rem; align-content: start; }
+      #home .topbar { grid-column: 1 / -1; }
+      #home .harbor { grid-column: 1; height: 21rem; }
+      #home .stat-row, #home .tank { grid-column: 1; }
+      #home .home-grid { grid-column: 2; grid-row: 2 / span 3; align-self: start; }
+      #home .row { grid-column: 2; }
+      .area-list { grid-template-columns: repeat(3, 1fr); }
+      .methods { grid-template-columns: repeat(6, 1fr); }
+    }
     /* 3Dの えもじ */
     .emo { display: inline-block; width: 1.2em; height: 1.2em; object-fit: contain; vertical-align: -0.25em; -webkit-user-drag: none; }
     .question-emoji .emo, .opt-emoji .emo { width: 1.1em; height: 1.1em; vertical-align: middle; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.12)); }
@@ -902,7 +929,7 @@ drawFish = function (sp) { return ['clam', 'razor', 'oyster', 'uni', 'sazae', 'a
 
 // =========================================================
 // ▼▼ さかなの データ ▼▼
-//   a: とれる ばしょ（seto せとうちかい / nihon にほんかい / taihei たいへいよう / hokkai ほっかいどう / kawa かわ）
+//   a: とれる ばしょ（seto せとないかい / nihon にほんかい / taihei たいへいよう / hokkai ほっかいどう / kawa かわ）
 //   m: つりかた（uki うきづり / lure ルアー / egi エギング）
 //   band: すんでる ふかさ（top うえ / mid まんなか / bot そこ）
 //   sz: おおきさ cm ／ p: ふつうの おおきさの ときの ねだん（えん）／ shun: しゅん（つき）
@@ -932,7 +959,7 @@ const AP = {
 };
 
 const SPECIES = [
-  // ---------------- せとうちかい ----------------
+  // ---------------- せとないかい ----------------
   { k: 'madai', n: 'マダイ', a: ['seto', 'nihon', 'taihei'], m: ['uki', 'lure'], band: 'bot', sz: [25, 90], p: 900, shun: [3, 4, 5, 11], pow: 3, rare: 2,
     info: 'あかい からだに あおい てんてん。「さかなの おうさま」と よばれるよ', eat: 'さしみ・たいめし・しおやき',
     art: AP.bream({ iris: '#E7B04A', scale: 11, scaleOp: 0.28, grad: ['#D9476A', '#EB6F87', '#F6A8B2', '#FCE1E2', '#FFF3F1'], line: '#8F2843', finColor: '#F08A9A', tailColor: '#E86F86',
@@ -1268,7 +1295,7 @@ const SP_BY = Object.fromEntries(SPECIES.map(s => [s.k, s]));
 
 // ---------- ばしょ ----------
 const AREAS = [
-  { k: 'seto', n: 'せとうちかい', icon: '🏝️', price: 0, sky: ['#8FD3FF', '#CDEBFF'], sea: ['#2E9CC8', '#0E5A86', '#0A3A5C'], sand: '#D9C49A', desc: 'しまが いっぱいの おだやかな うみ' },
+  { k: 'seto', n: 'せとないかい', icon: '🏝️', price: 0, sky: ['#8FD3FF', '#CDEBFF'], sea: ['#2E9CC8', '#0E5A86', '#0A3A5C'], sand: '#D9C49A', desc: 'しまが いっぱいの おだやかな うみ' },
   { k: 'kawa', n: 'かわ', icon: '🏞️', price: 0, sky: ['#9AD8FF', '#D8F1FF'], sea: ['#5AB8B0', '#2E7A70', '#1E5048'], sand: '#B8A888', river: true, desc: 'やまから ながれる きれいな かわ' },
   { k: 'nihon', n: 'にほんかい', icon: '🌊', price: 2000, sky: ['#8AB8E0', '#C8DDF0'], sea: ['#2A6E9E', '#123E66', '#0A2442'], sand: '#B8A890', desc: 'ふゆは あれる、さかなが おいしい うみ' },
   { k: 'taihei', n: 'たいへいよう', icon: '🐳', price: 5000, sky: ['#6FC8FF', '#BFE8FF'], sea: ['#1E7EC8', '#0A4A8A', '#062E5E'], sand: '#C8B890', desc: 'マグロが およぐ ひろい うみ' },
