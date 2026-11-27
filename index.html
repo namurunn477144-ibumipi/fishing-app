@@ -443,6 +443,19 @@
       .area-list { grid-template-columns: repeat(3, 1fr); }
       .methods { grid-template-columns: repeat(6, 1fr); }
     }
+    .rk { display: block; font-size: 0.75rem; letter-spacing: 0.05em; line-height: 1.1; }
+    .rk1 { color: #9AB0C0; } .rk2 { color: #2FA6F0; } .rk3 { color: #F2A900; text-shadow: 0 0 6px rgba(242,169,0,0.5); }
+    .zinfo .rk { display: inline; font-size: 1rem; }
+    .badge.rk-b2 { background: #2FA6F0; } .badge.rk-b3 { background: linear-gradient(135deg, #FFB627, #F2545B); }
+    .targets { margin-top: 0.2rem; }
+    .tg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(6.4rem, 1fr)); gap: 0.4rem; margin-top: 0.4rem; }
+    .tg { position: relative; border-radius: 0.9rem; background: #EEF5FA; padding: 0.3rem; text-align: center; font-weight: 900; font-size: 0.8rem; }
+    .tg img { width: 100%; aspect-ratio: 2 / 1; object-fit: contain; }
+    .tg.got { opacity: 0.55; }
+    .tg.off { filter: grayscale(0.6); }
+    .tg em { display: flex; gap: 0.2rem; justify-content: center; flex-wrap: wrap; font-style: normal; }
+    .tg i { font-style: normal; font-size: 0.65rem; padding: 0.05rem 0.35rem; border-radius: 999px; }
+    .tg .shun { background: #1FA772; color: #FFF; } .tg .nt { background: #2E3A59; color: #FFF; }
     /* 3Dの えもじ */
     .emo { display: inline-block; width: 1.2em; height: 1.2em; object-fit: contain; vertical-align: -0.25em; -webkit-user-drag: none; }
     .question-emoji .emo, .opt-emoji .emo { width: 1.1em; height: 1.1em; vertical-align: middle; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.12)); }
@@ -456,7 +469,7 @@
     <h1>いぶみー フィッシング</h1>
     <div class="title-fish" id="title-fish"></div>
     <div class="players" id="players"></div>
-    <div class="backup"><button class="btn" id="bk-save">💾 データを ファイルに ほぞん</button><button class="btn" id="bk-load">📂 ファイルから もどす</button><input type="file" id="bk-file" accept=".json,application/json" hidden></div>
+    <div class="backup"><button class="btn" id="bk-save">💾 データを ファイルに ほぞん</button><button class="btn" id="bk-share">📤 LINEなどに おくる</button><button class="btn" id="bk-load">📂 ファイルから もどす</button><input type="file" id="bk-file" accept=".json,application/json" hidden></div>
   </div>
 </section>
 
@@ -501,6 +514,7 @@
     <p class="hint" id="method-hint">つりかたを えらんでね</p>
     <div class="methods" id="methods"></div>
     <div class="trip-opts" id="trip-opts"></div>
+    <div class="targets" id="targets"></div>
     <button class="btn primary" id="start-btn" style="font-size:1.5rem;">しゅっぱつ！</button>
   </div>
 </section>
@@ -1332,6 +1346,10 @@ const PARTNERS = [
 ];
 
 // ---------- しゅん・じかん ----------
+// めずらしさ 3だんかい（1 ふつう／2 めずらしい／3 レア）
+function rank(sp) { return sp.rare >= 4 ? 3 : sp.rare >= 3 ? 2 : 1; }
+const RANK_NAME = ['', 'ふつう', 'めずらしい', 'レア'];
+function stars(sp) { const r = rank(sp); return `<span class="rk rk${r}">${'★'.repeat(r)}${'☆'.repeat(3 - r)}</span>`; }
 function seasonOf(month) { return [12, 1, 2].includes(month) ? 'ふゆ' : month <= 5 ? 'はる' : month <= 8 ? 'なつ' : 'あき'; }
 function timeOfDay(h) { return h >= 5 && h < 9 ? 'あさ' : h < 16 ? 'ひる' : h < 19 ? 'ゆうがた' : 'よる'; }
 function displayName(sp, size) {
@@ -1787,7 +1805,7 @@ const PLAYERS = [{ k: 'ibu', n: 'いぶちゃん', face: '👧', color: '#FF8FB1
 let player = null, save = null;
 function freshSave(k) { return { money: 300, rod: 0, cooler: 0, methods: ['uki'], areas: ['seto', 'kawa'], zukan: {}, box: [], partner: 7, easy: k === 'mii', total: 0, avatar: { ...AV_DEFAULT[k] }, pens: 0, farm: [] }; }
 function loadSave(k) { const s = loadProgress('fishing-save-' + k); return Object.assign(freshSave(k), s || {}); }
-function store() { if (player) saveProgress('fishing-save-' + player.k, save); }
+function store() { if (player) { saveProgress('fishing-save-' + player.k, save); if (typeof mirrorSave === 'function') mirrorSave(); } }
 function setMoney(v) { save.money = Math.max(0, Math.round(v)); store(); updateMoney(); }
 function updateMoney() { ['home-money', 'fish-money', 'shop-money'].forEach(id => { const el = $(id); if (el) el.textContent = `💰 ${save.money.toLocaleString()}えん`; }); }
 function boxCap() { return COOLERS[save.cooler].cap; }
@@ -1884,6 +1902,7 @@ function renderMap() {
     if (!save.methods.includes(k)) { toast('おみせで どうぐを かってね'); return; }
     selMethod = k; snd('tap'); speak(METHOD_BY[k].n); renderMap();
   });
+  renderTargets();
 }
 $('map-back').onclick = () => { renderHome(); show('home'); };
 $('start-btn').onclick = () => { snd('tap'); if (selMethod === 'hori') startDig(selArea); else if (selMethod === 'moguri') startDive(selArea); else startFishing(selArea, selMethod); };
@@ -2415,7 +2434,7 @@ function showResult(f) {
   const [mn, mx] = sp.sz;
   const full = save.box.length >= boxCap();
   $('result-box').innerHTML = `
-    <div class="badges">${isNew ? '<span class="badge new">✨ はじめて つれた！</span>' : ''}${isRec ? '<span class="badge rec">🏆 しんきろく！</span>' : ''}${shun ? '<span class="badge shun">しゅん！ たかく うれる</span>' : ''}${sp.poison ? '<span class="badge warn">どく！ たべられない</span>' : ''}${ikura ? '<span class="badge rec">🟠 メス！ いくらが とれた</span>' : ''}</div>
+    <div class="badges">${rank(sp) >= 2 ? `<span class="badge rk-b rk-b${rank(sp)}">${'★'.repeat(rank(sp))} ${RANK_NAME[rank(sp)]}！</span>` : ''}${isNew ? '<span class="badge new">✨ はじめて つれた！</span>' : ''}${isRec ? '<span class="badge rec">🏆 しんきろく！</span>' : ''}${shun ? '<span class="badge shun">しゅん！ たかく うれる</span>' : ''}${sp.poison ? '<span class="badge warn">どく！ たべられない</span>' : ''}${ikura ? '<span class="badge rec">🟠 メス！ いくらが とれた</span>' : ''}</div>
     <div class="res-fish"><img src="${fishImg(sp.k)}" alt=""></div>
     ${newFriend ? `<div class="friend"><img src="${getPokemonImageUrl(newFriend.id)}" alt=""><span>ずかん ${newFriend.need}しゅ たっせい！<br><b>${newFriend.n}</b>が なかまに なった！</span></div>` : ''}
     <p class="res-name">${name}</p>
@@ -2458,8 +2477,8 @@ function renderZukan() {
   const list = SPECIES.filter(s => zukanTab === 'all' || s.a.includes(zukanTab));
   $('zgrid').innerHTML = list.map(s => {
     const r = save.zukan[s.k];
-    return r ? `<button class="zc" data-k="${s.k}"><div class="pic"><img src="${fishImg(s.k)}" alt="" loading="lazy"></div>${s.n}<small>さいだい ${r.max}cm・${r.n}ひき</small></button>`
-      : `<button class="zc unk" data-k="${s.k}"><div class="pic"><img src="${fishImg(s.k, '#9DB4C4')}" alt="" loading="lazy"></div>？？？<small>${s.a.map(a => AREA_BY[a].icon).join('')}</small></button>`;
+    return r ? `<button class="zc" data-k="${s.k}"><div class="pic"><img src="${fishImg(s.k)}" alt="" loading="lazy"></div>${s.n}${stars(s)}<small>さいだい ${r.max}cm・${r.n}ひき</small></button>`
+      : `<button class="zc unk" data-k="${s.k}"><div class="pic"><img src="${fishImg(s.k, '#9DB4C4')}" alt="" loading="lazy"></div>？？？${stars(s)}<small>${s.a.map(a => AREA_BY[a].icon).join('')}</small></button>`;
   }).join('');
   $('zgrid').querySelectorAll('.zc').forEach(b => b.onclick = () => openZ(b.dataset.k));
 }
@@ -2469,12 +2488,12 @@ function openZ(k) {
   const months = Array.from({ length: 12 }, (_, i) => `<span class="${s.shun && s.shun.includes(i + 1) ? 'on' : ''}">${i + 1}</span>`).join('');
   if (!r) {
     $('zdetail-box').innerHTML = `<div class="res-fish"><img src="${fishImg(k, '#9DB4C4')}" alt=""></div><p class="res-name">？？？</p>
-      <dl class="zinfo"><dt>どこ</dt><dd>${where}</dd><dt>つりかた</dt><dd>${how}</dd>${s.t === 'night' ? '<dt>じかん</dt><dd>よるに よく つれる</dd>' : ''}</dl><button class="btn" id="z-close">とじる</button>`;
+      <dl class="zinfo"><dt>めずらしさ</dt><dd>${stars(s)} ${RANK_NAME[rank(s)]}</dd><dt>どこ</dt><dd>${where}</dd><dt>つりかた</dt><dd>${how}</dd>${s.shun ? `<dt>しゅん</dt><dd>${[...new Set(s.shun.map(seasonOf))].join('・')}</dd>` : ''}${s.t === 'night' ? '<dt>じかん</dt><dd>よるに よく つれる</dd>' : ''}</dl><button class="btn" id="z-close">とじる</button>`;
     speak(`まだ つれてないよ。${where}で ${how}で ねらってみよう`);
   } else {
     $('zdetail-box').innerHTML = `<div class="res-fish"><img src="${fishImg(k)}" alt=""></div><p class="res-name">${s.n}</p>
       ${s.grow ? `<p class="res-sub">${s.grow.map(g => g[1]).join(' → ')}</p>` : ''}
-      <dl class="zinfo"><dt>どこ</dt><dd>${where}</dd><dt>つりかた</dt><dd>${how}</dd><dt>おおきさ</dt><dd>${s.sz[0]}〜${s.sz[1]}cm くらい</dd><dt>きろく</dt><dd>🏆 ${r.max}cm（${r.n}ひき つった）</dd>${s.t === 'night' ? '<dt>じかん</dt><dd>よるに よく つれる</dd>' : ''}</dl>
+      <dl class="zinfo"><dt>めずらしさ</dt><dd>${stars(s)} ${RANK_NAME[rank(s)]}</dd><dt>どこ</dt><dd>${where}</dd><dt>つりかた</dt><dd>${how}</dd><dt>おおきさ</dt><dd>${s.sz[0]}〜${s.sz[1]}cm くらい</dd><dt>きろく</dt><dd>🏆 ${r.max}cm（${r.n}ひき つった）</dd>${s.t === 'night' ? '<dt>じかん</dt><dd>よるに よく つれる</dd>' : ''}</dl>
       <div><b>しゅん</b><div class="months">${months}</div></div>
       <p class="info">${s.info}<br>🍽️ ${s.eat}</p>${dishBook(k)}<button class="btn" id="z-close">とじる</button>`;
     speak(`${s.n}。${s.info}`);
@@ -3503,7 +3522,13 @@ const SEASON_ICON = { はる: '🌸', なつ: '🌻', あき: '🍁', ふゆ: '�
 const SEASON_MONTH = { はる: 4, なつ: 7, あき: 10, ふゆ: 1 };
 const TOD_HOUR = { あさ: 7, ひる: 12, ゆうがた: 17, よる: 21 };
 const TOD_ICON = { あさ: '🌅', ひる: '☀️', ゆうがた: '🌇', よる: '🌙' };
-function tripOpts() { save.trip = Object.assign({ season: 'now', tod: 'now', limit: 5, bait: false }, save.trip || {}); return save.trip; }
+function tripOpts() {
+  // おなじ オブジェクトを つかいつづける（えらんだ ものが きえないように）
+  if (!save.trip) save.trip = {};
+  const d = { season: 'now', tod: 'now', limit: 5, bait: false };
+  for (const k in d) if (save.trip[k] === undefined) save.trip[k] = d[k];
+  return save.trip;
+}
 function curMonth() { const t = save ? tripOpts() : {}; return t.season && t.season !== 'now' ? SEASON_MONTH[t.season] : NOW().getMonth() + 1; }
 function curHour() { const t = save ? tripOpts() : {}; return t.tod && t.tod !== 'now' ? TOD_HOUR[t.tod] : NOW().getHours(); }
 function renderTripOpts() {
@@ -3514,10 +3539,22 @@ function renderTripOpts() {
     <div class="dgroup"><b>じかん</b><div class="dchips">${row('tod', [['now', '🕐 いま'], ...Object.keys(TOD_ICON).map(k => [k, TOD_ICON[k] + ' ' + k])])}</div></div>
     <div class="dgroup"><b>なんびき つったら かえる？</b><div class="dchips">${row('limit', [[3, '3びき'], [5, '5ひき'], [10, '10ぴき'], [0, 'じゆう']])}</div><small class="sub">あみは なんかい あげたか、しおひがり・もぐりは じかんで おわるよ</small></div>
     ${(save.bait || 0) > 0 ? `<div class="dgroup"><b>✨ きらきら えさ（のこり ${save.bait}）</b><div class="dchips">${row('bait', [[false, 'つかわない'], [true, 'つかう！ めずらしい さかなが でやすい']])}</div></div>` : ''}`;
+  renderTargets();
   $('trip-opts').querySelectorAll('button').forEach(b => b.onclick = () => {
     let v = b.dataset.v; if (b.dataset.k === 'limit') v = +v; if (b.dataset.k === 'bait') v = v === 'true';
     t[b.dataset.k] = v; store(); snd('tap'); renderMap();
   });
+}
+// この じょうけんで つれる さかな（まだの ものを さきに）
+function renderTargets() {
+  const el = $('targets'); if (!el) return;
+  const pool = poolFor(selArea, selMethod); if (!pool.length) { el.innerHTML = ''; return; }
+  const m = curMonth(), night = timeOfDay(curHour()) === 'よる';
+  const list = pool.map(sp => ({ sp, got: !!save.zukan[sp.k], shun: sp.shun && sp.shun.includes(m), nightFish: sp.t === 'night' }))
+    .sort((a, b) => (a.got - b.got) || (b.shun - a.shun) || (rank(b.sp) - rank(a.sp)));
+  const left = list.filter(x => !x.got).length;
+  el.innerHTML = `<div class="dgroup"><b>${AREA_BY[selArea].n}・${METHOD_BY[selMethod].n}で つれる いきもの（${left ? `まだ ${left}しゅ` : 'ぜんぶ つれた！🎉'}）</b>
+    <div class="tg-grid">${list.map(x => `<div class="tg ${x.got ? 'got' : ''} ${x.nightFish && !night ? 'off' : ''}"><img src="${x.got ? fishImg(x.sp.k) : fishImg(x.sp.k, '#7E98AC')}" alt=""><span>${x.got ? x.sp.n : '？？？'}</span>${stars(x.sp)}<em>${x.shun ? '<i class="shun">しゅん</i>' : ''}${x.nightFish ? `<i class="nt">🌙${night ? '' : ' よるに おおい'}</i>` : ''}</em></div>`).join('')}</div></div>`;
 }
 let TRIP = { list: [], hauls: 0, limit: 0, method: 'uki', area: 'seto', money0: 0 };
 function startTrip(area, method) { TRIP = { list: [], hauls: 0, limit: tripOpts().limit, method, area, money0: save.money }; }
@@ -3629,6 +3666,34 @@ $('bk-file').onchange = async (e) => {
     toast('データを もどしたよ！'); renderTitle();
   } catch (err) { toast('この ファイルは よめなかったよ'); }
   e.target.value = '';
+};
+
+// ---------- よびの ほぞん（IndexedDB）：localStorage が きえても もどす ----------
+const IDB = {
+  open() { return new Promise((res, rej) => { try { const r = indexedDB.open('ibumi-fishing', 1); r.onupgradeneeded = () => r.result.createObjectStore('kv'); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); } catch (e) { rej(e); } }); },
+  async put(v) { const db = await this.open(); return new Promise((res) => { const tx = db.transaction('kv', 'readwrite'); tx.objectStore('kv').put(v, 'all'); tx.oncomplete = () => res(true); tx.onerror = () => res(false); }); },
+  async get() { const db = await this.open(); return new Promise((res) => { const tx = db.transaction('kv', 'readonly'); const q = tx.objectStore('kv').get('all'); q.onsuccess = () => res(q.result || null); q.onerror = () => res(null); }); },
+};
+let _mirrorT = 0;
+function mirrorSave() { clearTimeout(_mirrorT); _mirrorT = setTimeout(() => { IDB.put({ at: Date.now(), data: allData() }).catch(() => {}); }, 400); }
+(async () => {
+  try {
+    const hasLocal = Object.keys(allData()).some(k => k.startsWith('fishing-save-'));
+    const snap = await IDB.get();
+    if (!hasLocal && snap && snap.data && Object.keys(snap.data).some(k => k.startsWith('fishing-save-'))) {
+      Object.entries(snap.data).forEach(([k, v]) => localStorage.setItem(k, v));
+      toast('よびの データから もどしたよ！'); renderTitle();
+    } else if (hasLocal) mirrorSave();
+  } catch (e) {}
+})();
+function backupBlob() { return new Blob([JSON.stringify({ app: 'ibumi-fishing', at: new Date().toISOString(), data: allData() })], { type: 'application/json' }); }
+$('bk-share').onclick = async () => {
+  const d = new Date(), name = `ibumi-fishing-${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}.json`;
+  const file = new File([backupBlob()], name, { type: 'application/json' });
+  try {
+    if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], title: 'いぶみー フィッシング の データ' }); toast('おくったよ！'); return; }
+  } catch (e) { if (e && e.name === 'AbortError') return; }
+  $('bk-save').click(); toast('おくれない ので ファイルに ほぞんしたよ');
 };
 
 // =========================================================
@@ -3751,7 +3816,7 @@ function setMuted() {}
 // ==== EMOJI-3D START ====
 // もんだいの なかの えもじを、どの スマホでも おなじに みえる 3Dの え（Microsoft Fluent Emoji, MIT ライセンス）に おきかえる
 const EMOJI_BASE = 'https://raw.githubusercontent.com/microsoft/fluentui-emoji/1ffb34c752ecf5d402f04cfb4b392c77f57c54bc/';
-const EMOJI_IMG = {"♨️": "assets/Hot springs/3D/hot_springs_3d.png","❄️": "assets/Snowflake/3D/snowflake_3d.png","🗣️": "assets/Speaking head/3D/speaking_head_3d.png","🛳️": "assets/Passenger ship/3D/passenger_ship_3d.png","🏞️": "assets/National park/3D/national_park_3d.png","🏝️": "assets/Desert island/3D/desert_island_3d.png","🛥️": "assets/Motor boat/3D/motor_boat_3d.png","🍽️": "assets/Fork and knife with plate/3D/fork_and_knife_with_plate_3d.png","⛴️": "assets/Ferry/3D/ferry_3d.png","🕸️": "assets/Spider web/3D/spider_web_3d.png","⛱️": "assets/Umbrella on ground/3D/umbrella_on_ground_3d.png","☀️": "assets/Sun/3D/sun_3d.png","⛄": "assets/Snowman without snow/3D/snowman_without_snow_3d.png","🔔": "assets/Bell/3D/bell_3d.png","📖": "assets/Open book/3D/open_book_3d.png","🚢": "assets/Ship/3D/ship_3d.png","✊": "assets/Raised fist/Default/3D/raised_fist_3d_default.png","📅": "assets/Calendar/3D/calendar_3d.png","🍶": "assets/Sake/3D/sake_3d.png","👕": "assets/T-shirt/3D/t-shirt_3d.png","🍣": "assets/Sushi/3D/sushi_3d.png","🎏": "assets/Carp streamer/3D/carp_streamer_3d.png","🔪": "assets/Kitchen knife/3D/kitchen_knife_3d.png","🏪": "assets/Convenience store/3D/convenience_store_3d.png","🥚": "assets/Egg/3D/egg_3d.png","🔄": "assets/Counterclockwise arrows button/3D/counterclockwise_arrows_button_3d.png","🪸": "assets/Coral/3D/coral_3d.png","🌅": "assets/Sunrise/3D/sunrise_3d.png","🐠": "assets/Tropical fish/3D/tropical_fish_3d.png","🏆": "assets/Trophy/3D/trophy_3d.png","🔈": "assets/Speaker low volume/3D/speaker_low_volume_3d.png","🍤": "assets/Fried shrimp/3D/fried_shrimp_3d.png","🎡": "assets/Ferris wheel/3D/ferris_wheel_3d.png","🥣": "assets/Bowl with spoon/3D/bowl_with_spoon_3d.png","🗿": "assets/Moai/3D/moai_3d.png","🎉": "assets/Party popper/3D/party_popper_3d.png","🌸": "assets/Cherry blossom/3D/cherry_blossom_3d.png","🔒": "assets/Locked/3D/locked_3d.png","♨": "assets/Hot springs/3D/hot_springs_3d.png","🍁": "assets/Maple leaf/3D/maple_leaf_3d.png","📒": "assets/Ledger/3D/ledger_3d.png","🐚": "assets/Spiral shell/3D/spiral_shell_3d.png","🪁": "assets/Kite/3D/kite_3d.png","🛟": "assets/Ring buoy/3D/ring_buoy_3d.png","❄": "assets/Snowflake/3D/snowflake_3d.png","🟠": "assets/Orange circle/3D/orange_circle_3d.png","🗣": "assets/Speaking head/3D/speaking_head_3d.png","🛳": "assets/Passenger ship/3D/passenger_ship_3d.png","✅": "assets/Check mark button/3D/check_mark_button_3d.png","🧺": "assets/Basket/3D/basket_3d.png","💰": "assets/Money bag/3D/money_bag_3d.png","⚓": "assets/Anchor/3D/anchor_3d.png","🌊": "assets/Water wave/3D/water_wave_3d.png","🏮": "assets/Red paper lantern/3D/red_paper_lantern_3d.png","🏞": "assets/National park/3D/national_park_3d.png","⛵": "assets/Sailboat/3D/sailboat_3d.png","🐙": "assets/Octopus/3D/octopus_3d.png","😋": "assets/Face savoring food/3D/face_savoring_food_3d.png","🍱": "assets/Bento box/3D/bento_box_3d.png","🐧": "assets/Penguin/3D/penguin_3d.png","🐳": "assets/Spouting whale/3D/spouting_whale_3d.png","👧": "assets/Girl/Default/3D/girl_3d_default.png","✨": "assets/Sparkles/3D/sparkles_3d.png","🔨": "assets/Hammer/3D/hammer_3d.png","🎣": "assets/Fishing pole/3D/fishing_pole_3d.png","🌻": "assets/Sunflower/3D/sunflower_3d.png","🌴": "assets/Palm tree/3D/palm_tree_3d.png","🌙": "assets/Crescent moon/3D/crescent_moon_3d.png","🧈": "assets/Butter/3D/butter_3d.png","🏝": "assets/Desert island/3D/desert_island_3d.png","🏠": "assets/House/3D/house_3d.png","🦪": "assets/Oyster/3D/oyster_3d.png","🛥": "assets/Motor boat/3D/motor_boat_3d.png","🍗": "assets/Poultry leg/3D/poultry_leg_3d.png","🦭": "assets/Seal/3D/seal_3d.png","🧂": "assets/Salt/3D/salt_3d.png","🍋": "assets/Lemon/3D/lemon_3d.png","🍽": "assets/Fork and knife with plate/3D/fork_and_knife_with_plate_3d.png","🧯": "assets/Fire extinguisher/3D/fire_extinguisher_3d.png","🥢": "assets/Chopsticks/3D/chopsticks_3d.png","🪣": "assets/Bucket/3D/bucket_3d.png","🚤": "assets/Speedboat/3D/speedboat_3d.png","🦑": "assets/Squid/3D/squid_3d.png","🍚": "assets/Cooked rice/3D/cooked_rice_3d.png","🔇": "assets/Muted speaker/3D/muted_speaker_3d.png","📂": "assets/Open file folder/3D/open_file_folder_3d.png","💾": "assets/Floppy disk/3D/floppy_disk_3d.png","🍳": "assets/Cooking/3D/cooking_3d.png","👗": "assets/Dress/3D/dress_3d.png","⛴": "assets/Ferry/3D/ferry_3d.png","🕸": "assets/Spider web/3D/spider_web_3d.png","🧊": "assets/Ice/3D/ice_3d.png","⭐": "assets/Star/3D/star_3d.png","🕐": "assets/One oclock/3D/one_oclock_3d.png","🔊": "assets/Speaker high volume/3D/speaker_high_volume_3d.png","⛱": "assets/Umbrella on ground/3D/umbrella_on_ground_3d.png","🌈": "assets/Rainbow/3D/rainbow_3d.png","🔥": "assets/Fire/3D/fire_3d.png","☀": "assets/Sun/3D/sun_3d.png","🤿": "assets/Diving mask/3D/diving_mask_3d.png","🌇": "assets/Sunset/3D/sunset_3d.png","🎵": "assets/Musical note/3D/musical_note_3d.png","🐟": "assets/Fish/3D/fish_3d.png"};
+const EMOJI_IMG = {"♨️": "assets/Hot springs/3D/hot_springs_3d.png","❄️": "assets/Snowflake/3D/snowflake_3d.png","🗣️": "assets/Speaking head/3D/speaking_head_3d.png","🛳️": "assets/Passenger ship/3D/passenger_ship_3d.png","🏞️": "assets/National park/3D/national_park_3d.png","🏝️": "assets/Desert island/3D/desert_island_3d.png","🛥️": "assets/Motor boat/3D/motor_boat_3d.png","🍽️": "assets/Fork and knife with plate/3D/fork_and_knife_with_plate_3d.png","⛴️": "assets/Ferry/3D/ferry_3d.png","🕸️": "assets/Spider web/3D/spider_web_3d.png","⛱️": "assets/Umbrella on ground/3D/umbrella_on_ground_3d.png","☀️": "assets/Sun/3D/sun_3d.png","⛄": "assets/Snowman without snow/3D/snowman_without_snow_3d.png","🔔": "assets/Bell/3D/bell_3d.png","📖": "assets/Open book/3D/open_book_3d.png","🚢": "assets/Ship/3D/ship_3d.png","✊": "assets/Raised fist/Default/3D/raised_fist_3d_default.png","📅": "assets/Calendar/3D/calendar_3d.png","🍶": "assets/Sake/3D/sake_3d.png","👕": "assets/T-shirt/3D/t-shirt_3d.png","🍣": "assets/Sushi/3D/sushi_3d.png","🎏": "assets/Carp streamer/3D/carp_streamer_3d.png","🔪": "assets/Kitchen knife/3D/kitchen_knife_3d.png","🏪": "assets/Convenience store/3D/convenience_store_3d.png","🥚": "assets/Egg/3D/egg_3d.png","🔄": "assets/Counterclockwise arrows button/3D/counterclockwise_arrows_button_3d.png","🪸": "assets/Coral/3D/coral_3d.png","🌅": "assets/Sunrise/3D/sunrise_3d.png","🐠": "assets/Tropical fish/3D/tropical_fish_3d.png","🏆": "assets/Trophy/3D/trophy_3d.png","🔈": "assets/Speaker low volume/3D/speaker_low_volume_3d.png","🍤": "assets/Fried shrimp/3D/fried_shrimp_3d.png","🎡": "assets/Ferris wheel/3D/ferris_wheel_3d.png","🥣": "assets/Bowl with spoon/3D/bowl_with_spoon_3d.png","🗿": "assets/Moai/3D/moai_3d.png","🎉": "assets/Party popper/3D/party_popper_3d.png","🌸": "assets/Cherry blossom/3D/cherry_blossom_3d.png","🔒": "assets/Locked/3D/locked_3d.png","♨": "assets/Hot springs/3D/hot_springs_3d.png","🍁": "assets/Maple leaf/3D/maple_leaf_3d.png","📒": "assets/Ledger/3D/ledger_3d.png","🐚": "assets/Spiral shell/3D/spiral_shell_3d.png","🪁": "assets/Kite/3D/kite_3d.png","🛟": "assets/Ring buoy/3D/ring_buoy_3d.png","❄": "assets/Snowflake/3D/snowflake_3d.png","🟠": "assets/Orange circle/3D/orange_circle_3d.png","🗣": "assets/Speaking head/3D/speaking_head_3d.png","🛳": "assets/Passenger ship/3D/passenger_ship_3d.png","✅": "assets/Check mark button/3D/check_mark_button_3d.png","🧺": "assets/Basket/3D/basket_3d.png","💰": "assets/Money bag/3D/money_bag_3d.png","⚓": "assets/Anchor/3D/anchor_3d.png","🌊": "assets/Water wave/3D/water_wave_3d.png","🏮": "assets/Red paper lantern/3D/red_paper_lantern_3d.png","🏞": "assets/National park/3D/national_park_3d.png","⛵": "assets/Sailboat/3D/sailboat_3d.png","🐙": "assets/Octopus/3D/octopus_3d.png","😋": "assets/Face savoring food/3D/face_savoring_food_3d.png","🍱": "assets/Bento box/3D/bento_box_3d.png","🐧": "assets/Penguin/3D/penguin_3d.png","🐳": "assets/Spouting whale/3D/spouting_whale_3d.png","👧": "assets/Girl/Default/3D/girl_3d_default.png","✨": "assets/Sparkles/3D/sparkles_3d.png","🔨": "assets/Hammer/3D/hammer_3d.png","📤": "assets/Outbox tray/3D/outbox_tray_3d.png","🎣": "assets/Fishing pole/3D/fishing_pole_3d.png","🌻": "assets/Sunflower/3D/sunflower_3d.png","🌴": "assets/Palm tree/3D/palm_tree_3d.png","🌙": "assets/Crescent moon/3D/crescent_moon_3d.png","🧈": "assets/Butter/3D/butter_3d.png","🏝": "assets/Desert island/3D/desert_island_3d.png","🏠": "assets/House/3D/house_3d.png","🦪": "assets/Oyster/3D/oyster_3d.png","🛥": "assets/Motor boat/3D/motor_boat_3d.png","🍗": "assets/Poultry leg/3D/poultry_leg_3d.png","🦭": "assets/Seal/3D/seal_3d.png","🧂": "assets/Salt/3D/salt_3d.png","🍋": "assets/Lemon/3D/lemon_3d.png","🍽": "assets/Fork and knife with plate/3D/fork_and_knife_with_plate_3d.png","🧯": "assets/Fire extinguisher/3D/fire_extinguisher_3d.png","🥢": "assets/Chopsticks/3D/chopsticks_3d.png","🪣": "assets/Bucket/3D/bucket_3d.png","🚤": "assets/Speedboat/3D/speedboat_3d.png","🦑": "assets/Squid/3D/squid_3d.png","🍚": "assets/Cooked rice/3D/cooked_rice_3d.png","🔇": "assets/Muted speaker/3D/muted_speaker_3d.png","📂": "assets/Open file folder/3D/open_file_folder_3d.png","💾": "assets/Floppy disk/3D/floppy_disk_3d.png","🍳": "assets/Cooking/3D/cooking_3d.png","👗": "assets/Dress/3D/dress_3d.png","⛴": "assets/Ferry/3D/ferry_3d.png","🕸": "assets/Spider web/3D/spider_web_3d.png","🧊": "assets/Ice/3D/ice_3d.png","⭐": "assets/Star/3D/star_3d.png","🕐": "assets/One oclock/3D/one_oclock_3d.png","🔊": "assets/Speaker high volume/3D/speaker_high_volume_3d.png","⛱": "assets/Umbrella on ground/3D/umbrella_on_ground_3d.png","🌈": "assets/Rainbow/3D/rainbow_3d.png","🔥": "assets/Fire/3D/fire_3d.png","☀": "assets/Sun/3D/sun_3d.png","🤿": "assets/Diving mask/3D/diving_mask_3d.png","🌇": "assets/Sunset/3D/sunset_3d.png","🎵": "assets/Musical note/3D/musical_note_3d.png","🐟": "assets/Fish/3D/fish_3d.png"};
 const EMOJI_RE = /(?:\p{Extended_Pictographic}|\p{Regional_Indicator}{2}|[0-9#*]\uFE0F?\u20E3)(?:\uFE0F|\u200D\p{Extended_Pictographic}|[\u{1F3FB}-\u{1F3FF}])*/gu;
 function emojiSrc(e) {
   const p = EMOJI_IMG[e] || EMOJI_IMG[e.replace(/\uFE0F/g, '')] || EMOJI_IMG[e + '\uFE0F'];
