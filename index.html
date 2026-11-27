@@ -132,7 +132,7 @@
     .reel .arm { position: absolute; left: -0.45rem; top: -4.4rem; width: 0.9rem; height: 4.4rem; border-radius: 0.45rem; background: #5A6E80; }
     .reel .knob { position: absolute; left: -1.5rem; top: -5.6rem; width: 3rem; height: 3rem; border-radius: 50%; background: linear-gradient(135deg, #FFB627, #F28C00); box-shadow: 0 3px 6px rgba(0,0,0,0.3); }
     .reel .hub { position: absolute; left: 50%; top: 50%; width: 2.6rem; height: 2.6rem; margin: -1.3rem; border-radius: 50%; background: #3E5264; }
-    .reel .lbl { position: absolute; left: 0; right: 0; bottom: -1.6rem; text-align: center; font-weight: 900; color: #FFF; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+    .reel .lbl { position: absolute; left: -1rem; right: -1rem; top: -1.9rem; text-align: center; font-weight: 900; color: #FFF; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
     .fight { position: absolute; left: 50%; top: 4.4rem; transform: translateX(-50%); width: min(80%, 26rem); padding: 0.6rem 0.9rem; border-radius: 1.2rem; background: rgba(255,255,255,0.92); box-shadow: 0 8px 20px rgba(0,0,0,0.2); display: none; }
     .fight.show { display: block; }
     .fight .lbl { display: flex; justify-content: space-between; font-weight: 900; }
@@ -347,7 +347,9 @@
     .eat-av { position: absolute; left: 4%; bottom: 0; height: 92%; }
     .eat-pk { position: absolute; right: 4%; bottom: 18%; height: 40%; }
     .eat-table { position: absolute; left: 0; right: 0; bottom: 0; height: 26%; background: #C8864A; display: flex; justify-content: center; }
-    .eat-table img { width: 48%; margin-top: -12%; cursor: pointer; transition: clip-path 0.3s; }
+    .eat-plate { position: relative; width: 48%; margin-top: -12%; cursor: pointer; }
+    .eat-plate img { width: 100%; display: block; }
+    .eat-plate #eat-dish { position: absolute; inset: 0; transition: clip-path 0.3s, opacity 0.4s; }
     .dish-done .res-actions { width: 100%; }
     .dish-done .res-actions .btn { font-size: 1.3rem; padding: 1rem; }
     .floaty { position: absolute; left: 25%; top: 30%; width: 50%; opacity: 0.85; }
@@ -357,6 +359,19 @@
     .spot .cover svg { width: 100%; height: 100%; display: block; }
     .swim-pk { position: absolute; top: 14%; left: 0; height: 13vmin; animation: pkswim 14s ease-in-out infinite; pointer-events: none; }
     @keyframes pkswim { 0% { transform: translate(5vw, 0) scaleX(-1); } 45% { transform: translate(80vw, 6vh) scaleX(-1); } 50% { transform: translate(80vw, 6vh) scaleX(1); } 95% { transform: translate(5vw, 0) scaleX(1); } 100% { transform: translate(5vw, 0) scaleX(-1); } }
+    .pullring { position: absolute; left: 50%; top: 45%; width: 9rem; height: 9rem; transform: translate(-50%, -50%); pointer-events: none; display: none; }
+    .pullring.show { display: block; }
+    .pullring i { position: absolute; left: 50%; top: 50%; width: 9rem; height: 9rem; border-radius: 50%; transform: translate(-50%, -50%); }
+    .pullring .t { border: 0.5rem solid rgba(255,255,255,0.9); box-shadow: 0 0 0 0.2rem rgba(0,0,0,0.2); }
+    .pullring .o { border: 0.35rem solid #FFD23F; }
+    .pullring.good .t { border-color: #5ED6A0; box-shadow: 0 0 20px #5ED6A0; }
+    .plate-area { position: relative; width: min(100%, 34rem); border-radius: 1.4rem; background: radial-gradient(circle, #FFF8EC, #F2E2C8); box-shadow: 0 10px 22px var(--shadow); }
+    .plate-area img { width: 100%; display: block; }
+    .plate-area .pl-food { position: absolute; inset: 0; transition: clip-path 0.3s; }
+    .pieces { display: flex; gap: 1.2rem; justify-content: center; }
+    .piece { width: 6rem; touch-action: none; cursor: grab; filter: drop-shadow(0 6px 8px rgba(0,0,0,0.2)); }
+    .piece svg { width: 100%; display: block; }
+    .piece.drag { z-index: 10; position: relative; }
     /* 3Dの えもじ */
     .emo { display: inline-block; width: 1.2em; height: 1.2em; object-fit: contain; vertical-align: -0.25em; -webkit-user-drag: none; }
     .question-emoji .emo, .opt-emoji .emo { width: 1.1em; height: 1.1em; vertical-align: middle; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.12)); }
@@ -432,6 +447,7 @@
   <div class="fight" id="fight"><div class="lbl"><span id="fight-msg">まいて まいて！</span><span id="fight-dist">20m</span></div><div class="tbar"><i id="tension"></i></div><div class="dbar"><i id="dist-bar"></i></div></div>
   <div class="power" id="power"><i id="power-bar"></i></div>
   <div class="big-msg" id="big-msg">ヒット！</div>
+  <div class="pullring" id="pullring"><i class="t"></i><i class="o" id="pullring-o"></i></div>
   <div class="controls">
     <button class="act" id="act">なげる</button>
     <div class="reel" id="reel"><div class="hub"></div><div class="knob-arm" id="knob"><div class="arm"></div><div class="knob"></div></div><div class="lbl">ぐるぐる まく</div></div>
@@ -1943,6 +1959,7 @@ function startFishing(area, method) {
   layoutPartner();
   const g = geo();
   $('reel').style.display = method === 'ami' ? 'none' : '';
+  $('pullring').classList.remove('show');
   if (method === 'ami') { for (let i = 0; i < 3; i++) spawnSchool(g); G.net = null; }
   else for (let i = 0; i < 6; i++) spawnFish(g);
   setAct('なげる', 'blue');
@@ -1970,7 +1987,7 @@ function onAct() {
   if (!G.on) return;
   const ph = G.phase;
   if (G.method === 'ami') {
-    if (ph === 'idle') { G.phase = 'netaim'; setAct('うみを タップ！', 'blue', true); say('むれの ところを タップしてね！', true); }
+    if (ph === 'idle') { G.phase = 'netaim'; setAct('ゆびで ねらってね', 'wait'); say('ゆびで むれを ねらって、はなすと なげるよ！', true); }
     else if (ph === 'netpull') netPull();
     return;
   }
@@ -2125,7 +2142,8 @@ function updateFishes(g, dt) {
       if (f.x > 1.15) { removeFish(f); spawnFish(g); continue; }
     } else if (f.st === 'chase' || f.st === 'nibble' || f.st === 'hug') {
       const head = f.w / g.W * 0.5;
-      tx = G.bx + head * 0.9; td = G.bd + 0.02; speed = sp * (G.method === 'uki' ? 1.6 : 2.6);
+      if (f.side == null) f.side = f.x >= G.bx ? 1 : -1; // くる ほうから そのまま よる
+      tx = G.bx + f.side * head * 0.9; td = G.bd + 0.02; speed = sp * (G.method === 'uki' ? 1.6 : 2.6);
       f.chaseT += dt;
       const near = Math.abs(f.x - tx) < 0.02 && Math.abs(f.d - td) < 0.06;
       if (f.st === 'chase') {
@@ -2151,7 +2169,8 @@ function updateFishes(g, dt) {
     const dx = tx - f.x, dd = td - f.d;
     f.x += clamp(dx, -speed * dt, speed * dt);
     f.d += clamp(dd, -speed * (f.st === 'swim' ? 0.6 : 1.2) * dt, speed * (f.st === 'swim' ? 0.6 : 1.2) * dt);
-    if (Math.abs(dx) > 0.004) f.dir = dx > 0 ? 1 : -1;
+    if (f.st === 'chase' || f.st === 'nibble' || f.st === 'hug') f.dir = f.side > 0 ? -1 : 1; // かおを えさに むける
+    else { f.side = null; if (Math.abs(dx) > 0.004) f.dir = dx > 0 ? 1 : -1; }
     placeFish(g, f);
   }
   while (G.fishes.length < 6 && G.phase !== 'fight') spawnFish(g);
@@ -2561,43 +2580,71 @@ function updateSchools(g, dt) {
   });
   if (schools.length < 3 && G.phase !== 'netpull') spawnSchool(g);
 }
-function netTap(e) {
-  if (!G.on || G.method !== 'ami' || G.phase !== 'netaim') return;
+// ゆびで ねらって（ドラッグ）はなすと なげる
+function netAimAt(e) {
   const g = geo(), r = $('scene').getBoundingClientRect();
-  const x = (e.clientX - r.left) / g.W, y = e.clientY - r.top;
-  if (y < g.surf - 10) return;
-  G.net = { x: clamp(x, 0.3, 0.98), d: 0, t: 0, pulls: 0, need: save.easy ? 4 : 6 };
-  G.phase = 'netfly'; snd('cast');
-  setAct('…', ''); $('act').classList.add('hide');
+  G.aimX = clamp((e.clientX - r.left) / g.W, 0.3, 0.98);
 }
-$('scene').addEventListener('pointerdown', netTap);
+$('scene').addEventListener('pointerdown', (e) => { if (G.on && G.method === 'ami' && G.phase === 'netaim') { G.aiming = true; netAimAt(e); } });
+$('scene').addEventListener('pointermove', (e) => { if (G.aiming) netAimAt(e); });
+$('scene').addEventListener('pointerup', () => {
+  if (!G.aiming) return; G.aiming = false;
+  G.net = { x: G.aimX, d: 0, t: 0, pulls: 0, need: save.easy ? 3 : 4, ring: 0 };
+  G.phase = 'netfly'; snd('cast'); G.aimX = null;
+  setAct('…', ''); $('act').classList.add('hide');
+});
 function updateNet(g, dt) {
   const N = G.net; if (!N) return;
   if (G.phase === 'netfly') { N.t += dt / 0.6; if (N.t >= 1) { G.phase = 'netsink'; N.t = 0; splashAt(N.x * g.W, g.surf, true); snd('splash'); } }
   else if (G.phase === 'netsink') {
     N.d = Math.min(0.55, N.d + dt * 0.5);
+    // あみの はしっこの さかなは びっくりして にげる
+    G.fishes.forEach(f => { if (f.st === 'swim' && !f.spooked && Math.abs(f.x - N.x) < 0.2 && Math.abs(f.x - N.x) > 0.09 && Math.random() < dt * 1.5) { f.spooked = true; f.ox += (f.x > N.x ? 0.12 : -0.12); } });
     if (N.d >= 0.55) {
       N.caught = G.fishes.filter(f => Math.abs(f.x - N.x) < 0.12 && f.d < N.d + 0.05).sort((p, q) => Math.abs(p.x - N.x) - Math.abs(q.x - N.x)).slice(0, save.easy ? 6 : 5);
       N.caught.forEach(f => { f.st = 'net'; });
-      G.phase = 'netpull'; setAct('ひっぱる！', '', true); $('act').classList.remove('hide');
-      say(N.caught.length ? 'はいった！ ひっぱって！' : 'ひっぱって あげてみよう！');
+      G.phase = 'netpull'; N.ring = 0; setAct('えいっ！', '', false); $('act').classList.remove('hide'); $('pullring').classList.add('show');
+      say(N.caught.length ? 'はいった！ わっかが ぴったりの ときに えいっ！' : 'からっぽかも… ひっぱって あげよう');
     }
   } else if (G.phase === 'netpull') {
-    N.caught.forEach((f, i) => { f.x = N.x + Math.sin(i * 2.3) * 0.06; f.d = N.d - 0.03 + Math.cos(i * 1.7) * 0.03; f.t += dt; placeFish(g, f, ` rotate(${Math.sin(G.t * 12 + i) * 12}deg)`); });
+    N.ring = (N.ring + dt / (save.easy ? 1.5 : 1.1)) % 1;
+    const sc = 1.8 - N.ring * 1.4;  // 1.8 → 0.4 に ちぢむ
+    N.sc = sc; $('pullring-o').style.transform = `translate(-50%,-50%) scale(${sc})`;
+    $('pullring').classList.toggle('good', Math.abs(sc - 1) < (save.easy ? 0.22 : 0.15));
+    N.caught.forEach((f, i) => { f.x = N.x + Math.sin(i * 2.3) * 0.06; f.d = N.d - 0.03 + Math.cos(i * 1.7) * 0.03; f.t += dt; placeFish(g, f, ` rotate(${Math.sin(G.t * 12 + i) * 14}deg)`); });
   }
 }
 function netPull() {
-  const N = G.net; N.pulls++; N.d = Math.max(0, 0.55 * (1 - N.pulls / N.need)); snd('swish'); vib(40);
+  const N = G.net, g = geo();
+  const good = Math.abs(N.sc - 1) < (save.easy ? 0.22 : 0.15);
+  if (good) {
+    N.pulls++; N.d = Math.max(0, 0.55 * (1 - N.pulls / N.need)); snd('hit'); vib(40);
+    burst(window.innerWidth / 2, window.innerHeight * 0.45, { count: 8, spread: 50 });
+    $('pullring').animate([{ transform: 'translate(-50%,-50%) scale(1)' }, { transform: 'translate(-50%,-50%) scale(1.25)' }, { transform: 'translate(-50%,-50%) scale(1)' }], { duration: 250 });
+  } else {
+    snd('miss'); vib(20);
+    if (!save.easy && N.caught.length) {
+      const f = N.caught.splice(Math.floor(Math.random() * N.caught.length), 1)[0];
+      f.st = 'swim'; f.school.vx = 0.08;
+      const x0 = f.x * g.W, y0 = dpx(g, f.d);
+      f.el.animate([{ transform: `translate(${x0 - f.w / 2}px, ${y0}px)` }, { transform: `translate(${x0 + 40}px, ${g.surf - 90}px) rotate(-40deg)` }, { transform: `translate(${x0 + 90}px, ${g.surf + 20}px) rotate(60deg)` }], { duration: 700 });
+      splashAt(x0 + 90, g.surf, false);
+      say('あっ！ 1ぴき にげちゃった！', false);
+    } else say('もうすこし！ わっかが ぴったりの ときに！', false);
+  }
+  N.ring = 0;
   if (N.pulls >= N.need) {
+    $('pullring').classList.remove('show');
     const items = N.caught.map(f => ({ k: f.sp.k, size: f.size }));
     N.caught.forEach(f => removeFish(f));
     G.net = null; G.phase = 'idle'; $('act').classList.add('hide');
-    const g = geo(); splashAt(N.x * g.W, g.surf, true);
+    splashAt(N.x * g.W, g.surf, true);
     TRIP.hauls++; items.forEach(it => TRIP.list.push({ k: it.k, size: it.size }));
     showMulti(items, 'あみを あげた！', () => { if (tripDone()) { endTrip(true); return; } if (G.on) { G.phase = 'idle'; setAct('なげる', 'blue'); $('act').classList.remove('hide'); } });
   }
 }
 function drawNet(g) {
+  if (G.phase === 'netaim' && G.aimX != null) { const cx = G.aimX * g.W; return `<ellipse cx="${cx}" cy="${g.surf + 6}" rx="${g.W * 0.12}" ry="14" fill="rgba(255,255,255,0.15)" stroke="#FFD23F" stroke-width="4" stroke-dasharray="10 8"/><text x="${cx}" y="${g.surf - 18}" text-anchor="middle" font-size="22" font-weight="900" fill="#FFF" stroke="#12324A" stroke-width="4" paint-order="stroke">ここに なげる</text>`; }
   const N = G.net; if (!N) return '';
   if (G.phase === 'netfly') { const x = (0.2 + (N.x - 0.2) * N.t) * g.W, y = g.surf - Math.sin(N.t * Math.PI) * g.H * 0.18; return `<circle cx="${x}" cy="${y}" r="${10 + N.t * 20}" fill="none" stroke="#FFF" stroke-width="2" stroke-dasharray="4 4"/>`; }
   const cx = N.x * g.W, top = g.surf, bot = dpx(g, N.d), w = g.W * 0.13;
@@ -2859,26 +2906,29 @@ function IKURA_IMG() {
 }
 
 // ---------- りょうりの え ----------
-function drawDish(rk, k) {
+function drawDish(rk, k, part = 'all') {
   const R = RECIPE_BY[rk], [m1, m2] = meatColor(k), img = itemImg(k);
   const plate = (rx = 170, ry = 70, c = '#FFFFFF', rim = '#9CC8E8') => `<ellipse cx="200" cy="170" rx="${rx}" ry="${ry}" fill="${rim}"/><ellipse cx="200" cy="164" rx="${rx - 10}" ry="${ry - 8}" fill="${c}"/>`;
   const steam = `<g stroke="#FFF" stroke-width="5" fill="none" stroke-linecap="round" opacity="0.8"><path d="M150 70 q-12 -18 0 -36 q12 -18 0 -36"/><path d="M200 60 q-12 -18 0 -36 q12 -18 0 -36"/><path d="M250 70 q-12 -18 0 -36 q12 -18 0 -36"/></g>`;
   const defs = `<linearGradient id="mg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${m2}"/><stop offset="1" stop-color="${m1}"/></linearGradient><linearGradient id="gold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F6C25A"/><stop offset="1" stop-color="#C8862A"/></linearGradient>`;
-  let food = '';
+  let C = '', F = '';
   const slice = (x, y, rot) => `<g transform="translate(${x},${y}) rotate(${rot})"><rect x="-26" y="-34" width="52" height="68" rx="12" fill="url(#mg)" stroke="${shade(m1, -0.2)}" stroke-width="1.5"/><path d="M-18,-20 q18,8 36,0 M-18,0 q18,8 36,0" stroke="#FFF" stroke-width="3" opacity="0.45" fill="none"/></g>`;
-  if (R.dish === 'sashimi') food = plate(175, 72, '#FFFFFF', '#2E3A59') + `<path d="M90 150 q20 -30 50 -10 q-20 30 -50 10 Z" fill="#4CAF50"/><g stroke="#FFF" stroke-width="3">${Array.from({ length: 10 }, (_, i) => `<line x1="${90 + i * 6}" y1="150" x2="${110 + i * 5}" y2="185"/>`).join('')}</g>` + [0, 1, 2, 3, 4].map(i => slice(160 + i * 34, 150 - i * 2, -18 + i * 3)).join('') + `<path d="M310 175 a14 14 0 1 1 28 0 Z" fill="#8BC34A"/>`;
-  else if (R.dish === 'sushi') food = `<rect x="40" y="150" width="320" height="50" rx="8" fill="#C8954A"/><rect x="60" y="196" width="40" height="22" fill="#A8743A"/><rect x="300" y="196" width="40" height="22" fill="#A8743A"/>` + [130, 270].map(x => `<ellipse cx="${x}" cy="138" rx="58" ry="26" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2"/><path d="M${x - 66},128 Q${x},88 ${x + 66},126 Q${x + 60},146 ${x},140 Q${x - 60},146 ${x - 66},128 Z" fill="url(#mg)" stroke="${shade(m1, -0.2)}" stroke-width="1.5"/><path d="M${x - 40},116 q40 -10 80 0" stroke="#FFF" stroke-width="3" opacity="0.5" fill="none"/>`).join('');
-  else if (R.dish === 'grill') food = plate(180, 70, '#FFF8EE', '#5A7AA0') + `<image href="${img}" x="40" y="60" width="300" height="150" style="filter:sepia(0.7) saturate(1.4) brightness(0.85)"/>` + `<g stroke="#3A2010" stroke-width="5" opacity="0.5" stroke-linecap="round">${[0, 1, 2, 3].map(i => `<line x1="${140 + i * 40}" y1="100" x2="${120 + i * 40}" y2="160"/>`).join('')}</g><path d="M300 170 a24 24 0 0 1 48 0 Z" fill="#FFE04A" stroke="#E0B020" stroke-width="2"/>`;
-  else if (R.dish === 'fry') food = plate() + `<g stroke="#8BC34A" stroke-width="3">${Array.from({ length: 14 }, (_, i) => `<line x1="${250 + i * 6}" y1="120" x2="${240 + i * 7}" y2="180"/>`).join('')}</g>` + [0, 1, 2].map(i => `<g transform="translate(${120 + i * 55},${150 - i * 8}) rotate(${-20 + i * 10})"><ellipse rx="48" ry="26" fill="url(#gold)" stroke="#9A6020" stroke-width="2"/>${Array.from({ length: 14 }, (_, j) => `<circle cx="${(j * 37 % 80) - 40}" cy="${(j * 23 % 40) - 20}" r="2.5" fill="#FFE0A0"/>`).join('')}</g>`).join('') + `<path d="M330 175 a16 16 0 0 1 32 0 Z" fill="#FFE04A"/>`;
-  else if (R.dish === 'karaage' || R.dish === 'tempura') food = plate(170, 70, '#FFFFFF', '#C8A060') + `<path d="M60 160 L200 100 L340 160 L200 200 Z" fill="#FFF8E8" stroke="#E0D0B0" stroke-width="2"/>` + Array.from({ length: 5 }, (_, i) => R.dish === 'tempura' ? `<g transform="translate(${110 + i * 45},${145 - (i % 2) * 14}) rotate(${-30 + i * 12})"><ellipse rx="40" ry="16" fill="#F8DC8A" stroke="#C8A040" stroke-width="2"/><path d="M36 0 l18 -10 l0 20 Z" fill="${SHRIMP.includes(k) ? '#F06A4A' : '#E8C070'}"/></g>` : `<path d="M${110 + i * 45},${150 - (i % 2) * 18} q-26 -10 -18 -30 q10 -22 34 -12 q26 8 16 32 q-10 18 -32 10 Z" fill="url(#gold)" stroke="#9A5A18" stroke-width="2"/>`).join('') + `<path d="M300 180 a16 16 0 0 1 32 0 Z" fill="#FFE04A"/>`;
-  else if (R.dish === 'soup') food = `<path d="M70 110 Q70 220 200 220 Q330 220 330 110 Z" fill="#B8302A" stroke="#7A1A14" stroke-width="3"/><ellipse cx="200" cy="110" rx="130" ry="34" fill="#C89A5A"/><ellipse cx="200" cy="110" rx="118" ry="27" fill="#D8AE6E"/>` + [0, 1, 2, 3].map(i => `<image href="${img}" x="${110 + i * 45}" y="${86 + (i % 2) * 10}" width="60" height="30"/>`).join('') + Array.from({ length: 8 }, (_, i) => `<circle cx="${140 + i * 16}" cy="${108 + (i % 3) * 6}" r="4" fill="#5CB85C"/>`).join('') + steam;
-  else if (R.dish === 'shellgrill') food = plate(170, 66, '#F2F2F2', '#6A6A6A') + `<image href="${img}" x="80" y="50" width="240" height="120"/>` + (rk === 'butter' ? `<rect x="180" y="96" width="40" height="22" rx="4" fill="#FFE27A" stroke="#E0B020" stroke-width="2"/><path d="M160 120 q40 20 80 0" stroke="#FFE27A" stroke-width="6" fill="none" opacity="0.8"/>` : '') + steam;
-  else if (R.dish === 'don') food = `<path d="M60 120 Q60 230 200 230 Q340 230 340 120 Z" fill="${rk === 'unaju' ? '#2A1A14' : '#2E3A59'}" stroke="#141A2A" stroke-width="3"/><ellipse cx="200" cy="120" rx="140" ry="36" fill="#FFFFFF" stroke="#E8E8E8" stroke-width="2"/>` + (rk === 'ikuradon' ? Array.from({ length: 46 }, (_, i) => `<circle cx="${f1(110 + (i * 53 % 180))}" cy="${f1(104 + (i * 31 % 30))}" r="10" fill="#F26A1E" stroke="#B83A08" stroke-width="1.2"/><circle cx="${f1(107 + (i * 53 % 180))}" cy="${f1(101 + (i * 31 % 30))}" r="2.5" fill="#FFF" opacity="0.8"/>`).join('') : rk === 'unidon' ? Array.from({ length: 12 }, (_, i) => `<ellipse cx="${120 + (i % 6) * 32}" cy="${106 + Math.floor(i / 6) * 18}" rx="20" ry="10" fill="#F2A83A" stroke="#C87A10" stroke-width="1.5"/>`).join('') : [0, 1, 2].map(i => `<rect x="${100 + i * 70}" y="92" width="64" height="36" rx="6" fill="#7A3E1A" stroke="#4A2208" stroke-width="2"/><path d="M${104 + i * 70},110 h56" stroke="#3A1A08" stroke-width="3" opacity="0.6"/>`).join('')) + `<path d="M300 110 q14 -14 26 0" fill="#4CAF50"/>`;
-  else if (R.dish === 'takoyaki') food = `<rect x="70" y="100" width="260" height="110" rx="14" fill="#E8D8B0" stroke="#B8A070" stroke-width="3"/>` + Array.from({ length: 6 }, (_, i) => { const x = 120 + (i % 3) * 80, y = 130 + Math.floor(i / 3) * 50; return `<circle cx="${x}" cy="${y}" r="30" fill="url(#gold)" stroke="#9A5A18" stroke-width="2"/><path d="M${x - 22},${y - 6} q22 -16 44 0" stroke="#5A2A10" stroke-width="10" fill="none" stroke-linecap="round"/><path d="M${x - 18},${y - 4} q18 -10 36 0" stroke="#FFF" stroke-width="3" fill="none"/>${[0, 1, 2].map(j => `<circle cx="${x - 10 + j * 9}" cy="${y - 16 + (j % 2) * 4}" r="2.5" fill="#4CAF50"/>`).join('')}`; }).join('');
-  else if (R.dish === 'boiled') food = plate(175, 72, '#FFFFFF', '#3A6A9A') + `<image href="${img}" x="60" y="40" width="280" height="140" style="filter:hue-rotate(-20deg) saturate(1.6) brightness(1.05)"/>` + steam;
+  if (R.dish === 'sashimi') { C = plate(175, 72, '#FFFFFF', '#2E3A59'); F = `<path d="M90 150 q20 -30 50 -10 q-20 30 -50 10 Z" fill="#4CAF50"/><g stroke="#FFF" stroke-width="3">${Array.from({ length: 10 }, (_, i) => `<line x1="${90 + i * 6}" y1="150" x2="${110 + i * 5}" y2="185"/>`).join('')}</g>` + [0, 1, 2, 3, 4].map(i => slice(160 + i * 34, 150 - i * 2, -18 + i * 3)).join('') + `<path d="M310 175 a14 14 0 1 1 28 0 Z" fill="#8BC34A"/>`; }
+  else if (R.dish === 'sushi') { C = `<rect x="40" y="150" width="320" height="50" rx="8" fill="#C8954A"/><rect x="60" y="196" width="40" height="22" fill="#A8743A"/><rect x="300" y="196" width="40" height="22" fill="#A8743A"/>`; F = [130, 270].map(x => `<ellipse cx="${x}" cy="138" rx="58" ry="26" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2"/><path d="M${x - 66},128 Q${x},88 ${x + 66},126 Q${x + 60},146 ${x},140 Q${x - 60},146 ${x - 66},128 Z" fill="url(#mg)" stroke="${shade(m1, -0.2)}" stroke-width="1.5"/><path d="M${x - 40},116 q40 -10 80 0" stroke="#FFF" stroke-width="3" opacity="0.5" fill="none"/>`).join(''); }
+  else if (R.dish === 'grill') { C = plate(180, 70, '#FFF8EE', '#5A7AA0'); F = `<image href="${img}" x="40" y="60" width="300" height="150" style="filter:sepia(0.7) saturate(1.4) brightness(0.85)"/>` + `<g stroke="#3A2010" stroke-width="5" opacity="0.5" stroke-linecap="round">${[0, 1, 2, 3].map(i => `<line x1="${140 + i * 40}" y1="100" x2="${120 + i * 40}" y2="160"/>`).join('')}</g><path d="M300 170 a24 24 0 0 1 48 0 Z" fill="#FFE04A" stroke="#E0B020" stroke-width="2"/>`; }
+  else if (R.dish === 'fry') { C = plate(); F = `<g stroke="#8BC34A" stroke-width="3">${Array.from({ length: 14 }, (_, i) => `<line x1="${250 + i * 6}" y1="120" x2="${240 + i * 7}" y2="180"/>`).join('')}</g>` + [0, 1, 2].map(i => `<g transform="translate(${120 + i * 55},${150 - i * 8}) rotate(${-20 + i * 10})"><ellipse rx="48" ry="26" fill="url(#gold)" stroke="#9A6020" stroke-width="2"/>${Array.from({ length: 14 }, (_, j) => `<circle cx="${(j * 37 % 80) - 40}" cy="${(j * 23 % 40) - 20}" r="2.5" fill="#FFE0A0"/>`).join('')}</g>`).join('') + `<path d="M330 175 a16 16 0 0 1 32 0 Z" fill="#FFE04A"/>`; }
+  else if (R.dish === 'karaage' || R.dish === 'tempura') { C = plate(170, 70, '#FFFFFF', '#C8A060') + `<path d="M60 160 L200 100 L340 160 L200 200 Z" fill="#FFF8E8" stroke="#E0D0B0" stroke-width="2"/>`; F = Array.from({ length: 5 }, (_, i) => R.dish === 'tempura' ? `<g transform="translate(${110 + i * 45},${145 - (i % 2) * 14}) rotate(${-30 + i * 12})"><ellipse rx="40" ry="16" fill="#F8DC8A" stroke="#C8A040" stroke-width="2"/><path d="M36 0 l18 -10 l0 20 Z" fill="${SHRIMP.includes(k) ? '#F06A4A' : '#E8C070'}"/></g>` : `<path d="M${110 + i * 45},${150 - (i % 2) * 18} q-26 -10 -18 -30 q10 -22 34 -12 q26 8 16 32 q-10 18 -32 10 Z" fill="url(#gold)" stroke="#9A5A18" stroke-width="2"/>`).join('') + `<path d="M300 180 a16 16 0 0 1 32 0 Z" fill="#FFE04A"/>`; }
+  else if (R.dish === 'soup') { C = `<path d="M70 110 Q70 220 200 220 Q330 220 330 110 Z" fill="#B8302A" stroke="#7A1A14" stroke-width="3"/><ellipse cx="200" cy="110" rx="130" ry="34" fill="#C89A5A"/>`; F = `<ellipse cx="200" cy="110" rx="118" ry="27" fill="#D8AE6E"/>` + [0, 1, 2, 3].map(i => `<image href="${img}" x="${110 + i * 45}" y="${86 + (i % 2) * 10}" width="60" height="30"/>`).join('') + Array.from({ length: 8 }, (_, i) => `<circle cx="${140 + i * 16}" cy="${108 + (i % 3) * 6}" r="4" fill="#5CB85C"/>`).join('') + steam; }
+  else if (R.dish === 'shellgrill') { C = plate(170, 66, '#F2F2F2', '#6A6A6A'); F = `<image href="${img}" x="80" y="50" width="240" height="120"/>` + (rk === 'butter' ? `<rect x="180" y="96" width="40" height="22" rx="4" fill="#FFE27A" stroke="#E0B020" stroke-width="2"/><path d="M160 120 q40 20 80 0" stroke="#FFE27A" stroke-width="6" fill="none" opacity="0.8"/>` : '') + steam; }
+  else if (R.dish === 'don') { C = `<path d="M60 120 Q60 230 200 230 Q340 230 340 120 Z" fill="${rk === 'unaju' ? '#2A1A14' : '#2E3A59'}" stroke="#141A2A" stroke-width="3"/><ellipse cx="200" cy="120" rx="140" ry="36" fill="#FFFFFF" stroke="#E8E8E8" stroke-width="2"/>`; F = (rk === 'ikuradon' ? Array.from({ length: 46 }, (_, i) => `<circle cx="${f1(110 + (i * 53 % 180))}" cy="${f1(104 + (i * 31 % 30))}" r="10" fill="#F26A1E" stroke="#B83A08" stroke-width="1.2"/><circle cx="${f1(107 + (i * 53 % 180))}" cy="${f1(101 + (i * 31 % 30))}" r="2.5" fill="#FFF" opacity="0.8"/>`).join('') : rk === 'unidon' ? Array.from({ length: 12 }, (_, i) => `<ellipse cx="${120 + (i % 6) * 32}" cy="${106 + Math.floor(i / 6) * 18}" rx="20" ry="10" fill="#F2A83A" stroke="#C87A10" stroke-width="1.5"/>`).join('') : [0, 1, 2].map(i => `<rect x="${100 + i * 70}" y="92" width="64" height="36" rx="6" fill="#7A3E1A" stroke="#4A2208" stroke-width="2"/><path d="M${104 + i * 70},110 h56" stroke="#3A1A08" stroke-width="3" opacity="0.6"/>`).join('')) + `<path d="M300 110 q14 -14 26 0" fill="#4CAF50"/>`; }
+  else if (R.dish === 'takoyaki') { C = `<rect x="70" y="100" width="260" height="110" rx="14" fill="#E8D8B0" stroke="#B8A070" stroke-width="3"/>`; F = Array.from({ length: 6 }, (_, i) => { const x = 120 + (i % 3) * 80, y = 130 + Math.floor(i / 3) * 50; return `<circle cx="${x}" cy="${y}" r="30" fill="url(#gold)" stroke="#9A5A18" stroke-width="2"/><path d="M${x - 22},${y - 6} q22 -16 44 0" stroke="#5A2A10" stroke-width="10" fill="none" stroke-linecap="round"/><path d="M${x - 18},${y - 4} q18 -10 36 0" stroke="#FFF" stroke-width="3" fill="none"/>${[0, 1, 2].map(j => `<circle cx="${x - 10 + j * 9}" cy="${y - 16 + (j % 2) * 4}" r="2.5" fill="#4CAF50"/>`).join('')}`; }).join(''); }
+  else if (R.dish === 'boiled') { C = plate(175, 72, '#FFFFFF', '#3A6A9A'); F = `<image href="${img}" x="60" y="40" width="280" height="140" style="filter:hue-rotate(-20deg) saturate(1.6) brightness(1.05)"/>` + steam; }
+  if (R.dish === 'don' && part === 'plate') C = C.replace('fill="#FFFFFF" stroke="#E8E8E8"', 'fill="#E2D8CC" stroke="#C8BCB0"');
+  if (R.dish === 'soup' && part === 'plate') C += `<ellipse cx="200" cy="112" rx="118" ry="27" fill="#F4ECE0"/>`;
+  const food = part === 'plate' ? C : part === 'food' ? F : C + F;
   return `<svg viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg"><defs>${defs}</defs>${food}</svg>`;
 }
-function dishURL(rk, k) { return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(drawDish(rk, k)); }
+function dishURL(rk, k, part) { return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(drawDish(rk, k, part)); }
 
 // ---------- キッチン ----------
 let kitchenSel = null;
@@ -2931,14 +2981,17 @@ function rubStep(st, done, img, label, fx) {
   cookMsg(label);
   st.innerHTML = board(`<img class="cimg" src="${img}" alt="" draggable="false"><div class="sparkles" id="spk"></div>`) + progressBar('rb');
   const cells = new Set(); let last = 0;
+  const need = save.easy ? 8 : 12;
   st.onpointermove = (e) => {
     if (e.buttons === 0 && e.pointerType === 'mouse') return;
-    const r = st.querySelector('.board').getBoundingClientRect();
+    const im = st.querySelector('.cimg').getBoundingClientRect();
+    // さかなの まんなかあたり だけ かぞえる（まないたは こすらなくて いい）
+    const r = { left: im.left + im.width * 0.08, right: im.right - im.width * 0.08, top: im.top + im.height * 0.22, bottom: im.bottom - im.height * 0.22 };
     if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) return;
-    cells.add(Math.floor((e.clientX - r.left) / r.width * 10) + ',' + Math.floor((e.clientY - r.top) / r.height * 5));
+    cells.add(Math.floor((e.clientX - r.left) / (r.right - r.left) * 6) + ',' + Math.floor((e.clientY - r.top) / (r.bottom - r.top) * 3));
     const now = performance.now();
     if (now - last > 90) { last = now; burst(e.clientX, e.clientY, { count: 2, spread: 30, shapes: fx.shapes || [''], colors: fx.colors }); if (Math.random() < 0.3) snd('tick'); }
-    const p = Math.min(1, cells.size / 26); $('rb').style.width = p * 100 + '%';
+    const p = Math.min(1, cells.size / need); $('rb').style.width = p * 100 + '%';
     if (p >= 1 && !st._done) { st._done = true; done(1); }
   };
 }
@@ -3099,7 +3152,7 @@ const STEPS = {
   salt: (st, done) => tapStep(st, done, { msg: 'しおを パラパラ ふってね', btn: '🧂 パラパラ', n: 5, scene: fishBoard() + '<div id="salt" class="saltlayer"></div>', onTap: () => { const s = $('salt'); for (let i = 0; i < 12; i++) { const d = document.createElement('i'); d.style.left = rand(15, 85) + '%'; d.style.top = rand(30, 70) + '%'; s.appendChild(d); } } }),
   nigiri: (st, done) => tapStep(st, done, { msg: 'ごはんを ぎゅっぎゅっ と にぎってね', btn: '✊ ぎゅっ', n: 4, scene: `<div class="rice" id="rice"></div>`, onTap: (n) => { $('rice').style.borderRadius = `${50 - n * 8}% / ${50 - n * 5}%`; $('rice').style.transform = `scaleX(${1 + n * 0.15}) scaleY(${1 - n * 0.08})`; } }),
   open: (st, done) => tapStep(st, done, { msg: 'からを トントン たたいて あけてね', btn: '🔨 トントン', n: 4, sound: 'nibble', scene: fishBoard(), onTap: (n) => { $('cfish').animate([{ transform: 'rotate(0)' }, { transform: 'rotate(-6deg)' }, { transform: 'rotate(5deg)' }, { transform: 'rotate(0)' }], { duration: 250 }); } }),
-  plate: (st, done) => tapStep(st, done, { msg: 'おさらに きれいに もりつけてね', btn: '✨ もりつけ', n: 3, scene: `<img class="cimg" src="${dishURL(C.rk, C.it.k)}" alt="" id="cfish" style="opacity:0.35">`, onTap: (n) => { $('cfish').style.opacity = 0.35 + n * 0.22; } }),
+  plate: (st, done) => plateStep(st, done),
   coat3: (st, done) => coatStep(st, done, ['こむぎこ', 'たまご', 'パンこ']),
   coat1: (st, done) => coatStep(st, done, [C.rk === 'tempura' ? 'てんぷらこ' : 'かたくりこ']),
   grill: (st, done) => timingStep(st, done, { msg: 'いい いろに なったら ひっくりかえそう（2かい）', btn: '🔄 ひっくりかえす', times: 2, z0: 0.55, z1: 0.78,
@@ -3111,6 +3164,33 @@ const STEPS = {
   stir: (st, done) => circleStep(st, done, `<div class="pot big"><div class="soup"></div><div class="spoon" id="spoon"><i></i></div></div>`, 'ゆびで ぐるぐる まぜてね（3しゅう）'),
   takoyaki: (st, done) => takoStep(st, done),
 };
+// もりつけ：ゆびで ドラッグして おさらに のせる
+function plateStep(st, done) {
+  const k = C.it.k, [m1, m2] = meatColor(k), R = C.R;
+  cookMsg('ゆびで つまんで おさらに のせてね');
+  const piece = R.dish === 'don' && C.rk === 'ikuradon' ? `<svg viewBox="0 0 80 60">${[0, 1, 2, 3, 4, 5, 6].map(i => `<circle cx="${18 + (i % 4) * 14}" cy="${20 + Math.floor(i / 4) * 16}" r="9" fill="#F26A1E" stroke="#B83A08"/>`).join('')}</svg>`
+    : R.dish === 'don' ? `<svg viewBox="0 0 80 60"><ellipse cx="40" cy="30" rx="30" ry="16" fill="#F2A83A" stroke="#C87A10" stroke-width="2"/></svg>`
+    : `<svg viewBox="0 0 80 60"><rect x="12" y="6" width="56" height="48" rx="12" fill="${m1}" stroke="${shade(m1, -0.25)}" stroke-width="2"/><path d="M20,20 q20,8 40,0 M20,36 q20,8 40,0" stroke="${m2}" stroke-width="4" fill="none" opacity="0.7"/></svg>`;
+  const n = 3;
+  st.innerHTML = `<div class="plate-area"><img class="pl-dish" src="${dishURL(C.rk, k, 'plate')}" alt=""><img class="pl-food" id="pl-food" src="${dishURL(C.rk, k, 'food')}" alt=""></div><div class="pieces">${Array.from({ length: n }, (_, i) => `<div class="piece" data-i="${i}">${piece}</div>`).join('')}</div>`;
+  const food = $('pl-food'); food.style.clipPath = 'inset(0 100% 0 0)';
+  let placed = 0;
+  st.querySelectorAll('.piece').forEach(p => {
+    let sx = 0, sy = 0, drag = false;
+    p.onpointerdown = (e) => { e.preventDefault(); drag = true; p.setPointerCapture(e.pointerId); sx = e.clientX; sy = e.clientY; p.classList.add('drag'); snd('tap'); };
+    p.onpointermove = (e) => { if (drag) p.style.transform = `translate(${e.clientX - sx}px, ${e.clientY - sy}px) scale(1.15)`; };
+    p.onpointerup = (e) => {
+      if (!drag) return; drag = false; p.classList.remove('drag');
+      const a = st.querySelector('.plate-area').getBoundingClientRect();
+      if (e.clientX > a.left && e.clientX < a.right && e.clientY > a.top && e.clientY < a.bottom) {
+        p.style.visibility = 'hidden'; placed++; snd('hit'); burst(e.clientX, e.clientY, { count: 8, spread: 50 });
+        food.style.clipPath = `inset(0 ${100 - placed / n * 100}% 0 0)`;
+        if (placed >= n && !st._done) { st._done = true; food.style.clipPath = 'none'; cookMsg('きれいに もりつけ できた！'); setTimeout(() => done(1), 700); }
+        else cookMsg(`あと ${n - placed}こ！`);
+      } else { p.style.transition = 'transform 0.25s'; p.style.transform = ''; setTimeout(() => { p.style.transition = ''; }, 260); }
+    };
+  });
+}
 // たこやき：きつねいろの ときに タップで くるっ
 function takoStep(st, done) {
   cookMsg('きつねいろに なった たこやきを タップで くるっと まわしてね');
@@ -3153,7 +3233,7 @@ function finishCook() {
 }
 function startEat(name) {
   const a = myAvatar();
-  $('eat-box').innerHTML = `<div class="eat-scene"><img class="eat-av" id="eat-av" src="${avImg(a)}" alt=""><div class="eat-table" id="eat-table"><img id="eat-dish" src="${dishURL(C.rk, C.it.k)}" alt=""></div><img class="eat-pk" id="eat-pk" src="${getPokemonImageUrl(partnerOf().id)}" alt=""></div><p class="res-name" id="eat-msg">いただきます！</p><p class="hint">りょうりを タップして たべよう</p>`;
+  $('eat-box').innerHTML = `<div class="eat-scene"><img class="eat-av" id="eat-av" src="${avImg(a)}" alt=""><div class="eat-table" id="eat-table"><div class="eat-plate"><img src="${dishURL(C.rk, C.it.k, 'plate')}" alt=""><img id="eat-dish" src="${dishURL(C.rk, C.it.k, 'food')}" alt=""></div></div><img class="eat-pk" id="eat-pk" src="${getPokemonImageUrl(partnerOf().id)}" alt=""></div><p class="res-name" id="eat-msg">いただきます！</p><p class="hint">りょうりを タップして たべよう</p>`;
   $('eat').classList.add('show'); speak('いただきます！');
   let bites = 0;
   $('eat-table').onclick = (e) => {
@@ -3161,7 +3241,8 @@ function startEat(name) {
     $('eat-av').src = avImg({ ...a, eyes: 'smile' }, { open: true });
     setTimeout(() => { $('eat-av').src = avImg(a); }, 350);
     burst(e.clientX, e.clientY, { count: 6, spread: 40, shapes: ['heart'] });
-    $('eat-dish').style.clipPath = `inset(0 ${bites * 28}% 0 0)`;
+    const fd = $('eat-dish');
+    if (bites >= 3) fd.style.opacity = '0'; else fd.style.clipPath = `inset(0 ${bites * 34}% 0 0)`;
     $('eat-msg').textContent = ['もぐもぐ…', 'おいしい〜！', 'ほっぺが おちそう！'][Math.min(2, bites - 1)];
     if (bites === 2) { const p = partnerOf(); playCry(p.id, 0.4); pokeMove($('eat-pk'), 'hop', 900); }
     if (bites >= 3) {
