@@ -386,6 +386,35 @@
     .mi.keep .ck { opacity: 1; }
     .backup { display: flex; gap: 0.6rem; justify-content: center; flex-wrap: wrap; }
     .backup .btn { font-size: 0.95rem; padding: 0.6rem 1rem; background: rgba(255,255,255,0.9); }
+    .grater { position: absolute; left: 30%; top: 10%; width: 40%; height: 80%; border-radius: 0.6rem; background: repeating-linear-gradient(45deg, #D8DCE0 0 6px, #B8BEC4 6px 8px), #C8CED4; box-shadow: inset 0 0 0 4px #9AA2AA; }
+    .wasabi { position: absolute; left: 44%; bottom: 8%; width: 12%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, #B8E080, #6EA83A); transform: scale(0.2); z-index: 2; }
+    .wroot { position: absolute; left: 46%; top: 16%; width: 8%; height: 45%; border-radius: 40% 40% 30% 30%; background: linear-gradient(90deg, #7AA84A, #A8D078); z-index: 2; transform-origin: top center; }
+    .pan { position: relative; width: 80%; height: 70%; border-radius: 50%; background: radial-gradient(circle, #5A5E68, #2A2E38); display: flex; align-items: center; justify-content: center; transition: transform 0.12s; }
+    .pan::after { content: ''; position: absolute; right: -28%; top: 45%; width: 30%; height: 10%; border-radius: 1rem; background: #2A2E38; }
+    .bowl-big { position: absolute; left: 30%; bottom: 8%; width: 40%; height: 45%; border-radius: 0 0 50% 50%; background: #E8F0F6; box-shadow: inset 0 -6px 0 #C8D8E4; }
+    .yolk { position: absolute; left: 35%; top: 20%; width: 30%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle at 40% 40%, #FFE27A, #F2A200); box-shadow: 0 0 0 0.8rem rgba(255,255,255,0.8); opacity: 0; transition: opacity 0.3s; }
+    .yolk.show { opacity: 1; }
+    .egg { position: absolute; left: 42%; top: 6%; width: 16%; aspect-ratio: 0.78; border-radius: 50% 50% 46% 46% / 60% 60% 40% 40%; background: radial-gradient(circle at 35% 30%, #FFF, #F2E6D2); box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
+    .egg.crack1 { background: radial-gradient(circle at 35% 30%, #FFF, #F2E6D2), linear-gradient(transparent 48%, #A89070 48% 52%, transparent 52%); background-blend-mode: multiply; }
+    .egg.crack2 { box-shadow: 0 4px 8px rgba(0,0,0,0.15), inset 0 0 0 2px #A89070; }
+    .egg.open { opacity: 0; transition: opacity 0.4s; }
+    .negi { position: absolute; left: 15%; top: 42%; width: 70%; height: 12%; border-radius: 1rem; background: linear-gradient(90deg, #F2F8E8 0 30%, #8BC34A 30%); transition: width 0.15s; }
+    .bits i { position: absolute; width: 0.7rem; height: 0.7rem; border-radius: 50%; background: #8BC34A; box-shadow: inset 0 0 0 2px #C5E1A5; }
+    .lemon { position: absolute; right: 10%; top: 10%; width: 22%; aspect-ratio: 1.3; border-radius: 50%; background: radial-gradient(circle, #FFF3A0, #FFD23F); border: 4px solid #F2B800; transition: transform 0.1s; }
+    .drops { position: absolute; inset: 0; pointer-events: none; }
+    .drops i { position: absolute; top: 30%; width: 0.6rem; height: 0.9rem; border-radius: 50% 50% 50% 50% / 30% 30% 70% 70%; background: #FFE04A; animation: drip 0.6s ease-in forwards; }
+    .drops.sauce i { background: #6A3A1A; }
+    @keyframes drip { to { transform: translateY(8rem); opacity: 0; } }
+    .bottle { position: absolute; right: 18%; top: 4%; width: 10%; height: 40%; border-radius: 0.6rem 0.6rem 0.4rem 0.4rem; background: linear-gradient(90deg, #5A2A10, #8A4A20); transform-origin: bottom center; transform: rotate(-30deg); z-index: 2; }
+    .bottle::before { content: ''; position: absolute; left: 30%; top: -18%; width: 40%; height: 22%; border-radius: 0.3rem; background: #F2545B; }
+    .foam { position: absolute; inset: 0; }
+    .aku { position: absolute; width: 3.2rem; height: 2.4rem; margin: -1.2rem -1.6rem; border: none; border-radius: 50%; background: radial-gradient(circle at 40% 40%, #FFFFFF, #E8DCC0 70%); box-shadow: 0 0 0 3px rgba(255,255,255,0.6); }
+    .scoop-area { display: flex; flex-direction: column; gap: 1rem; align-items: center; width: min(100%, 36rem); }
+    .oilpot { position: relative; width: 100%; aspect-ratio: 2.6; border-radius: 0 0 2rem 2rem; background: radial-gradient(ellipse at 50% 30%, #F8D870, #D8A030); box-shadow: inset 0 0 0 0.6rem #6A6E78; }
+    .piece.fried { position: absolute; top: 22%; width: 22%; }
+    .piece.fried img { width: 100%; filter: sepia(1) saturate(2) brightness(0.9); pointer-events: none; }
+    .rack { position: relative; width: 80%; height: 6rem; border-radius: 1rem; background: repeating-linear-gradient(90deg, #C8CED4 0 4px, transparent 4px 18px), repeating-linear-gradient(0deg, #C8CED4 0 4px, transparent 4px 18px), #F4F6F8; display: flex; align-items: flex-end; justify-content: center; font-weight: 900; color: #9AA2AA; }
+    .onrack { position: absolute; bottom: 0.5rem; width: 28%; filter: sepia(1) saturate(2) brightness(0.9); }
     /* 3Dの えもじ */
     .emo { display: inline-block; width: 1.2em; height: 1.2em; object-fit: contain; vertical-align: -0.25em; -webkit-user-drag: none; }
     .question-emoji .emo, .opt-emoji .emo { width: 1.1em; height: 1.1em; vertical-align: middle; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.12)); }
@@ -2927,24 +2956,24 @@ function meatColor(k) {
 const FISHY = SPECIES.filter(s => !s.art.kind || s.art.kind === undefined).map(s => s.k);
 const isFish = (k) => SP_BY[k] && !SP_BY[k].art.kind;
 const RECIPES = [
-  { k: 'sashimi', n: 'おさしみ', icon: '🍣', steps: ['scale', 'fillet', 'slice', 'plate'], ok: (k) => isFish(k) && !['kusafugu', 'koi', 'funa', 'namazu', 'bass', 'bluegill', 'ugui', 'oikawa', 'haze', 'kyusen', 'unagi', 'anago', 'hatahata', 'hokke'].includes(k) || SQUID.includes(k) || OCTO.includes(k) || ['iseebi', 'awabi', 'hotate'].includes(k), dish: 'sashimi' },
-  { k: 'sushi', n: 'おすし', icon: '🍣', steps: ['fillet', 'slice', 'nigiri'], ok: (k) => [...RED, ...AMBER, 'madai', 'hirame', 'aji', 'saba', 'konoshiro', 'kinmedai', 'nodoguro', 'hiroshima', 'sakuramasu', 'kurumaebi', 'hotate', 'aoriika', 'yariika', 'madako', 'hokkigai', 'sayori', 'kawahagi', 'isaki'].includes(k), dish: 'sushi' },
-  { k: 'shioyaki', n: 'しおやき', icon: '🔥', steps: ['scale', 'salt', 'grill'], ok: (k) => isFish(k) && !['kusafugu', 'unagi', 'anago', 'kuromaguro', 'kihada', 'tachiuo'].includes(k), dish: 'grill' },
-  { k: 'fry', n: 'フライ', icon: '🍤', steps: ['fillet', 'coat3', 'fry'], ok: (k) => ['aji', 'saba', 'maiwashi', 'kisu', 'hokke', 'shiira', 'madara', 'bass', 'ohyou', 'kaki', 'kurumaebi', 'tenagaebi', 'hotate', 'suzuki', 'sake'].includes(k), dish: 'fry' },
-  { k: 'karaage', n: 'からあげ', icon: '🍗', steps: ['coat1', 'fry'], ok: (k) => ['kasago', 'mebaru', 'haze', 'kurosoi', 'ainame', 'makogarei', 'tenagaebi', 'bluegill', 'oikawa', 'ugui', 'surumeika', 'madako', 'katakuchi', 'kyusen', 'hatahata', 'ayu', 'yamame', 'amago'].includes(k), dish: 'karaage' },
-  { k: 'tempura', n: 'てんぷら', icon: '🍤', steps: ['coat1', 'fry'], ok: (k) => ['kisu', 'haze', 'anago', 'kurumaebi', 'tenagaebi', 'katakuchi', 'sayori', 'kyusen', 'oikawa', 'aoriika', 'namazu'].includes(k), dish: 'tempura' },
-  { k: 'misoshiru', n: 'おみそしる', icon: '🥣', steps: ['wash', 'boil', 'stir'], ok: (k) => ['asari', 'hamaguri', 'kasago', 'kegani', 'tenagaebi'].includes(k), dish: 'soup' },
-  { k: 'tsuboyaki', n: 'つぼやき', icon: '🔥', steps: ['grill'], ok: (k) => k === 'sazae', dish: 'shellgrill' },
-  { k: 'butter', n: 'バターやき', icon: '🧈', steps: ['wash', 'grill'], ok: (k) => ['hotate', 'awabi', 'mategai', 'hokkigai', 'kaki'].includes(k), dish: 'shellgrill' },
-  { k: 'kakifry', n: 'カキフライ', icon: '🍤', steps: ['open', 'coat3', 'fry'], ok: (k) => k === 'kaki', dish: 'fry' },
-  { k: 'ikuradon', n: 'いくらどん', icon: '🍚', steps: ['hogusu', 'stir', 'plate'], ok: (k) => k === 'ikura', dish: 'don' },
+  { k: 'sashimi', n: 'おさしみ', icon: '🍣', steps: ['scale', 'fillet', 'slice', 'wasabi', 'plate'], ok: (k) => isFish(k) && !['kusafugu', 'koi', 'funa', 'namazu', 'bass', 'bluegill', 'ugui', 'oikawa', 'haze', 'kyusen', 'unagi', 'anago', 'hatahata', 'hokke'].includes(k) || SQUID.includes(k) || OCTO.includes(k) || ['iseebi', 'awabi', 'hotate'].includes(k), dish: 'sashimi' },
+  { k: 'sushi', n: 'おすし', icon: '🍣', steps: ['fillet', 'slice', 'nigiri', 'aburi'], ok: (k) => [...RED, ...AMBER, 'madai', 'hirame', 'aji', 'saba', 'konoshiro', 'kinmedai', 'nodoguro', 'hiroshima', 'sakuramasu', 'kurumaebi', 'hotate', 'aoriika', 'yariika', 'madako', 'hokkigai', 'sayori', 'kawahagi', 'isaki'].includes(k), dish: 'sushi' },
+  { k: 'shioyaki', n: 'しおやき', icon: '🔥', steps: ['scale', 'kazari', 'kushi', 'salt', 'grill', 'lemon'], ok: (k) => isFish(k) && !['kusafugu', 'unagi', 'anago', 'kuromaguro', 'kihada', 'tachiuo'].includes(k), dish: 'grill' },
+  { k: 'fry', n: 'フライ', icon: '🍤', steps: ['fillet', 'egg', 'coat3', 'fry', 'scoop'], ok: (k) => ['aji', 'saba', 'maiwashi', 'kisu', 'hokke', 'shiira', 'madara', 'bass', 'ohyou', 'kaki', 'kurumaebi', 'tenagaebi', 'hotate', 'suzuki', 'sake'].includes(k), dish: 'fry' },
+  { k: 'karaage', n: 'からあげ', icon: '🍗', steps: ['coat1', 'fry', 'scoop', 'lemon'], ok: (k) => ['kasago', 'mebaru', 'haze', 'kurosoi', 'ainame', 'makogarei', 'tenagaebi', 'bluegill', 'oikawa', 'ugui', 'surumeika', 'madako', 'katakuchi', 'kyusen', 'hatahata', 'ayu', 'yamame', 'amago'].includes(k), dish: 'karaage' },
+  { k: 'tempura', n: 'てんぷら', icon: '🍤', steps: ['coat1', 'fry', 'scoop'], ok: (k) => ['kisu', 'haze', 'anago', 'kurumaebi', 'tenagaebi', 'katakuchi', 'sayori', 'kyusen', 'oikawa', 'aoriika', 'namazu'].includes(k), dish: 'tempura' },
+  { k: 'misoshiru', n: 'おみそしる', icon: '🥣', steps: ['wash', 'boil', 'aku', 'stir', 'chop'], ok: (k) => ['asari', 'hamaguri', 'kasago', 'kegani', 'tenagaebi'].includes(k), dish: 'soup' },
+  { k: 'tsuboyaki', n: 'つぼやき', icon: '🔥', steps: ['grill', 'tare'], ok: (k) => k === 'sazae', dish: 'shellgrill' },
+  { k: 'butter', n: 'バターやき', icon: '🧈', steps: ['wash', 'shake', 'grill'], ok: (k) => ['hotate', 'awabi', 'mategai', 'hokkigai', 'kaki'].includes(k), dish: 'shellgrill' },
+  { k: 'kakifry', n: 'カキフライ', icon: '🍤', steps: ['open', 'egg', 'coat3', 'fry', 'scoop', 'lemon'], ok: (k) => k === 'kaki', dish: 'fry' },
+  { k: 'ikuradon', n: 'いくらどん', icon: '🍚', steps: ['hogusu', 'tare', 'plate'], ok: (k) => k === 'ikura', dish: 'don' },
   { k: 'unidon', n: 'うにどん', icon: '🍚', steps: ['open', 'hogusu', 'plate'], ok: (k) => ['murasakiuni', 'bafununi'].includes(k), dish: 'don' },
-  { k: 'unaju', n: 'うなじゅう', icon: '🍱', steps: ['fillet', 'grill'], ok: (k) => ['unagi', 'anago'].includes(k), dish: 'don' },
-  { k: 'takoyaki', n: 'たこやき', icon: '🐙', steps: ['slice', 'takoyaki'], ok: (k) => OCTO.includes(k), dish: 'takoyaki' },
-  { k: 'yude', n: 'しおゆで', icon: '♨️', steps: ['wash', 'boil'], ok: (k) => ['kegani', 'iseebi', 'kurumaebi', 'hokkigai', 'namako', 'tenagaebi'].includes(k), dish: 'boiled' },
+  { k: 'unaju', n: 'うなじゅう', icon: '🍱', steps: ['fillet', 'kushi', 'grill', 'tare'], ok: (k) => ['unagi', 'anago'].includes(k), dish: 'don' },
+  { k: 'takoyaki', n: 'たこやき', icon: '🐙', steps: ['chop', 'takoyaki', 'tare'], ok: (k) => OCTO.includes(k), dish: 'takoyaki' },
+  { k: 'yude', n: 'しおゆで', icon: '♨️', steps: ['wash', 'boil', 'aku'], ok: (k) => ['kegani', 'iseebi', 'kurumaebi', 'hokkigai', 'namako', 'tenagaebi'].includes(k), dish: 'boiled' },
 ];
 const RECIPE_BY = Object.fromEntries(RECIPES.map(r => [r.k, r]));
-const STEP_NAMES = { scale: 'うろこを とる', fillet: 'さばく', slice: 'きる', plate: 'もりつけ', nigiri: 'にぎる', salt: 'しおを ふる', grill: 'やく', coat3: 'ころもを つける', coat1: 'こなを つける', fry: 'あげる', wash: 'あらう', boil: 'にる', stir: 'まぜる', open: 'からを あける', hogusu: 'ほぐす', takoyaki: 'くるっと まわす' };
+const STEP_NAMES = { scale: 'うろこを とる', fillet: 'さばく', slice: 'きる', plate: 'もりつけ', nigiri: 'にぎる', salt: 'しおを ふる', grill: 'やく', coat3: 'ころもを つける', coat1: 'こなを つける', fry: 'あげる', wash: 'あらう', boil: 'にる', stir: 'まぜる', open: 'からを あける', hogusu: 'ほぐす', takoyaki: 'くるっと まわす', wasabi: 'わさびを する', kushi: 'くしを さす', kazari: 'かざりぎり', egg: 'たまごを わる', chop: 'ねぎを きざむ', aku: 'あくを とる', scoop: 'あみで すくう', lemon: 'レモンを しぼる', aburi: 'あぶる', shake: 'フライパンを ふる', tare: 'たれを かける' };
 function itemName(k) { return k === 'ikura' ? 'いくら' : SP_BY[k].n; }
 function itemImg(k) { return k === 'ikura' ? IKURA_IMG() : fishImg(k); }
 let _ikura = null;
@@ -3049,7 +3078,8 @@ function rubStep(st, done, img, label, fx) {
     if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) return;
     cells.add(Math.floor((e.clientX - r.left) / (r.right - r.left) * 6) + ',' + Math.floor((e.clientY - r.top) / (r.bottom - r.top) * 3));
     const now = performance.now();
-    if (now - last > 90) { last = now; burst(e.clientX, e.clientY, { count: 2, spread: 30, shapes: fx.shapes || [''], colors: fx.colors }); if (Math.random() < 0.3) snd('tick'); }
+    if (now - last > 90) { last = now; burst(e.clientX, e.clientY, { count: fx.fire ? 4 : 2, spread: 30, shapes: fx.shapes || [''], colors: fx.colors }); if (Math.random() < 0.3) snd(fx.fire ? 'swish' : 'tick'); }
+    if (fx.fire) { const im = st.querySelector('.cimg'); if (im) im.style.filter = `sepia(${Math.min(0.6, cells.size / need * 0.6)}) brightness(${1 - Math.min(0.15, cells.size / need * 0.15)})`; }
     const p = Math.min(1, cells.size / need); $('rb').style.width = p * 100 + '%';
     if (p >= 1 && !st._done) { st._done = true; done(1); }
   };
@@ -3077,7 +3107,7 @@ function timingStep(st, done, opts) {
     cookMsg(sc >= 1 ? 'ばっちり！' : v < opts.z0 ? 'ちょっと はやかった' : 'ちょっと こげちゃった');
     snd(sc >= 1 ? 'hit' : 'tap'); burst(e.clientX, e.clientY, { count: sc >= 1 ? 12 : 5, spread: 60 });
     if (opts.onHit) opts.onHit(results.length);
-    if (results.length >= times) { live = false; setTimeout(() => done(results.reduce((a, b) => a + b, 0) / results.length), 500); }
+    if (results.length >= times) { live = false; st._done = true; setTimeout(() => done(results.reduce((a, b) => a + b, 0) / results.length), 500); }
     else t = 0;
   };
 }
@@ -3222,6 +3252,17 @@ const STEPS = {
     scene: `<div class="pot"><div class="bub"></div></div>${fishBoard('width:40%')}` }),
   stir: (st, done) => circleStep(st, done, `<div class="pot big"><div class="soup"></div><div class="spoon" id="spoon"><i></i></div></div>`, 'ゆびで ぐるぐる まぜてね（3しゅう）'),
   takoyaki: (st, done) => takoStep(st, done),
+  wasabi: (st, done) => swingStep(st, done, { msg: 'わさびを おろしがねで ゴシゴシ（よこに うごかしてね）', scene: `<div class="grater"></div><div class="wasabi" id="wasabi"></div><div class="wroot" id="wroot"></div>`, onSwing: (p) => { $('wasabi').style.transform = `scale(${0.2 + p})`; $('wroot').style.transform = `translateX(${p * 0}px) rotate(${p * 8 - 4}deg) scaleY(${1 - p * 0.5})`; }, colors: ['#8BC34A', '#C5E1A5'] }),
+  shake: (st, done) => swingStep(st, done, { msg: 'フライパンを よこに ふって ころがそう', scene: `<div class="pan" id="pan">${fishBoard('width:55%')}</div>`, onSwing: (p, dir) => { $('pan').style.transform = `translateX(${dir * 18}px) rotate(${dir * 4}deg)`; }, colors: ['#FFE27A', '#FFF3C4'] }),
+  kushi: (st, done) => traceStep(st, done, { msg: 'くねくねの せんを なぞって くしを させてね', guides: [[[70, 120], [120, 95], [170, 125], [220, 95], [270, 125], [330, 100]]], after: (svg) => { svg.insertAdjacentHTML('beforeend', `<path d="M40,124 L70,120 Q120,95 170,125 Q220,95 270,125 L360,96" stroke="#C8A060" stroke-width="7" fill="none" stroke-linecap="round"/><path d="M40,124 L70,120 Q120,95 170,125 Q220,95 270,125 L360,96" stroke="#F2D8A0" stroke-width="3" fill="none" stroke-linecap="round"/>`); } }),
+  kazari: (st, done) => traceStep(st, done, { msg: 'ななめの せんを スッ スッと なぞってね', guides: [[[175, 80], [205, 140]], [[235, 80], [265, 140]]], after: (svg) => { svg.insertAdjacentHTML('beforeend', `<path d="M175,80 L205,140 M235,80 L265,140" stroke="#FFF" stroke-width="5" stroke-linecap="round" opacity="0.9"/>`); } }),
+  aburi: (st, done) => rubStep(st, done, pieceImg(), 'バーナーで あぶってね（ゆびで うごかす）', { colors: ['#FF7A1A', '#FFD23F', '#FF4F2A'], shapes: ['star'], fire: true }),
+  egg: (st, done) => tapStep(st, done, { msg: 'たまごを コンコン して わろう', btn: '🥚 コンコン', n: 3, sound: 'nibble', scene: `<div class="bowl-big"><div class="yolk" id="yolk"></div></div><div class="egg" id="egg"></div>`, onTap: (n) => { const e = $('egg'); if (n < 3) { e.classList.add('crack' + n); e.animate([{ transform: 'rotate(0)' }, { transform: 'rotate(-14deg)' }, { transform: 'rotate(0)' }], { duration: 200 }); } else { e.classList.add('open'); $('yolk').classList.add('show'); } } }),
+  chop: (st, done) => tapStep(st, done, { msg: C.rk === 'takoyaki' ? 'タコを トントン こまかく きってね' : 'ねぎを トントン きざんでね', btn: '🔪 トントン', n: 8, sound: 'tick', scene: `<div class="negi" id="negi"></div><div class="bits" id="bits"></div>`, onTap: (n) => { $('negi').style.width = (70 - n * 7) + '%'; const b = document.createElement('i'); b.style.left = (30 + Math.random() * 40) + '%'; b.style.top = (40 + Math.random() * 30) + '%'; if (C.rk === 'takoyaki') b.style.background = '#B8504A'; $('bits').appendChild(b); } }),
+  aku: (st, done) => akuStep(st, done),
+  scoop: (st, done) => scoopStep(st, done),
+  lemon: (st, done) => holdStep(st, done, { msg: 'ながおしで しぼって、ちょうど いい ところで はなしてね', btn: '🍋 ぎゅーっ', scene: `${fishBoard('width:60%')}<div class="lemon" id="lemon"></div><div class="drops" id="drops"></div>`, color: '#FFE04A', onFill: (v) => { $('lemon').style.transform = `scaleX(${1 - v * 0.35})`; if (Math.random() < 0.3) { const d = document.createElement('i'); d.style.left = (40 + Math.random() * 20) + '%'; $('drops').appendChild(d); setTimeout(() => d.remove(), 600); } } }),
+  tare: (st, done) => holdStep(st, done, { msg: 'ながおしで かけて、せんの ところで はなしてね', btn: C.rk === 'takoyaki' ? '🍶 ソース' : '🍶 とろ〜り', scene: `<div class="bottle" id="bottle"></div>${C.R.dish === 'don' || C.R.dish === 'takoyaki' ? `<img class="cimg" src="${dishURL(C.rk, C.it.k)}" alt="" style="width:70%">` : fishBoard('width:60%')}<div class="drops sauce" id="drops"></div>`, color: '#6A3A1A', onFill: (v) => { $('bottle').style.transform = `rotate(${-30 - v * 80}deg)`; if (Math.random() < 0.4) { const d = document.createElement('i'); d.style.left = (44 + Math.random() * 12) + '%'; $('drops').appendChild(d); setTimeout(() => d.remove(), 600); } } }),
 };
 // もりつけ：ゆびで ドラッグして おさらに のせる
 function plateStep(st, done) {
@@ -3250,6 +3291,110 @@ function plateStep(st, done) {
     };
   });
 }
+// よこに ふる（わさび・フライパン）
+function swingStep(st, done, o) {
+  cookMsg(o.msg);
+  st.innerHTML = board(o.scene) + progressBar('swb');
+  let lastX = null, dir = 0, swings = 0, travel = 0; const need = save.easy ? 6 : 9;
+  st.onpointerdown = (e) => { lastX = e.clientX; };
+  st.onpointermove = (e) => {
+    if (lastX === null) { if (e.pointerType === 'mouse' && e.buttons === 0) return; lastX = e.clientX; }
+    const dx = e.clientX - lastX; lastX = e.clientX; travel += Math.abs(dx);
+    const nd = dx > 3 ? 1 : dx < -3 ? -1 : dir;
+    if (nd !== dir && travel > 40) { dir = nd; swings++; travel = 0; snd('swish'); burst(e.clientX, e.clientY, { count: 4, spread: 30, shapes: [''], colors: o.colors }); }
+    const p = Math.min(1, swings / need); $('swb').style.width = p * 100 + '%'; o.onSwing(p, dir || 1);
+    if (p >= 1 && !st._done) { st._done = true; cookMsg('できた！'); setTimeout(() => done(1), 500); }
+  };
+  st.onpointerup = () => { lastX = null; };
+}
+// せんを なぞる（くし・かざりぎり）
+function traceStep(st, done, o) {
+  cookMsg(o.msg);
+  st.innerHTML = board(`<svg class="fsvg" viewBox="0 0 440 220"><image href="${pieceImg()}" x="0" y="0" width="440" height="220"/>${o.guides.map((g, i) => `<polyline id="tg${i}" points="${g.map(p => p.join(',')).join(' ')}" fill="none" stroke="#FFF" stroke-width="5" stroke-dasharray="10 10" stroke-linecap="round" stroke-linejoin="round"/>`).join('')}</svg>`) + progressBar('trb');
+  const svg = st.querySelector('svg');
+  const samples = o.guides.map(g => { const pts = []; for (let i = 0; i < g.length - 1; i++) for (let t = 0; t < 1; t += 0.12) pts.push([g[i][0] + (g[i + 1][0] - g[i][0]) * t, g[i][1] + (g[i + 1][1] - g[i][1]) * t, false]); return pts; });
+  let ok = 0, down = false;
+  const toV = (e) => { const r = svg.getBoundingClientRect(); return [(e.clientX - r.left) / r.width * 440, (e.clientY - r.top) / r.height * 220]; };
+  st.onpointerdown = () => { down = true; }; st.onpointerup = () => { down = false; };
+  st.onpointermove = (e) => {
+    if (!down && e.pointerType === 'mouse' && e.buttons === 0) return;
+    const [x, y] = toV(e);
+    samples.forEach((pts, gi) => {
+      if (pts.done) return;
+      pts.forEach(p => { if (!p[2] && Math.hypot(p[0] - x, p[1] - y) < 28) p[2] = true; });
+      if (pts.filter(p => p[2]).length / pts.length >= 0.75) {
+        pts.done = true; ok++; snd('swish'); vib(25);
+        svg.querySelector('#tg' + gi).remove();
+        $('trb').style.width = ok / samples.length * 100 + '%';
+        if (ok === samples.length && !st._done) { st._done = true; o.after(svg); cookMsg('じょうず！'); setTimeout(() => done(1), 700); }
+      }
+    });
+  };
+}
+// ながおしして ちょうど いい ところで はなす（レモン・たれ）
+function holdStep(st, done, o) {
+  cookMsg(o.msg);
+  const z0 = save.easy ? 0.5 : 0.6, z1 = save.easy ? 0.9 : 0.82;
+  st.innerHTML = board(o.scene) + `<div class="gauge"><i class="zone" style="left:${z0 * 100}%;width:${(z1 - z0) * 100}%"></i><i class="needle" id="hneedle" style="left:0"></i></div><button class="act" id="hbtn">${o.btn}</button>`;
+  let v = 0, holding = false, last = 0, live = true;
+  const tick = (now) => {
+    if (!live) return;
+    const dt = last ? (now - last) / 1000 : 0; last = now;
+    if (holding) { v = Math.min(1, v + dt * (save.easy ? 0.32 : 0.42)); o.onFill(v); }
+    $('hneedle').style.left = v * 100 + '%';
+    requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+  const b = $('hbtn');
+  b.onpointerdown = (e) => { e.preventDefault(); if (live) { holding = true; snd('swish'); } };
+  const up = () => {
+    if (!holding || !live) return; holding = false;
+    if (v < 0.08) return;
+    const sc = v >= z0 && v <= z1 ? 1 : v < z0 ? clamp(0.5 + v, 0.5, 0.9) : 0.6;
+    live = false; st._done = true; snd(sc >= 1 ? 'hit' : 'tap');
+    cookMsg(sc >= 1 ? 'ばっちり！' : v < z0 ? 'ちょっと すくなかった' : 'ちょっと おおすぎ');
+    setTimeout(() => done(sc), 600);
+  };
+  b.onpointerup = up; b.onpointerleave = up; b.onpointercancel = up;
+}
+// あくを とる：うかんでくる あわを タップ
+function akuStep(st, done) {
+  cookMsg('うかんでくる あわ（あく）を タップして とってね');
+  st.innerHTML = board(`<div class="pot big"><div class="soup"></div><div class="foam" id="foam"></div></div>`, 'round') + progressBar('akb');
+  const need = save.easy ? 5 : 7; let got = 0, live = true;
+  const spawn = () => {
+    if (!live) return;
+    const f = $('foam'); if (!f) return;
+    const b = document.createElement('button'); b.className = 'aku';
+    b.style.left = (20 + Math.random() * 55) + '%'; b.style.top = (20 + Math.random() * 55) + '%';
+    b.onpointerdown = (e) => { e.preventDefault(); b.remove(); got++; snd('tap'); burst(e.clientX, e.clientY, { count: 5, spread: 30, shapes: [''], colors: ['#F2E8D0', '#FFF'] }); $('akb').style.width = got / need * 100 + '%'; if (got >= need && live) { live = false; st._done = true; cookMsg('きれいに なった！'); setTimeout(() => done(1), 500); } };
+    f.appendChild(b); b.animate([{ transform: 'scale(0)' }, { transform: 'scale(1)' }], { duration: 300 });
+    setTimeout(() => { if (b.isConnected) b.remove(); }, save.easy ? 4000 : 2800);
+    setTimeout(spawn, save.easy ? 700 : 550);
+  };
+  spawn();
+}
+// あみで すくう：あぶらから あげて あみに のせる
+function scoopStep(st, done) {
+  cookMsg('ゆびで つまんで あみの うえに あげてね');
+  const k = C.it.k, n = 3;
+  st.innerHTML = `<div class="scoop-area"><div class="oilpot" id="oilpot">${Array.from({ length: n }, (_, i) => `<div class="piece fried" data-i="${i}" style="left:${18 + i * 26}%"><img src="${pieceImg()}" alt=""></div>`).join('')}</div><div class="rack" id="rack">あみ</div></div>`;
+  let placed = 0;
+  st.querySelectorAll('.piece').forEach(p => {
+    let sx = 0, sy = 0, drag = false;
+    p.onpointerdown = (e) => { e.preventDefault(); drag = true; p.setPointerCapture(e.pointerId); sx = e.clientX; sy = e.clientY; snd('tap'); };
+    p.onpointermove = (e) => { if (drag) p.style.transform = `translate(${e.clientX - sx}px, ${e.clientY - sy}px) scale(1.1)`; };
+    p.onpointerup = (e) => {
+      if (!drag) return; drag = false;
+      const a = $('rack').getBoundingClientRect();
+      if (e.clientX > a.left - 20 && e.clientX < a.right + 20 && e.clientY > a.top - 30 && e.clientY < a.bottom + 20) {
+        p.style.visibility = 'hidden'; placed++; snd('hit'); burst(e.clientX, e.clientY, { count: 6, spread: 40, shapes: [''], colors: ['#F6C25A', '#FFF'] });
+        const r = document.createElement('img'); r.src = pieceImg(); r.className = 'onrack'; r.style.left = (10 + (placed - 1) * 30) + '%'; $('rack').appendChild(r);
+        if (placed >= n && !st._done) { st._done = true; cookMsg('カラッと あがった！'); setTimeout(() => done(1), 600); }
+      } else { p.style.transition = 'transform 0.25s'; p.style.transform = ''; setTimeout(() => { p.style.transition = ''; }, 260); }
+    };
+  });
+}
 // たこやき：きつねいろの ときに タップで くるっ
 function takoStep(st, done) {
   cookMsg('きつねいろに なった たこやきを タップで くるっと まわしてね');
@@ -3267,7 +3412,7 @@ function takoStep(st, done) {
     e.preventDefault(); if (b.done || b.t < 0.2) return;
     b.done = true; const v = b.t; const sc = v >= 0.6 && v < 1 ? 1 : 0.5; score += sc;
     b.el.classList.remove('ready'); b.el.classList.add('turned'); snd(sc === 1 ? 'hit' : 'tap'); burst(e.clientX, e.clientY, { count: 6, spread: 40 });
-    if (balls.every(x => x.done)) { live = false; setTimeout(() => done(score / balls.length), 500); }
+    if (balls.every(x => x.done)) { live = false; st._done = true; setTimeout(() => done(score / balls.length), 500); }
   });
 }
 
@@ -3459,7 +3604,7 @@ function setMuted() {}
 // ==== EMOJI-3D START ====
 // もんだいの なかの えもじを、どの スマホでも おなじに みえる 3Dの え（Microsoft Fluent Emoji, MIT ライセンス）に おきかえる
 const EMOJI_BASE = 'https://raw.githubusercontent.com/microsoft/fluentui-emoji/1ffb34c752ecf5d402f04cfb4b392c77f57c54bc/';
-const EMOJI_IMG = {"♨️": "assets/Hot springs/3D/hot_springs_3d.png","❄️": "assets/Snowflake/3D/snowflake_3d.png","🛳️": "assets/Passenger ship/3D/passenger_ship_3d.png","🏞️": "assets/National park/3D/national_park_3d.png","🏝️": "assets/Desert island/3D/desert_island_3d.png","🛥️": "assets/Motor boat/3D/motor_boat_3d.png","🍽️": "assets/Fork and knife with plate/3D/fork_and_knife_with_plate_3d.png","⛴️": "assets/Ferry/3D/ferry_3d.png","🕸️": "assets/Spider web/3D/spider_web_3d.png","⛱️": "assets/Umbrella on ground/3D/umbrella_on_ground_3d.png","☀️": "assets/Sun/3D/sun_3d.png","⛄": "assets/Snowman without snow/3D/snowman_without_snow_3d.png","📖": "assets/Open book/3D/open_book_3d.png","🚢": "assets/Ship/3D/ship_3d.png","✊": "assets/Raised fist/Default/3D/raised_fist_3d_default.png","📅": "assets/Calendar/3D/calendar_3d.png","👕": "assets/T-shirt/3D/t-shirt_3d.png","🍣": "assets/Sushi/3D/sushi_3d.png","🎏": "assets/Carp streamer/3D/carp_streamer_3d.png","🏪": "assets/Convenience store/3D/convenience_store_3d.png","🔄": "assets/Counterclockwise arrows button/3D/counterclockwise_arrows_button_3d.png","🪸": "assets/Coral/3D/coral_3d.png","🌅": "assets/Sunrise/3D/sunrise_3d.png","🐠": "assets/Tropical fish/3D/tropical_fish_3d.png","🏆": "assets/Trophy/3D/trophy_3d.png","🔈": "assets/Speaker low volume/3D/speaker_low_volume_3d.png","🍤": "assets/Fried shrimp/3D/fried_shrimp_3d.png","🎡": "assets/Ferris wheel/3D/ferris_wheel_3d.png","🥣": "assets/Bowl with spoon/3D/bowl_with_spoon_3d.png","🗿": "assets/Moai/3D/moai_3d.png","🎉": "assets/Party popper/3D/party_popper_3d.png","🌸": "assets/Cherry blossom/3D/cherry_blossom_3d.png","🔒": "assets/Locked/3D/locked_3d.png","♨": "assets/Hot springs/3D/hot_springs_3d.png","🍁": "assets/Maple leaf/3D/maple_leaf_3d.png","📒": "assets/Ledger/3D/ledger_3d.png","🐚": "assets/Spiral shell/3D/spiral_shell_3d.png","🪁": "assets/Kite/3D/kite_3d.png","🛟": "assets/Ring buoy/3D/ring_buoy_3d.png","❄": "assets/Snowflake/3D/snowflake_3d.png","🟠": "assets/Orange circle/3D/orange_circle_3d.png","🛳": "assets/Passenger ship/3D/passenger_ship_3d.png","✅": "assets/Check mark button/3D/check_mark_button_3d.png","🧺": "assets/Basket/3D/basket_3d.png","💰": "assets/Money bag/3D/money_bag_3d.png","⚓": "assets/Anchor/3D/anchor_3d.png","🌊": "assets/Water wave/3D/water_wave_3d.png","🏮": "assets/Red paper lantern/3D/red_paper_lantern_3d.png","🏞": "assets/National park/3D/national_park_3d.png","⛵": "assets/Sailboat/3D/sailboat_3d.png","🐙": "assets/Octopus/3D/octopus_3d.png","😋": "assets/Face savoring food/3D/face_savoring_food_3d.png","🍱": "assets/Bento box/3D/bento_box_3d.png","🐧": "assets/Penguin/3D/penguin_3d.png","🐳": "assets/Spouting whale/3D/spouting_whale_3d.png","👧": "assets/Girl/Default/3D/girl_3d_default.png","✨": "assets/Sparkles/3D/sparkles_3d.png","🔨": "assets/Hammer/3D/hammer_3d.png","🎣": "assets/Fishing pole/3D/fishing_pole_3d.png","🌻": "assets/Sunflower/3D/sunflower_3d.png","🌴": "assets/Palm tree/3D/palm_tree_3d.png","🌙": "assets/Crescent moon/3D/crescent_moon_3d.png","🧈": "assets/Butter/3D/butter_3d.png","🏝": "assets/Desert island/3D/desert_island_3d.png","🏠": "assets/House/3D/house_3d.png","🦪": "assets/Oyster/3D/oyster_3d.png","🛥": "assets/Motor boat/3D/motor_boat_3d.png","🍗": "assets/Poultry leg/3D/poultry_leg_3d.png","🦭": "assets/Seal/3D/seal_3d.png","🧂": "assets/Salt/3D/salt_3d.png","🍽": "assets/Fork and knife with plate/3D/fork_and_knife_with_plate_3d.png","🧯": "assets/Fire extinguisher/3D/fire_extinguisher_3d.png","🥢": "assets/Chopsticks/3D/chopsticks_3d.png","🪣": "assets/Bucket/3D/bucket_3d.png","🚤": "assets/Speedboat/3D/speedboat_3d.png","🦑": "assets/Squid/3D/squid_3d.png","🍚": "assets/Cooked rice/3D/cooked_rice_3d.png","🔇": "assets/Muted speaker/3D/muted_speaker_3d.png","📂": "assets/Open file folder/3D/open_file_folder_3d.png","💾": "assets/Floppy disk/3D/floppy_disk_3d.png","🍳": "assets/Cooking/3D/cooking_3d.png","👗": "assets/Dress/3D/dress_3d.png","⛴": "assets/Ferry/3D/ferry_3d.png","🕸": "assets/Spider web/3D/spider_web_3d.png","🧊": "assets/Ice/3D/ice_3d.png","⭐": "assets/Star/3D/star_3d.png","🕐": "assets/One oclock/3D/one_oclock_3d.png","⛱": "assets/Umbrella on ground/3D/umbrella_on_ground_3d.png","🌈": "assets/Rainbow/3D/rainbow_3d.png","🔥": "assets/Fire/3D/fire_3d.png","☀": "assets/Sun/3D/sun_3d.png","🤿": "assets/Diving mask/3D/diving_mask_3d.png","🌇": "assets/Sunset/3D/sunset_3d.png","🐟": "assets/Fish/3D/fish_3d.png"};
+const EMOJI_IMG = {"♨️": "assets/Hot springs/3D/hot_springs_3d.png","❄️": "assets/Snowflake/3D/snowflake_3d.png","🛳️": "assets/Passenger ship/3D/passenger_ship_3d.png","🏞️": "assets/National park/3D/national_park_3d.png","🏝️": "assets/Desert island/3D/desert_island_3d.png","🛥️": "assets/Motor boat/3D/motor_boat_3d.png","🍽️": "assets/Fork and knife with plate/3D/fork_and_knife_with_plate_3d.png","⛴️": "assets/Ferry/3D/ferry_3d.png","🕸️": "assets/Spider web/3D/spider_web_3d.png","⛱️": "assets/Umbrella on ground/3D/umbrella_on_ground_3d.png","☀️": "assets/Sun/3D/sun_3d.png","⛄": "assets/Snowman without snow/3D/snowman_without_snow_3d.png","📖": "assets/Open book/3D/open_book_3d.png","🚢": "assets/Ship/3D/ship_3d.png","✊": "assets/Raised fist/Default/3D/raised_fist_3d_default.png","📅": "assets/Calendar/3D/calendar_3d.png","🍶": "assets/Sake/3D/sake_3d.png","👕": "assets/T-shirt/3D/t-shirt_3d.png","🍣": "assets/Sushi/3D/sushi_3d.png","🎏": "assets/Carp streamer/3D/carp_streamer_3d.png","🔪": "assets/Kitchen knife/3D/kitchen_knife_3d.png","🏪": "assets/Convenience store/3D/convenience_store_3d.png","🥚": "assets/Egg/3D/egg_3d.png","🔄": "assets/Counterclockwise arrows button/3D/counterclockwise_arrows_button_3d.png","🪸": "assets/Coral/3D/coral_3d.png","🌅": "assets/Sunrise/3D/sunrise_3d.png","🐠": "assets/Tropical fish/3D/tropical_fish_3d.png","🏆": "assets/Trophy/3D/trophy_3d.png","🔈": "assets/Speaker low volume/3D/speaker_low_volume_3d.png","🍤": "assets/Fried shrimp/3D/fried_shrimp_3d.png","🎡": "assets/Ferris wheel/3D/ferris_wheel_3d.png","🥣": "assets/Bowl with spoon/3D/bowl_with_spoon_3d.png","🗿": "assets/Moai/3D/moai_3d.png","🎉": "assets/Party popper/3D/party_popper_3d.png","🌸": "assets/Cherry blossom/3D/cherry_blossom_3d.png","🔒": "assets/Locked/3D/locked_3d.png","♨": "assets/Hot springs/3D/hot_springs_3d.png","🍁": "assets/Maple leaf/3D/maple_leaf_3d.png","📒": "assets/Ledger/3D/ledger_3d.png","🐚": "assets/Spiral shell/3D/spiral_shell_3d.png","🪁": "assets/Kite/3D/kite_3d.png","🛟": "assets/Ring buoy/3D/ring_buoy_3d.png","❄": "assets/Snowflake/3D/snowflake_3d.png","🟠": "assets/Orange circle/3D/orange_circle_3d.png","🛳": "assets/Passenger ship/3D/passenger_ship_3d.png","✅": "assets/Check mark button/3D/check_mark_button_3d.png","🧺": "assets/Basket/3D/basket_3d.png","💰": "assets/Money bag/3D/money_bag_3d.png","⚓": "assets/Anchor/3D/anchor_3d.png","🌊": "assets/Water wave/3D/water_wave_3d.png","🏮": "assets/Red paper lantern/3D/red_paper_lantern_3d.png","🏞": "assets/National park/3D/national_park_3d.png","⛵": "assets/Sailboat/3D/sailboat_3d.png","🐙": "assets/Octopus/3D/octopus_3d.png","😋": "assets/Face savoring food/3D/face_savoring_food_3d.png","🍱": "assets/Bento box/3D/bento_box_3d.png","🐧": "assets/Penguin/3D/penguin_3d.png","🐳": "assets/Spouting whale/3D/spouting_whale_3d.png","👧": "assets/Girl/Default/3D/girl_3d_default.png","✨": "assets/Sparkles/3D/sparkles_3d.png","🔨": "assets/Hammer/3D/hammer_3d.png","🎣": "assets/Fishing pole/3D/fishing_pole_3d.png","🌻": "assets/Sunflower/3D/sunflower_3d.png","🌴": "assets/Palm tree/3D/palm_tree_3d.png","🌙": "assets/Crescent moon/3D/crescent_moon_3d.png","🧈": "assets/Butter/3D/butter_3d.png","🏝": "assets/Desert island/3D/desert_island_3d.png","🏠": "assets/House/3D/house_3d.png","🦪": "assets/Oyster/3D/oyster_3d.png","🛥": "assets/Motor boat/3D/motor_boat_3d.png","🍗": "assets/Poultry leg/3D/poultry_leg_3d.png","🦭": "assets/Seal/3D/seal_3d.png","🧂": "assets/Salt/3D/salt_3d.png","🍋": "assets/Lemon/3D/lemon_3d.png","🍽": "assets/Fork and knife with plate/3D/fork_and_knife_with_plate_3d.png","🧯": "assets/Fire extinguisher/3D/fire_extinguisher_3d.png","🥢": "assets/Chopsticks/3D/chopsticks_3d.png","🪣": "assets/Bucket/3D/bucket_3d.png","🚤": "assets/Speedboat/3D/speedboat_3d.png","🦑": "assets/Squid/3D/squid_3d.png","🍚": "assets/Cooked rice/3D/cooked_rice_3d.png","🔇": "assets/Muted speaker/3D/muted_speaker_3d.png","📂": "assets/Open file folder/3D/open_file_folder_3d.png","💾": "assets/Floppy disk/3D/floppy_disk_3d.png","🍳": "assets/Cooking/3D/cooking_3d.png","👗": "assets/Dress/3D/dress_3d.png","⛴": "assets/Ferry/3D/ferry_3d.png","🕸": "assets/Spider web/3D/spider_web_3d.png","🧊": "assets/Ice/3D/ice_3d.png","⭐": "assets/Star/3D/star_3d.png","🕐": "assets/One oclock/3D/one_oclock_3d.png","⛱": "assets/Umbrella on ground/3D/umbrella_on_ground_3d.png","🌈": "assets/Rainbow/3D/rainbow_3d.png","🔥": "assets/Fire/3D/fire_3d.png","☀": "assets/Sun/3D/sun_3d.png","🤿": "assets/Diving mask/3D/diving_mask_3d.png","🌇": "assets/Sunset/3D/sunset_3d.png","🐟": "assets/Fish/3D/fish_3d.png"};
 const EMOJI_RE = /(?:\p{Extended_Pictographic}|\p{Regional_Indicator}{2}|[0-9#*]\uFE0F?\u20E3)(?:\uFE0F|\u200D\p{Extended_Pictographic}|[\u{1F3FB}-\u{1F3FF}])*/gu;
 function emojiSrc(e) {
   const p = EMOJI_IMG[e] || EMOJI_IMG[e.replace(/\uFE0F/g, '')] || EMOJI_IMG[e + '\uFE0F'];
