@@ -192,6 +192,11 @@
     .pick { border: none; border-radius: 1rem; padding: 0.4rem 0.2rem; background: #F2FAFF; display: flex; flex-direction: column; align-items: center; font-weight: 900; font-size: 0.85rem; }
     .pick img { width: 4rem; height: 4rem; object-fit: contain; }
     .pick.on { background: linear-gradient(135deg, #FFF3C4, #FFE08A); box-shadow: inset 0 0 0 3px #FFB800; }
+    .pick small { font-size: 0.7rem; color: var(--ink-soft); }
+    .pick.locked { background: #EEF2F5; }
+    .friend { display: flex; align-items: center; gap: 0.8rem; padding: 0.6rem 0.9rem; border-radius: 1.2rem; background: linear-gradient(135deg, #FFF3C4, #FFE08A); font-weight: 900; text-align: left; animation: bob 2s ease-in-out infinite; }
+    .friend img { width: 4.5rem; height: 4.5rem; object-fit: contain; }
+    .friend b { font-size: 1.3rem; }
     .toast { position: fixed; left: 50%; bottom: 2rem; z-index: 80; transform: translateX(-50%); padding: 0.7rem 1.2rem; border-radius: 999px; background: #12324A; color: #FFF; font-weight: 900; opacity: 0; transition: opacity 0.25s; pointer-events: none; white-space: nowrap; }
     .toast.show { opacity: 1; }
     .switch { display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 900; }
@@ -883,9 +888,10 @@ const RODS = [
 ];
 const COOLERS = [{ n: 'ちいさい クーラー', cap: 6, price: 0 }, { n: 'おおきい クーラー', cap: 15, price: 800 }, { n: 'ジャンボ クーラー', cap: 30, price: 3000 }];
 
+// need: ずかんが なんしゅるい うまったら なかまに なるか
 const PARTNERS = [
-  { id: 134, n: 'シャワーズ' }, { id: 7, n: 'ゼニガメ' }, { id: 54, n: 'コダック' }, { id: 79, n: 'ヤドン' },
-  { id: 61, n: 'ニョロゾ' }, { id: 91, n: 'パルシェン' }, { id: 184, n: 'マリルリ' }, { id: 729, n: 'アシレーヌ' },
+  { id: 7, n: 'ゼニガメ', need: 0 }, { id: 54, n: 'コダック', need: 4 }, { id: 79, n: 'ヤドン', need: 8 }, { id: 61, n: 'ニョロゾ', need: 13 },
+  { id: 184, n: 'マリルリ', need: 18 }, { id: 91, n: 'パルシェン', need: 24 }, { id: 134, n: 'シャワーズ', need: 31 }, { id: 729, n: 'アシレーヌ', need: 40 },
 ];
 
 // ---------- しゅん・じかん ----------
@@ -1226,7 +1232,7 @@ function renderTitle() {
 }
 
 // ---------- みなと ----------
-function partnerOf() { return PARTNERS.find(p => p.id === save.partner) || PARTNERS[1]; }
+function partnerOf() { return PARTNERS.find(p => p.id === save.partner) || PARTNERS[0]; }
 const HOME_LINES = ['きょうは なにを つる？', 'おおきい さかな つりたいね！', 'ずかんを うめよう！', 'クーラーの さかなは おみせで うれるよ', 'しゅんの さかなは たかく うれるよ！'];
 function renderHome() {
   $('home-name').textContent = player.n;
@@ -1252,8 +1258,12 @@ $('easy-btn').onclick = () => { save.easy = !save.easy; store(); renderHome(); t
 $('mute-btn').onclick = () => { isMuted = !isMuted; saveProgress(APP_ID + '-muted', isMuted); if (isMuted) stopSpeech(); renderHome(); };
 $('partner-btn').onclick = () => openPicker();
 function openPicker() {
-  $('picker-grid').innerHTML = PARTNERS.map(p => `<button class="pick ${p.id === save.partner ? 'on' : ''}" data-id="${p.id}"><img src="${getPokemonImageUrl(p.id)}" alt=""><span>${p.n}</span></button>`).join('');
-  $('picker-grid').querySelectorAll('.pick').forEach(b => b.onclick = () => {
+  const got = Object.keys(save.zukan).length;
+  $('picker-grid').innerHTML = PARTNERS.map(p => p.need <= got
+    ? `<button class="pick ${p.id === save.partner ? 'on' : ''}" data-id="${p.id}"><img src="${getPokemonImageUrl(p.id)}" alt=""><span>${p.n}</span></button>`
+    : `<button class="pick locked" data-need="${p.need}"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${p.id}.png" alt="" style="filter:brightness(0);opacity:0.35"><span>？？？</span><small>ずかん ${p.need}しゅ</small></button>`).join('');
+  $('picker-grid').querySelectorAll('.pick.locked').forEach(b => b.onclick = () => { const n = +b.dataset.need - got; toast(`ずかんを あと ${n}しゅるい うめると なかまに なるよ`); speak(`ずかんを あと ${n}しゅるい うめると なかまに なるよ`); });
+  $('picker-grid').querySelectorAll('.pick:not(.locked)').forEach(b => b.onclick = () => {
     save.partner = +b.dataset.id; store(); $('picker').classList.remove('show'); renderHome();
     const p = partnerOf(); playCry(p.id); speak(`${p.n}と いっしょに つりに いこう！`);
   });
@@ -1776,6 +1786,7 @@ function showResult(f) {
   const rec = save.zukan[sp.k];
   const isNew = !rec, isRec = rec && f.size > rec.max;
   if (!rec) save.zukan[sp.k] = { n: 0, max: 0, first: Date.now() };
+  const newFriend = !rec ? PARTNERS.find(p => p.need === Object.keys(save.zukan).length) : null;
   save.zukan[sp.k].n++; save.zukan[sp.k].max = Math.max(save.zukan[sp.k].max, f.size);
   save.total = (save.total || 0) + 1;
   const ikura = sp.ikura && Math.random() < 0.5;
@@ -1788,6 +1799,7 @@ function showResult(f) {
   $('result-box').innerHTML = `
     <div class="badges">${isNew ? '<span class="badge new">✨ はじめて つれた！</span>' : ''}${isRec ? '<span class="badge rec">🏆 しんきろく！</span>' : ''}${shun ? '<span class="badge shun">しゅん！ たかく うれる</span>' : ''}${sp.poison ? '<span class="badge warn">どく！ たべられない</span>' : ''}${ikura ? '<span class="badge rec">🟠 メス！ いくらが とれた</span>' : ''}</div>
     <div class="res-fish"><img src="${fishImg(sp.k)}" alt=""></div>
+    ${newFriend ? `<div class="friend"><img src="${getPokemonImageUrl(newFriend.id)}" alt=""><span>ずかん ${newFriend.need}しゅ たっせい！<br><b>${newFriend.n}</b>が なかまに なった！</span></div>` : ''}
     <p class="res-name">${name}</p>
     ${name !== sp.n ? `<p class="res-sub">（${sp.n}の なかま）</p>` : ''}
     <div class="res-size">${f.size} cm</div>
@@ -1802,7 +1814,8 @@ function showResult(f) {
   snd('catch'); confetti(); vib([60, 40, 60]);
   const p = partnerOf();
   playCry(p.id, 0.35);
-  setTimeout(() => speak(`${name}！ ${Math.round(f.size)}センチ！${isNew ? ' はじめて つれたね！' : isRec ? ' しんきろく！' : ''}`), 300);
+  setTimeout(() => speak(`${name}！ ${Math.round(f.size)}センチ！${isNew ? ' はじめて つれたね！' : isRec ? ' しんきろく！' : ''}${newFriend ? ` ${newFriend.n}が なかまに なったよ！ パートナーボタンで こうたい できるよ` : ''}`), 300);
+  if (newFriend) setTimeout(() => playCry(newFriend.id, 0.5), 1200);
   $('r-keep').onclick = () => { save.box.push({ k: sp.k, size: f.size, price, ikura: false }); if (ikura) save.box.push({ k: 'ikura', size: 0, price: Math.round(price * 0.6 / 10) * 10, ikura: true }); store(); closeResult('クーラーに いれたよ'); };
   $('r-sell').onclick = () => { setMoney(save.money + price + (ikura ? Math.round(price * 0.6 / 10) * 10 : 0)); snd('coin'); closeResult(`${price.toLocaleString()}えんで うれた！`); };
   $('r-free').onclick = () => { closeResult('ばいばい〜 げんきでね'); };
