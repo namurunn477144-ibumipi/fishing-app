@@ -1,0 +1,1947 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>うみと かわの つりびと - いぶちゃん・みーちゃん</title>
+  <meta name="color-scheme" content="only light">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon-192.png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="つりびと">
+  <meta name="theme-color" content="#2FB0F0">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=M+PLUS+Rounded+1c:wght@700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #12324A; --ink-soft: #4D6A80; --sea: #1E88C8; --sea-2: #0E5A96; --sun: #FFC43D; --coral: #FF7A59; --leaf: #3CC48A;
+      --card: #FFFFFF; --bg1: #BFE9FF; --bg2: #F2FBFF; --shadow: rgba(14, 70, 110, 0.18);
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html { font-size: clamp(15px, min(2.3vw, 2.2vh), 24px); }
+    html, body { margin: 0; height: 100%; }
+    body { font-family: 'M PLUS Rounded 1c', sans-serif; color: var(--ink); background: linear-gradient(180deg, var(--bg1), var(--bg2)); overflow: hidden; user-select: none; -webkit-user-select: none; overscroll-behavior: none; }
+    button { font-family: inherit; color: inherit; cursor: pointer; }
+    .screen { position: fixed; inset: 0; display: none; flex-direction: column; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    .screen.show { display: flex; }
+    .wrap { width: min(100%, 46rem); margin: 0 auto; padding: 1rem 1rem 2rem; display: flex; flex-direction: column; gap: 0.9rem; }
+    .topbar { display: flex; align-items: center; gap: 0.6rem; }
+    .topbar h2 { flex: 1; margin: 0; font-size: 1.4rem; font-weight: 900; }
+    .round-btn { flex: none; width: 3rem; height: 3rem; border: none; border-radius: 50%; background: #FFF; font-size: 1.4rem; font-weight: 900; box-shadow: 0 6px 14px var(--shadow); display: flex; align-items: center; justify-content: center; }
+    .chip { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.4rem 0.8rem; border-radius: 999px; background: #FFF; font-weight: 900; box-shadow: 0 4px 10px var(--shadow); white-space: nowrap; }
+    .money { color: #B07800; }
+    .btn { border: none; border-radius: 1.2rem; padding: 0.9rem 1rem; font-weight: 900; font-size: 1.15rem; background: #FFF; box-shadow: 0 8px 18px var(--shadow); display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: transform 0.1s; }
+    .btn:active { transform: scale(0.96); }
+    .btn.primary { color: #FFF; background: linear-gradient(135deg, #2FB0F0, #1272C4); box-shadow: 0 10px 22px -6px #1272C4; }
+    .btn.sun { color: #5A3A00; background: linear-gradient(135deg, #FFE27A, #FFB627); }
+    .btn.coral { color: #FFF; background: linear-gradient(135deg, #FF9A76, #F2545B); }
+    .btn.green { color: #FFF; background: linear-gradient(135deg, #5ED6A0, #1FA772); }
+    .btn:disabled { opacity: 0.45; }
+    .emo { display: inline-block; width: 1.25em; height: 1.25em; object-fit: contain; vertical-align: -0.25em; -webkit-user-drag: none; }
+    .card { background: var(--card); border-radius: 1.4rem; box-shadow: 0 10px 24px var(--shadow); padding: 1rem; }
+
+    /* ---------- タイトル ---------- */
+    #title { align-items: center; justify-content: center; background: linear-gradient(180deg, #7FD4FF 0%, #C8EEFF 45%, #2E9CC8 46%, #0E5A86 100%); }
+    .title-box { width: min(92%, 36rem); text-align: center; display: flex; flex-direction: column; gap: 1rem; }
+    .title-box h1 { margin: 0; font-size: 2.6rem; font-weight: 900; color: #FFF; text-shadow: 0 4px 0 #1272C4, 0 8px 20px rgba(0,0,0,0.2); letter-spacing: 0.05em; }
+    .title-box .kicker { margin: 0; font-weight: 900; color: #1272C4; }
+    .title-fish { height: 7rem; display: flex; justify-content: center; gap: 0.5rem; }
+    .title-fish img { height: 100%; animation: bob 3s ease-in-out infinite; }
+    .title-fish img:nth-child(2) { animation-delay: -1s; } .title-fish img:nth-child(3) { animation-delay: -2s; }
+    .players { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .player { border: none; border-radius: 1.6rem; padding: 1.1rem 0.6rem; background: #FFF; box-shadow: 0 12px 26px rgba(0,0,0,0.2); display: flex; flex-direction: column; align-items: center; gap: 0.3rem; }
+    .player .face { font-size: 3rem; line-height: 1; }
+    .player b { font-size: 1.4rem; }
+    .player small { font-weight: 800; color: var(--ink-soft); }
+    @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+    /* ---------- みなと（ホーム）---------- */
+    .harbor { position: relative; height: clamp(15rem, 36vh, 30rem); border-radius: 1.6rem; overflow: hidden; box-shadow: 0 12px 26px var(--shadow); background: linear-gradient(180deg, #8FD3FF, #DDF3FF 55%, #2E9CC8 56%, #0E5A86); }
+    .harbor .boat { position: absolute; right: 8%; top: 38%; width: 34%; animation: bob 4s ease-in-out infinite; }
+    .harbor .pier { position: absolute; left: 0; bottom: 30%; width: 55%; height: 0.9rem; background: repeating-linear-gradient(90deg, #A0703C 0 2.2rem, #8A5C2E 2.2rem 2.4rem); border-radius: 0 0.4rem 0.4rem 0; }
+    .harbor .pier::after { content: ''; position: absolute; left: 1rem; right: 1rem; top: 0.9rem; height: 4rem; background: repeating-linear-gradient(90deg, #6E4A24 0 0.6rem, transparent 0.6rem 5rem); }
+    .harbor .partner { position: absolute; left: 22%; bottom: calc(30% + 0.6rem); height: 6.5rem; transform-origin: bottom center; cursor: pointer; }
+    .harbor .bubble { position: absolute; left: 6%; top: 8%; max-width: 60%; padding: 0.5rem 0.9rem; border-radius: 1rem; background: #FFF; font-weight: 900; box-shadow: 0 6px 14px var(--shadow); }
+    .home-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+    .home-grid .btn { flex-direction: column; padding: 1rem 0.5rem; font-size: 1.2rem; }
+    .home-grid .btn .big { font-size: 2.4rem; }
+    .home-grid .go { grid-column: 1 / -1; font-size: 1.6rem; padding: 1.1rem; flex-direction: row; }
+    .row { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+    .row .btn { flex: 1; font-size: 1rem; padding: 0.7rem; }
+    .stat-row { display: flex; gap: 0.6rem; flex-wrap: wrap; justify-content: center; }
+
+    /* ---------- マップ ---------- */
+    .area-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr)); gap: 0.8rem; }
+    .area { position: relative; border: none; text-align: left; border-radius: 1.4rem; padding: 0.9rem; color: #FFF; box-shadow: 0 10px 22px var(--shadow); display: flex; flex-direction: column; gap: 0.2rem; min-height: 8rem; overflow: hidden; }
+    .area b { font-size: 1.35rem; } .area small { font-weight: 800; opacity: 0.95; }
+    .area .ico { position: absolute; right: 0.6rem; top: 0.4rem; font-size: 2.6rem; }
+    .area.locked { filter: grayscale(0.7); }
+    .area .lock { margin-top: auto; align-self: flex-start; padding: 0.25rem 0.7rem; border-radius: 999px; background: rgba(0,0,0,0.35); font-weight: 900; }
+    .area.sel { outline: 5px solid var(--sun); }
+    .methods { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.7rem; }
+    .method { border: none; border-radius: 1.2rem; padding: 0.8rem 0.4rem; background: #FFF; box-shadow: 0 8px 18px var(--shadow); display: flex; flex-direction: column; align-items: center; gap: 0.2rem; font-weight: 900; font-size: 1.1rem; }
+    .method .ico { font-size: 2.2rem; }
+    .method small { font-size: 0.75rem; color: var(--ink-soft); text-align: center; }
+    .method.locked { opacity: 0.45; }
+    .method.sel { outline: 4px solid var(--sea); }
+    .hint { margin: 0; font-weight: 800; color: var(--ink-soft); text-align: center; }
+
+    /* ---------- つり ---------- */
+    #fish { overflow: hidden; touch-action: none; }
+    #scene { position: absolute; inset: 0; overflow: hidden; }
+    .sky { position: absolute; left: 0; right: 0; top: 0; }
+    .sunmoon { position: absolute; border-radius: 50%; }
+    .cloud { position: absolute; height: 2.4rem; width: 7rem; border-radius: 999px; background: rgba(255,255,255,0.85); animation: drift linear infinite; }
+    .cloud::before, .cloud::after { content: ''; position: absolute; background: inherit; border-radius: 50%; }
+    .cloud::before { width: 3rem; height: 3rem; left: 1rem; top: -1.4rem; } .cloud::after { width: 2.2rem; height: 2.2rem; left: 3.4rem; top: -0.9rem; }
+    @keyframes drift { from { transform: translateX(-12rem); } to { transform: translateX(110vw); } }
+    .far { position: absolute; left: 0; right: 0; }
+    .water { position: absolute; left: 0; right: 0; bottom: 0; }
+    .surface { position: absolute; left: -10%; width: 120%; height: 1.2rem; animation: wave 4s ease-in-out infinite alternate; }
+    @keyframes wave { from { transform: translateX(0); } to { transform: translateX(-4%); } }
+    .rays { position: absolute; left: 0; right: 0; pointer-events: none; }
+    .seabed { position: absolute; left: 0; right: 0; bottom: 0; }
+    .weed { position: absolute; bottom: 0; transform-origin: bottom center; animation: sway 3.5s ease-in-out infinite alternate; }
+    @keyframes sway { from { transform: rotate(-6deg); } to { transform: rotate(6deg); } }
+    .bubble-dot { position: absolute; width: 0.5rem; height: 0.5rem; border-radius: 50%; border: 2px solid rgba(255,255,255,0.7); animation: rise linear infinite; }
+    @keyframes rise { from { transform: translateY(0); opacity: 0.9; } to { transform: translateY(-40vh); opacity: 0; } }
+    .night-veil { position: absolute; inset: 0; background: rgba(6, 14, 40, 0.38); pointer-events: none; }
+    .fish-sprite { position: absolute; left: 0; top: 0; pointer-events: none; will-change: transform; }
+    .fish-sprite img { width: 100%; height: 100%; display: block; }
+    .fish-sprite .mark { position: absolute; left: 50%; top: -1.6rem; transform: translateX(-50%); font-size: 1.6rem; font-weight: 900; color: #FFF; text-shadow: 0 2px 0 #F2545B, 0 0 6px #F2545B; }
+    #lines { position: absolute; inset: 0; pointer-events: none; overflow: visible; }
+    .pier-el { position: absolute; left: 0; pointer-events: none; }
+    .partner-fish { position: absolute; pointer-events: auto; transform-origin: bottom center; }
+    .say { position: absolute; padding: 0.5rem 0.9rem; border-radius: 1rem; background: #FFF; font-weight: 900; font-size: 1.1rem; box-shadow: 0 6px 14px var(--shadow); white-space: nowrap; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
+    .say.show { opacity: 1; }
+    .hud { position: absolute; left: 0; right: 0; top: 0; padding: 0.7rem; display: flex; gap: 0.5rem; align-items: center; pointer-events: none; }
+    .hud > * { pointer-events: auto; }
+    .hud .sp { flex: 1; }
+    .controls { position: absolute; left: 0; right: 0; bottom: 0; padding: 0.8rem 1rem calc(0.8rem + env(safe-area-inset-bottom)); display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; pointer-events: none; }
+    .controls > * { pointer-events: auto; }
+    .act { min-width: 11rem; min-height: 5.2rem; border: none; border-radius: 2.6rem; font-size: 1.6rem; font-weight: 900; color: #FFF; background: linear-gradient(135deg, #FF9A76, #F2545B); box-shadow: 0 10px 0 #B8323A, 0 16px 26px rgba(0,0,0,0.25); }
+    .act:active { transform: translateY(6px); box-shadow: 0 4px 0 #B8323A, 0 8px 16px rgba(0,0,0,0.25); }
+    .act.blue { background: linear-gradient(135deg, #4CC2FF, #1272C4); box-shadow: 0 10px 0 #0B4E8A, 0 16px 26px rgba(0,0,0,0.25); }
+    .act.glow { animation: glow 0.5s ease-in-out infinite alternate; }
+    @keyframes glow { from { transform: scale(1); } to { transform: scale(1.1); } }
+    .act.hide { visibility: hidden; }
+    .reel { position: relative; width: 11rem; height: 11rem; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #FFFFFF, #C9D6E0 60%, #8EA2B2); box-shadow: 0 12px 26px rgba(0,0,0,0.3), inset 0 0 0 0.5rem rgba(255,255,255,0.5); touch-action: none; }
+    .reel .knob-arm { position: absolute; left: 50%; top: 50%; width: 0; height: 0; }
+    .reel .arm { position: absolute; left: -0.45rem; top: -4.4rem; width: 0.9rem; height: 4.4rem; border-radius: 0.45rem; background: #5A6E80; }
+    .reel .knob { position: absolute; left: -1.5rem; top: -5.6rem; width: 3rem; height: 3rem; border-radius: 50%; background: linear-gradient(135deg, #FFB627, #F28C00); box-shadow: 0 3px 6px rgba(0,0,0,0.3); }
+    .reel .hub { position: absolute; left: 50%; top: 50%; width: 2.6rem; height: 2.6rem; margin: -1.3rem; border-radius: 50%; background: #3E5264; }
+    .reel .lbl { position: absolute; left: 0; right: 0; bottom: -1.6rem; text-align: center; font-weight: 900; color: #FFF; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+    .fight { position: absolute; left: 50%; top: 4.4rem; transform: translateX(-50%); width: min(80%, 26rem); padding: 0.6rem 0.9rem; border-radius: 1.2rem; background: rgba(255,255,255,0.92); box-shadow: 0 8px 20px rgba(0,0,0,0.2); display: none; }
+    .fight.show { display: block; }
+    .fight .lbl { display: flex; justify-content: space-between; font-weight: 900; }
+    .tbar { position: relative; height: 1.3rem; margin-top: 0.3rem; border-radius: 999px; background: linear-gradient(90deg, #5ED6A0 0 60%, #FFD23F 60% 82%, #F2545B 82%); overflow: hidden; }
+    .tbar i { position: absolute; top: -0.2rem; bottom: -0.2rem; width: 0.5rem; margin-left: -0.25rem; border-radius: 0.3rem; background: #12324A; box-shadow: 0 0 0 2px #FFF; }
+    .dbar { height: 0.8rem; margin-top: 0.4rem; border-radius: 999px; background: #DCEAF3; overflow: hidden; }
+    .dbar i { display: block; height: 100%; background: linear-gradient(90deg, #2FB0F0, #1272C4); border-radius: 999px; }
+    .power { position: absolute; left: 1rem; bottom: 7.5rem; width: 12rem; height: 1.4rem; border-radius: 999px; background: rgba(255,255,255,0.9); box-shadow: 0 6px 14px rgba(0,0,0,0.2); overflow: hidden; display: none; }
+    .power.show { display: block; }
+    .power i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #5ED6A0, #FFD23F, #F2545B); }
+    .big-msg { position: absolute; left: 50%; top: 32%; transform: translate(-50%, -50%); font-size: 3rem; font-weight: 900; color: #FFF; text-shadow: 0 4px 0 #F2545B, 0 0 18px rgba(242,84,91,0.8); pointer-events: none; white-space: nowrap; opacity: 0; }
+    .splash { position: absolute; width: 4rem; height: 1.4rem; margin: -0.7rem -2rem; border-radius: 50%; border: 3px solid rgba(255,255,255,0.9); pointer-events: none; }
+
+    /* ---------- けっか ---------- */
+    .modal { position: fixed; inset: 0; z-index: 50; display: none; align-items: center; justify-content: center; background: rgba(8, 30, 50, 0.5); padding: 1rem; }
+    .modal.show { display: flex; }
+    .modal .box { width: min(100%, 34rem); max-height: 94vh; overflow-y: auto; border-radius: 1.8rem; background: #FFF; padding: 1.2rem; box-shadow: 0 24px 60px rgba(0,0,0,0.35); display: flex; flex-direction: column; gap: 0.7rem; text-align: center; }
+    .res-fish { width: 100%; aspect-ratio: 2 / 1; border-radius: 1.2rem; background: radial-gradient(ellipse at center, #E8F7FF, #BFE6FA); display: flex; align-items: center; justify-content: center; }
+    .res-fish img { width: 94%; }
+    .res-name { margin: 0; font-size: 2rem; font-weight: 900; }
+    .res-sub { margin: 0; font-weight: 800; color: var(--ink-soft); }
+    .res-size { font-family: 'Fredoka', sans-serif; font-size: 2.4rem; font-weight: 700; color: var(--sea-2); }
+    .badges { display: flex; gap: 0.4rem; justify-content: center; flex-wrap: wrap; }
+    .badge { padding: 0.25rem 0.7rem; border-radius: 999px; font-weight: 900; font-size: 0.9rem; color: #FFF; background: var(--coral); }
+    .badge.new { background: #8F6BFF; } .badge.rec { background: #F2A900; } .badge.shun { background: #1FA772; } .badge.warn { background: #E03131; }
+    .ruler { position: relative; height: 1.6rem; border-radius: 0.4rem; background: repeating-linear-gradient(90deg, #FFE7A8 0 calc(10% - 2px), #C9A040 calc(10% - 2px) 10%); }
+    .ruler i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 0.4rem; background: rgba(30, 136, 200, 0.45); }
+    .res-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
+    .res-actions .btn { flex-direction: column; font-size: 1rem; padding: 0.7rem 0.3rem; gap: 0.1rem; }
+    .res-actions .btn small { font-size: 0.8rem; opacity: 0.9; }
+    .info { margin: 0; text-align: left; font-weight: 800; line-height: 1.6; padding: 0.7rem 0.9rem; border-radius: 1rem; background: #F2FAFF; }
+
+    /* ---------- ずかん ---------- */
+    .tabs { display: flex; gap: 0.4rem; overflow-x: auto; padding-bottom: 0.2rem; }
+    .tabs button { flex: none; border: none; padding: 0.5rem 0.9rem; border-radius: 999px; background: #FFF; font-weight: 900; box-shadow: 0 4px 10px var(--shadow); }
+    .tabs button.on { color: #FFF; background: var(--sea); }
+    .zgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr)); gap: 0.6rem; }
+    .zc { border: none; border-radius: 1.1rem; background: #FFF; padding: 0.4rem 0.4rem 0.6rem; box-shadow: 0 6px 14px var(--shadow); display: flex; flex-direction: column; align-items: center; gap: 0.1rem; font-weight: 900; }
+    .zc .pic { width: 100%; aspect-ratio: 2 / 1; display: flex; align-items: center; justify-content: center; border-radius: 0.8rem; background: #EAF6FD; }
+    .zc .pic img { width: 92%; }
+    .zc small { font-size: 0.75rem; color: var(--ink-soft); }
+    .zc.unk { color: #9AB0C0; }
+    .zinfo { display: grid; grid-template-columns: auto 1fr; gap: 0.3rem 0.8rem; text-align: left; font-weight: 800; }
+    .zinfo dt { color: var(--ink-soft); } .zinfo dd { margin: 0; }
+    .months { display: flex; gap: 2px; } .months span { flex: 1; text-align: center; font-size: 0.7rem; padding: 0.15rem 0; border-radius: 0.3rem; background: #EEF3F6; color: #9AB0C0; }
+    .months span.on { background: #1FA772; color: #FFF; }
+
+    /* ---------- おみせ ---------- */
+    .shop-list { display: flex; flex-direction: column; gap: 0.6rem; }
+    .item { display: flex; align-items: center; gap: 0.8rem; padding: 0.7rem 0.9rem; border-radius: 1.2rem; background: #FFF; box-shadow: 0 6px 14px var(--shadow); }
+    .item .ico { font-size: 2.2rem; flex: none; width: 3rem; text-align: center; }
+    .item .ico img.fishimg { width: 4.5rem; }
+    .item .txt { flex: 1; display: flex; flex-direction: column; font-weight: 900; }
+    .item .txt small { font-weight: 800; color: var(--ink-soft); }
+    .item .btn { flex: none; padding: 0.6rem 0.9rem; font-size: 1rem; }
+    .owned { flex: none; font-weight: 900; color: #1FA772; }
+    .picker-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; }
+    .pick { border: none; border-radius: 1rem; padding: 0.4rem 0.2rem; background: #F2FAFF; display: flex; flex-direction: column; align-items: center; font-weight: 900; font-size: 0.85rem; }
+    .pick img { width: 4rem; height: 4rem; object-fit: contain; }
+    .pick.on { background: linear-gradient(135deg, #FFF3C4, #FFE08A); box-shadow: inset 0 0 0 3px #FFB800; }
+    .toast { position: fixed; left: 50%; bottom: 2rem; z-index: 80; transform: translateX(-50%); padding: 0.7rem 1.2rem; border-radius: 999px; background: #12324A; color: #FFF; font-weight: 900; opacity: 0; transition: opacity 0.25s; pointer-events: none; white-space: nowrap; }
+    .toast.show { opacity: 1; }
+    .switch { display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 900; }
+    .switch i { position: relative; width: 3.2rem; height: 1.8rem; border-radius: 999px; background: #C9D6E0; transition: background 0.2s; }
+    .switch i::after { content: ''; position: absolute; left: 0.2rem; top: 0.2rem; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: #FFF; transition: transform 0.2s; }
+    .switch.on i { background: #1FA772; } .switch.on i::after { transform: translateX(1.4rem); }
+    .particle { position: fixed; z-index: 1001; width: 14px; height: 14px; pointer-events: none; border-radius: 50%; }
+    .particle.star { clip-path: polygon(50% 0, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); border-radius: 0; width: 18px; height: 18px; }
+    .particle.heart { width: 18px; height: 18px; border-radius: 0; clip-path: path('M9 16.5 L2.2 9.6 A4 4 0 0 1 9 3.9 A4 4 0 0 1 15.8 9.6 Z'); }
+    .confetti { position: fixed; top: -20px; z-index: 1002; width: 10px; height: 16px; border-radius: 3px; pointer-events: none; }
+    .emote { position: fixed; z-index: 1003; width: 48px; height: 48px; padding: 9px; border-radius: 50%; background: #FFF; box-shadow: 0 8px 18px var(--shadow); pointer-events: none; }
+    .emote::after { content: ''; position: absolute; left: 6px; bottom: 0; width: 12px; height: 12px; background: #FFF; transform: rotate(45deg); border-radius: 2px; }
+    .emote svg { position: relative; z-index: 1; display: block; width: 100%; height: 100%; }
+    .tap-ripple { position: fixed; z-index: 1002; width: 70px; height: 70px; border-radius: 50%; border: 4px solid rgba(255,255,255,0.95); box-shadow: 0 0 14px rgba(255,255,255,0.9); pointer-events: none; }
+    .tap-ripple.sound { width: 150px; height: 150px; border: 3px solid var(--sea); box-shadow: none; }
+    .float-note { position: fixed; z-index: 1003; font-size: 2rem; font-weight: 900; pointer-events: none; text-shadow: 0 2px 0 #FFF, 0 0 8px #FFF; }
+    /* 3Dの えもじ */
+    .emo { display: inline-block; width: 1.2em; height: 1.2em; object-fit: contain; vertical-align: -0.25em; -webkit-user-drag: none; }
+    .question-emoji .emo, .opt-emoji .emo { width: 1.1em; height: 1.1em; vertical-align: middle; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.12)); }
+  </style>
+</head>
+<body>
+<!-- タイトル：だれが あそぶ？ -->
+<section id="title" class="screen show">
+  <div class="title-box">
+    <p class="kicker">いぶちゃん＆みーちゃんの</p>
+    <h1>うみと かわの つりびと</h1>
+    <div class="title-fish" id="title-fish"></div>
+    <div class="players" id="players"></div>
+  </div>
+</section>
+
+<!-- みなと -->
+<section id="home" class="screen">
+  <div class="wrap">
+    <div class="topbar">
+      <button class="round-btn" id="home-back" aria-label="もどる">←</button>
+      <h2 id="home-name">いぶちゃん</h2>
+      <span class="chip money" id="home-money">💰 0えん</span>
+    </div>
+    <div class="harbor" id="harbor">
+      <svg class="boat" viewBox="0 0 200 110"><path d="M10 60 L190 60 L165 100 L35 100 Z" fill="#F2545B" stroke="#8A2A30" stroke-width="4"/><rect x="60" y="22" width="70" height="38" rx="6" fill="#FFF" stroke="#8A2A30" stroke-width="4"/><rect x="72" y="30" width="18" height="14" rx="3" fill="#8FD3FF"/><rect x="100" y="30" width="18" height="14" rx="3" fill="#8FD3FF"/><path d="M10 60 L190 60" stroke="#FFF" stroke-width="6"/></svg>
+      <div class="pier"></div>
+      <img class="partner" id="home-partner" alt="パートナー">
+      <div class="bubble" id="home-bubble">きょうは なにを つる？</div>
+    </div>
+    <div class="stat-row" id="home-stats"></div>
+    <div class="home-grid">
+      <button class="btn primary go" id="go-btn"><span class="big">🎣</span>つりに いく！</button>
+      <button class="btn" id="zukan-btn"><span class="big">📖</span>ずかん</button>
+      <button class="btn" id="shop-btn"><span class="big">🏪</span>おみせ</button>
+    </div>
+    <div class="row">
+      <button class="btn" id="partner-btn">🔄 パートナー</button>
+      <button class="btn" id="easy-btn"><span class="switch" id="easy-sw"><i></i>かんたん</span></button>
+      <button class="btn" id="mute-btn">🔈 おと</button>
+    </div>
+  </div>
+</section>
+
+<!-- どこで つる？ -->
+<section id="map" class="screen">
+  <div class="wrap">
+    <div class="topbar"><button class="round-btn" id="map-back" aria-label="もどる">←</button><h2>どこで つる？</h2><span class="chip" id="map-season"></span></div>
+    <div class="area-list" id="area-list"></div>
+    <p class="hint" id="method-hint">つりかたを えらんでね</p>
+    <div class="methods" id="methods"></div>
+    <button class="btn primary" id="start-btn" style="font-size:1.5rem;">しゅっぱつ！</button>
+  </div>
+</section>
+
+<!-- つり -->
+<section id="fish" class="screen">
+  <div id="scene"></div>
+  <svg id="lines"></svg>
+  <div class="hud">
+    <button class="round-btn" id="fish-back" aria-label="もどる">←</button>
+    <span class="chip" id="fish-where"></span>
+    <span class="sp"></span>
+    <span class="chip" id="fish-cool">🧊 0</span>
+    <span class="chip money" id="fish-money">💰 0</span>
+  </div>
+  <div class="fight" id="fight"><div class="lbl"><span id="fight-msg">まいて まいて！</span><span id="fight-dist">20m</span></div><div class="tbar"><i id="tension"></i></div><div class="dbar"><i id="dist-bar"></i></div></div>
+  <div class="power" id="power"><i id="power-bar"></i></div>
+  <div class="big-msg" id="big-msg">ヒット！</div>
+  <div class="controls">
+    <button class="act" id="act">なげる</button>
+    <div class="reel" id="reel"><div class="hub"></div><div class="knob-arm" id="knob"><div class="arm"></div><div class="knob"></div></div><div class="lbl">ぐるぐる まく</div></div>
+  </div>
+</section>
+
+<!-- ずかん -->
+<section id="zukan" class="screen">
+  <div class="wrap">
+    <div class="topbar"><button class="round-btn" id="zukan-back" aria-label="もどる">←</button><h2>さかな ずかん</h2><span class="chip" id="zukan-count"></span></div>
+    <div class="tabs" id="zukan-tabs"></div>
+    <div class="zgrid" id="zgrid"></div>
+  </div>
+</section>
+
+<!-- おみせ -->
+<section id="shop" class="screen">
+  <div class="wrap">
+    <div class="topbar"><button class="round-btn" id="shop-back" aria-label="もどる">←</button><h2>おみせ</h2><span class="chip money" id="shop-money"></span></div>
+    <div class="tabs" id="shop-tabs"><button data-t="sell" class="on">🐟 うる</button><button data-t="tool">🎣 どうぐ</button><button data-t="ticket">⛴️ ふねの きっぷ</button></div>
+    <div class="shop-list" id="shop-list"></div>
+  </div>
+</section>
+
+<div class="modal" id="result"><div class="box" id="result-box"></div></div>
+<div class="modal" id="zdetail"><div class="box" id="zdetail-box"></div></div>
+<div class="modal" id="picker"><div class="box"><h3 style="margin:0">いっしょに つりに いく ポケモン</h3><div class="picker-grid" id="picker-grid"></div><button class="btn" id="picker-close">とじる</button></div></div>
+<div class="toast" id="toast"></div>
+<script>
+// =========================================================
+// ▼▼ さかなの え（SVG を パラメータで えがく）▼▼
+//   さかな：からだの かたち・ひれ・いろ・もよう
+//   イカ・タコ・ヒラメ（うえから みた かたち）・エビ は べつの かきかた
+// =========================================================
+const FISH_VB = { w: 440, h: 220, cy: 110, x0: 30, x1: 350 };
+let _fid = 0;
+const f1 = (n) => (+n).toFixed(1);
+function fishBody(sp) {
+  const { x0, x1, cy } = FISH_VB, L = x1 - x0, n = 48;
+  const prof = (t, a, b, d) => {
+    const pk = Math.pow(a / (a + b), a) * Math.pow(b / (a + b), b);
+    const f = Math.pow(t, a) * Math.pow(1 - t, b) / pk;
+    return sp.ped + (d - sp.ped) * f;
+  };
+  const top = [], bot = [];
+  for (let i = 0; i <= n; i++) {
+    const t = i / n, x = x0 + L * t;
+    const snout = Math.min(1, t / 0.02);
+    top.push([x, cy - prof(t, sp.ta, sp.tb, sp.dt) * snout + (sp.mouthY || 0) * (1 - t)]);
+    bot.push([x, cy + prof(t, sp.ba, sp.bb, sp.db) * snout + (sp.mouthY || 0) * (1 - t)]);
+  }
+  return { top, bot };
+}
+function smooth(pts) {
+  let d = `M${f1(pts[0][0])},${f1(pts[0][1])}`;
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[i - 1] || pts[i], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] || p2;
+    d += ` C${f1(p1[0] + (p2[0] - p0[0]) / 6)},${f1(p1[1] + (p2[1] - p0[1]) / 6)} ${f1(p2[0] - (p3[0] - p1[0]) / 6)},${f1(p2[1] - (p3[1] - p1[1]) / 6)} ${f1(p2[0])},${f1(p2[1])}`;
+  }
+  return d;
+}
+function yAt(arr, x) {
+  for (let i = 0; i < arr.length - 1; i++) if (arr[i + 1][0] >= x) {
+    const k = (x - arr[i][0]) / (arr[i + 1][0] - arr[i][0]);
+    return arr[i][1] + (arr[i + 1][1] - arr[i][1]) * k;
+  }
+  return arr[arr.length - 1][1];
+}
+function fin(edge, from, to, h, opt = {}) {
+  const { x0, x1 } = FISH_VB, L = x1 - x0;
+  const xa = x0 + L * from, xb = x0 + L * to, dir = edge.dir;
+  const ya = yAt(edge.pts, xa), yb = yAt(edge.pts, xb);
+  const sweep = opt.sweep ?? 0.35, peak = opt.peak ?? 0.25;
+  const tipX = xa + (xb - xa) * peak + h * sweep, tipY = yAt(edge.pts, xa + (xb - xa) * peak) + dir * h;
+  const backX = xb + (opt.back ?? 0), backY = yb + dir * h * (opt.backH ?? 0.15);
+  return `M${f1(xa)},${f1(ya - dir * 2)} Q${f1(xa + (tipX - xa) * 0.2)},${f1(tipY)} ${f1(tipX)},${f1(tipY)} Q${f1((tipX + backX) / 2)},${f1((tipY + backY) / 2 - dir * h * (opt.concave ?? 0.1))} ${f1(backX)},${f1(backY)} L${f1(xb)},${f1(yb - dir * 2)} Z`;
+}
+const rnd = (s) => () => (s = (s * 9301 + 49297) % 233280) / 233280;
+function svgWrap(inner, defs) {
+  return `<svg viewBox="0 0 ${FISH_VB.w} ${FISH_VB.h}" xmlns="http://www.w3.org/2000/svg"><defs>${defs || ''}</defs>${inner}</svg>`;
+}
+// みずの なかの「かげ」：おなじ え を ひといろで ぬる
+function toShadow(svg, color = '#0B2A3C') {
+  return svg.replace('<defs>', `<defs><filter id="shd"><feFlood flood-color="${color}"/><feComposite in2="SourceAlpha" operator="in"/></filter>`).replace(/<\/defs>([\s\S]*)<\/svg>$/, '</defs><g filter="url(#shd)">$1</g></svg>');
+}
+
+function drawFish(sp) {
+  if (sp.kind === 'squid') return drawSquid(sp);
+  if (sp.kind === 'octo') return drawOcto(sp);
+  if (sp.kind === 'flat') return drawFlat(sp);
+  if (sp.kind === 'shrimp') return drawShrimp(sp);
+  const id = 'f' + (++_fid);
+  const { x0, x1, cy } = FISH_VB, L = x1 - x0, ln = sp.line;
+  const { top, bot } = fishBody(sp);
+  const body = smooth(top) + ' L' + smooth(bot.slice().reverse()).slice(1) + ' Z';
+  const H = sp.tailH || 0, tl = sp.tailL || 0, tx = x1 + tl;
+  const ty = yAt(top, x1 - 2), by = yAt(bot, x1 - 2);
+  let tail = '';
+  if (sp.tail === 'lunate') tail = `M${x1 - 8},${ty} Q${x1 + 10},${cy - H * 0.5} ${tx},${cy - H} Q${x1 + tl * 0.45},${cy - H * 0.3} ${x1 + tl * 0.35},${cy} Q${x1 + tl * 0.45},${cy + H * 0.3} ${tx},${cy + H} Q${x1 + 10},${cy + H * 0.5} ${x1 - 8},${by} Z`;
+  else if (sp.tail === 'fork') tail = `M${x1 - 8},${ty} Q${x1 + tl * 0.5},${cy - H * 0.55} ${tx},${cy - H} Q${tx - 6},${cy - H * 0.35} ${x1 + tl * 0.48},${cy} Q${tx - 6},${cy + H * 0.35} ${tx},${cy + H} Q${x1 + tl * 0.5},${cy + H * 0.55} ${x1 - 8},${by} Z`;
+  else if (sp.tail === 'round') tail = `M${x1 - 8},${ty} L${tx - 8},${cy - H} Q${tx + 8},${cy} ${tx - 8},${cy + H} L${x1 - 8},${by} Z`;
+  else if (sp.tail === 'trunc') tail = `M${x1 - 8},${ty} Q${x1 + tl * 0.5},${cy - H * 0.6} ${tx},${cy - H} Q${tx - 8},${cy} ${tx},${cy + H} Q${x1 + tl * 0.5},${cy + H * 0.6} ${x1 - 8},${by} Z`;
+  const T = { pts: top, dir: -1 }, B = { pts: bot, dir: 1 };
+  const fins = (sp.fins || []).map((f, k) => {
+    const e = f.edge === 'top' ? T : B, d = fin(e, f.from, f.to, f.h, f), c = f.color || sp.finColor;
+    const xa = x0 + L * f.from, xb = x0 + L * f.to, n = Math.max(4, Math.round((xb - xa) / 7));
+    let rays = '';
+    for (let i = 0; i <= n; i++) { const x = xa + (xb - xa) * i / n, y = yAt(e.pts, x); rays += `<line x1="${f1(x)}" y1="${f1(y)}" x2="${f1(x + f.h * (f.sweep ?? 0.35) * 1.6 + 6)}" y2="${f1(y + e.dir * f.h * 1.6)}"/>`; }
+    return `<clipPath id="${id}f${k}"><path d="${d}"/></clipPath><path d="${d}" fill="${c}" opacity="${f.op ?? 0.95}"/><g clip-path="url(#${id}f${k})" stroke="${ln}" stroke-width="1" opacity="0.35">${rays}</g><path d="${d}" fill="none" stroke="${ln}" stroke-width="1.4" stroke-linejoin="round"/>`;
+  }).join('');
+  let tailSvg = '';
+  if (tail) {
+    let trays = ''; for (let i = 0; i <= 16; i++) { const a = -1 + i / 8; trays += `<line x1="${x1 - 6}" y1="${cy}" x2="${tx + 20}" y2="${f1(cy + a * H * 1.3)}"/>`; }
+    tailSvg = `<clipPath id="${id}t"><path d="${tail}"/></clipPath><path d="${tail}" fill="${sp.tailColor || sp.finColor}"/><g clip-path="url(#${id}t)"><g stroke="${ln}" stroke-width="1" opacity="0.3">${trays}</g>${sp.tailDeco ? sp.tailDeco({ x1, cy, tx, H }) : ''}<path d="${tail}" fill="url(#${id}tg)"/></g><path d="${tail}" fill="none" stroke="${ln}" stroke-width="1.6" stroke-linejoin="round"/>`;
+  }
+  const ex = x0 + L * sp.eyeX, ey = cy + sp.eyeY;
+  let pec = '';
+  if (sp.pecL !== 0) {
+    const px = x0 + L * (sp.pecX ?? 0.27), py = cy + (sp.pecY ?? 14), pecL = sp.pecL ?? 40;
+    const pd = `M${f1(px)},${f1(py - 6)} Q${f1(px + pecL * 0.6)},${f1(py - 11)} ${f1(px + pecL)},${f1(py + 5)} Q${f1(px + pecL * 0.5)},${f1(py + 11)} ${f1(px)},${f1(py + 6)} Z`;
+    let prays = ''; for (let i = 0; i < 7; i++) prays += `<line x1="${f1(px)}" y1="${f1(py)}" x2="${f1(px + pecL + 4)}" y2="${f1(py - 10 + i * 4)}"/>`;
+    pec = `<clipPath id="${id}p"><path d="${pd}"/></clipPath><path d="${pd}" fill="${sp.pecColor || sp.finColor}" opacity="0.9"/><g clip-path="url(#${id}p)" stroke="${ln}" stroke-width="0.9" opacity="0.4">${prays}</g><path d="${pd}" fill="none" stroke="${ln}" stroke-width="1.2"/>`;
+  }
+  let gill = '';
+  if (sp.gill !== false) {
+    const gx = x0 + L * (sp.gillX ?? 0.24);
+    const gTop = yAt(top, gx) + 6, gBot = yAt(bot, gx) - 4, gx2 = gx - L * 0.045;
+    gill = `<path d="M${f1(gx - 4)},${f1(gTop)} Q${f1(gx + 12)},${f1((gTop + gBot) / 2)} ${f1(gx - 10)},${f1(gBot)}" fill="none" stroke="${ln}" stroke-width="2" opacity="0.6" stroke-linecap="round"/>
+<path d="M${f1(gx - 4)},${f1(gTop)} Q${f1(gx + 12)},${f1((gTop + gBot) / 2)} ${f1(gx - 10)},${f1(gBot)} L${f1(gx - 16)},${f1(gBot)} Q${f1(gx + 2)},${f1((gTop + gBot) / 2)} ${f1(gx - 10)},${f1(gTop)} Z" fill="${ln}" opacity="0.10"/>
+<path d="M${f1(gx2)},${f1(ey + 6)} Q${f1(gx2 + 4)},${f1(gBot - 14)} ${f1(gx2 - 14)},${f1(gBot - 4)}" fill="none" stroke="${ln}" stroke-width="1.3" opacity="0.35" stroke-linecap="round"/>`;
+  }
+  const my = cy + (sp.mouthY || 0) + 2, ml = sp.mouth || 0;
+  let mouth = ml ? `<path d="M${x0 + 1},${my} q${ml},3 ${f1(ml * 1.7)},1" fill="none" stroke="${ln}" stroke-width="2" stroke-linecap="round" opacity="0.75"/><path d="M${f1(x0 + ml * 0.4)},${my - 4} Q${f1(x0 + ml * 1.2)},${my - 3} ${f1(x0 + ml * 1.8)},${my + 1}" fill="none" stroke="${ln}" stroke-width="1.2" opacity="0.4"/>` : '';
+  if (sp.barbel) {
+    const bc = sp.barbelColor || ln;
+    for (let i = 0; i < sp.barbel; i++) {
+      const bl = (sp.barbelL || 24) * (1 - i * 0.25);
+      mouth += `<path d="M${x0 + 6 + i * 6},${my + 2} q${-bl * 0.3},${bl * 0.5} ${-bl * 0.4},${bl}" fill="none" stroke="${bc}" stroke-width="${2.4 - i * 0.4}" stroke-linecap="round"/>`;
+    }
+  }
+  const er = sp.eyeR ?? 9, iris = sp.iris || '#D8B45A';
+  const eye = `<circle cx="${f1(ex)}" cy="${f1(ey)}" r="${f1(er + 3)}" fill="${ln}" opacity="0.18"/><circle cx="${f1(ex)}" cy="${f1(ey)}" r="${f1(er + 1)}" fill="${iris}" stroke="${ln}" stroke-width="1.2"/><circle cx="${f1(ex + 0.5)}" cy="${f1(ey + 0.3)}" r="${f1(er * 0.6)}" fill="#0B0C10"/><ellipse cx="${f1(ex - er * 0.25)}" cy="${f1(ey - er * 0.35)}" rx="${f1(er * 0.28)}" ry="${f1(er * 0.2)}" fill="#FFF" opacity="0.9"/>`;
+  const stops = sp.grad.map((c, i) => `<stop offset="${(i / (sp.grad.length - 1)) * 100}%" stop-color="${c}"/>`).join('');
+  const ctx = { top, bot, x0, x1, cy, yAt, ex, ey, tx, H, L };
+  const over = typeof sp.over === 'function' ? sp.over(ctx) : '';
+  const deco = typeof sp.deco === 'function' ? sp.deco(ctx) : '';
+  const sc = sp.scale ?? 8;
+  const defs = `<linearGradient id="${id}g" x1="0" y1="0" x2="0" y2="1">${stops}</linearGradient>
+<linearGradient id="${id}s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF" stop-opacity="0"/><stop offset="0.42" stop-color="#FFF" stop-opacity="0.32"/><stop offset="0.55" stop-color="#FFF" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="0.12"/></linearGradient>
+<radialGradient id="${id}r" cx="0.42" cy="0.42" r="0.62"><stop offset="0.55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="0.22"/></radialGradient>
+<linearGradient id="${id}tg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#000" stop-opacity="0.15"/><stop offset="1" stop-color="#FFF" stop-opacity="0.15"/></linearGradient>
+<pattern id="${id}sp" width="${sc}" height="${sc * 0.8}" patternUnits="userSpaceOnUse" patternTransform="rotate(-8)"><path d="M0,${sc * 0.4} a${sc / 2},${sc * 0.45} 0 0 1 ${sc},0 M${-sc / 2},${sc * 0.8} a${sc / 2},${sc * 0.45} 0 0 1 ${sc},0 M${sc / 2},${sc * 0.8} a${sc / 2},${sc * 0.45} 0 0 1 ${sc},0" fill="none" stroke="${ln}" stroke-width="0.7"/></pattern>
+<clipPath id="${id}c"><path d="${body}"/></clipPath>`;
+  return svgWrap(`${fins}${tailSvg}
+<path d="${body}" fill="url(#${id}g)"/>
+<g clip-path="url(#${id}c)">${deco}<rect x="${x0 + L * 0.2}" y="0" width="${L}" height="${FISH_VB.h}" fill="url(#${id}sp)" opacity="${sp.scaleOp ?? 0.22}"/><path d="${body}" fill="url(#${id}s)"/><path d="${body}" fill="url(#${id}r)"/>${gill}</g>
+<path d="${body}" fill="none" stroke="${ln}" stroke-width="2"/>
+${over}${mouth}${pec}${eye}`, defs);
+}
+
+// ---------- イカ（あしが ひだり、どうが みぎ）----------
+function drawSquid(sp) {
+  const id = 'f' + (++_fid), ln = sp.line, cy = 110;
+  const mx0 = 160, mx1 = sp.mantleEnd || 410, mw = sp.mantleW || 40;
+  // どう（とがった さき）
+  const mantle = `M${mx0},${cy - mw} C${mx0 + 90},${cy - mw - 4} ${mx1 - 60},${cy - mw * 0.55} ${mx1},${cy} C${mx1 - 60},${cy + mw * 0.55} ${mx0 + 90},${cy + mw + 4} ${mx0},${cy + mw} Q${mx0 - 12},${cy} ${mx0},${cy - mw} Z`;
+  let fins = '';
+  if (sp.finType === 'full') fins = `M${mx0 + 10},${cy - mw + 2} C${mx0 + 80},${cy - mw - 40} ${mx1 - 40},${cy - 40} ${mx1 + 6},${cy} C${mx1 - 40},${cy + 40} ${mx0 + 80},${cy + mw + 40} ${mx0 + 10},${cy + mw - 2} Z`;
+  else if (sp.finType === 'frill') fins = `M${mx0 + 6},${cy - mw + 1} C${mx0 + 80},${cy - mw - 16} ${mx1 - 30},${cy - mw * 0.5 - 12} ${mx1 + 4},${cy} C${mx1 - 30},${cy + mw * 0.5 + 12} ${mx0 + 80},${cy + mw + 16} ${mx0 + 6},${cy + mw - 1} Z`;
+  else fins = `M${mx1 - 70},${cy - mw * 0.45} L${mx1 - 10},${cy - mw - 22} L${mx1 + 8},${cy} L${mx1 - 10},${cy + mw + 22} L${mx1 - 70},${cy + mw * 0.45} Z`;
+  // あし 8ほん ＋ しょくわん 2ほん
+  let arms = '';
+  for (let i = 0; i < 8; i++) {
+    const a = (i - 3.5) / 3.5, len = (sp.armL || 90) * (0.75 + 0.25 * (1 - Math.abs(a)));
+    const y0 = cy + a * 16, y1 = cy + a * 34 + Math.sin(i * 1.7) * 6;
+    arms += `<path d="M125,${f1(y0)} Q${f1(125 - len * 0.5)},${f1(y0 + a * 18)} ${f1(125 - len)},${f1(y1)}" fill="none" stroke="${sp.armColor || sp.grad[1]}" stroke-width="${f1(9 - Math.abs(a) * 2)}" stroke-linecap="round"/>`;
+  }
+  const tl = sp.tentL || 150;
+  const tent = [-1, 1].map(s => `<path d="M122,${cy + s * 6} Q${125 - tl * 0.5},${cy + s * 30} ${125 - tl},${cy + s * 12}" fill="none" stroke="${sp.armColor || sp.grad[1]}" stroke-width="4" stroke-linecap="round"/><ellipse cx="${125 - tl + 6}" cy="${cy + s * 13}" rx="12" ry="5" fill="${sp.armColor || sp.grad[1]}"/>`).join('');
+  const head = `M118,${cy - 26} Q150,${cy - 34} 166,${cy - mw * 0.8} L166,${cy + mw * 0.8} Q150,${cy + 34} 118,${cy + 26} Q108,${cy} 118,${cy - 26} Z`;
+  const r = rnd(sp.seed || 3); let dots = '';
+  for (let i = 0; i < (sp.dots ?? 70); i++) dots += `<circle cx="${f1(mx0 + (mx1 - mx0) * r())}" cy="${f1(cy + (r() - 0.5) * mw * 1.9)}" r="${f1(1 + r() * 2.2)}" fill="${sp.dotColor || '#8A3B2A'}" opacity="0.55"/>`;
+  const stops = sp.grad.map((c, i) => `<stop offset="${(i / (sp.grad.length - 1)) * 100}%" stop-color="${c}"/>`).join('');
+  const defs = `<linearGradient id="${id}g" x1="0" y1="0" x2="0" y2="1">${stops}</linearGradient><clipPath id="${id}c"><path d="${mantle}"/></clipPath>
+<radialGradient id="${id}r" cx="0.4" cy="0.35" r="0.7"><stop offset="0.5" stop-color="#FFF" stop-opacity="0.25"/><stop offset="1" stop-color="#000" stop-opacity="0.15"/></radialGradient>`;
+  return svgWrap(`${tent}${arms}<path d="${fins}" fill="${sp.finColor || sp.grad[2]}" opacity="0.85" stroke="${ln}" stroke-width="1.4"/>
+<path d="${mantle}" fill="url(#${id}g)"/><g clip-path="url(#${id}c)">${dots}${sp.deco ? sp.deco({ mx0, mx1, mw, cy }) : ''}<path d="${mantle}" fill="url(#${id}r)"/></g><path d="${mantle}" fill="none" stroke="${ln}" stroke-width="2"/>
+<path d="${head}" fill="${sp.grad[1]}" stroke="${ln}" stroke-width="1.8"/>
+<circle cx="140" cy="${cy - 8}" r="12" fill="${sp.iris || '#E8E0C8'}" stroke="${ln}" stroke-width="1.4"/><ellipse cx="139" cy="${cy - 8}" rx="5" ry="7" fill="#101114"/><circle cx="136" cy="${cy - 12}" r="2.6" fill="#FFF"/>`, defs);
+}
+
+// ---------- タコ ----------
+function drawOcto(sp) {
+  const id = 'f' + (++_fid), ln = sp.line;
+  const head = `M250,118 C232,70 268,22 330,24 C392,26 418,74 404,112 C394,140 352,150 312,146 C286,144 258,140 250,118 Z`;
+  let arms = '';
+  const r = rnd(sp.seed || 9);
+  const order = [0, 7, 1, 6, 2, 5, 3, 4];
+  order.forEach((i, n) => {
+    const a = i / 7, back = n < 4;
+    const sx = 262 + a * 70, sy = 128 + Math.sin(a * Math.PI) * 12;
+    const ex = 24 + a * 300 + (r() - 0.5) * 20, ey = 168 + (1 - Math.abs(a - 0.5) * 2) * 30 + (r() - 0.5) * 14;
+    const c1x = sx - 10 - a * 10, c1y = sy + 70, c2x = ex + 50 - a * 40, c2y = ey + 30;
+    const curl = (a < 0.5 ? -1 : 1);
+    const d = `M${f1(sx)},${f1(sy)} C${f1(c1x)},${f1(c1y)} ${f1(c2x)},${f1(c2y)} ${f1(ex)},${f1(ey)} q${f1(-14 * curl)},${f1(-4)} ${f1(-10 * curl)},${f1(-16)} q${f1(4 * curl)},${f1(-6)} ${f1(10 * curl)},${f1(-2)}`;
+    const w = back ? 11 : 15, col = back ? sp.grad[0] : sp.grad[1];
+    arms += `<path d="${d}" fill="none" stroke="${ln}" stroke-width="${w + 3}" stroke-linecap="round" stroke-linejoin="round"/><path d="${d}" fill="none" stroke="${col}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>`;
+    for (let k = 2; k < 9; k++) { const t = k / 10, u = 1 - t; const qx = u * u * u * sx + 3 * u * u * t * c1x + 3 * u * t * t * c2x + t * t * t * ex, qy = u * u * u * sy + 3 * u * u * t * c1y + 3 * u * t * t * c2y + t * t * t * ey; arms += `<circle cx="${f1(qx)}" cy="${f1(qy + w * 0.3)}" r="${f1(w * 0.26 * (1 - t * 0.5))}" fill="${sp.sucker || '#F3D6C8'}" opacity="${back ? 0.6 : 1}"/>`; }
+  });
+  let dots = ''; for (let i = 0; i < 60; i++) dots += `<circle cx="${f1(250 + r() * 160)}" cy="${f1(24 + r() * 125)}" r="${f1(1.5 + r() * 3)}" fill="${sp.dotColor || '#6B2E22'}" opacity="0.4"/>`;
+  const stops = sp.grad.map((c, i) => `<stop offset="${(i / (sp.grad.length - 1)) * 100}%" stop-color="${c}"/>`).join('');
+  const defs = `<linearGradient id="${id}g" x1="0" y1="0" x2="0" y2="1">${stops}</linearGradient><clipPath id="${id}c"><path d="${head}"/></clipPath>
+<radialGradient id="${id}r" cx="0.45" cy="0.3" r="0.7"><stop offset="0.3" stop-color="#FFF" stop-opacity="0.3"/><stop offset="1" stop-color="#000" stop-opacity="0.2"/></radialGradient>`;
+  return svgWrap(`${arms}<path d="${head}" fill="url(#${id}g)"/><g clip-path="url(#${id}c)">${dots}<path d="${head}" fill="url(#${id}r)"/></g><path d="${head}" fill="none" stroke="${ln}" stroke-width="2"/>
+<ellipse cx="276" cy="108" rx="13" ry="11" fill="${sp.iris || '#F0D9A0'}" stroke="${ln}" stroke-width="1.4"/><rect x="268" y="105" width="16" height="6" rx="3" fill="#121316"/><circle cx="272" cy="103" r="2.4" fill="#FFF"/>`, defs);
+}
+
+// ---------- ヒラメ・カレイ（うえから みた かたち）----------
+function drawFlat(sp) {
+  const id = 'f' + (++_fid), ln = sp.line, cy = 110;
+  const body = `M38,${cy} C48,${cy - 78} 300,${cy - 84} 336,${cy - 8} L336,${cy + 8} C300,${cy + 84} 48,${cy + 78} 38,${cy} Z`;
+  const fringe = `M52,${cy - 14} C70,${cy - 102} 300,${cy - 104} 340,${cy - 14} L340,${cy + 14} C300,${cy + 104} 70,${cy + 102} 52,${cy + 14} Z`;
+  const tail = sp.tail === 'lunate' ? `M330,${cy - 10} Q370,${cy - 40} 418,${cy - 62} Q392,${cy} 418,${cy + 62} Q370,${cy + 40} 330,${cy + 10} Z` : `M330,${cy - 12} Q372,${cy - 52} 414,${cy - 40} Q426,${cy} 414,${cy + 40} Q372,${cy + 52} 330,${cy + 12} Z`;
+  let rays = ''; for (let i = 0; i < 46; i++) { const t = i / 45, x = 60 + t * 270; rays += `<line x1="${f1(x)}" y1="${cy - 70}" x2="${f1(x + 4)}" y2="${cy - 104}"/><line x1="${f1(x)}" y1="${cy + 70}" x2="${f1(x + 4)}" y2="${cy + 104}"/>`; }
+  const r = rnd(sp.seed || 5); let spots = '';
+  for (let i = 0; i < (sp.spots ?? 40); i++) spots += `<ellipse cx="${f1(70 + r() * 250)}" cy="${f1(cy + (r() - 0.5) * 120)}" rx="${f1(3 + r() * 7)}" ry="${f1(2 + r() * 5)}" fill="${i % 3 ? sp.spot1 || '#4A3A28' : sp.spot2 || '#E8DCC0'}" opacity="0.45"/>`;
+  const stops = sp.grad.map((c, i) => `<stop offset="${(i / (sp.grad.length - 1)) * 100}%" stop-color="${c}"/>`).join('');
+  const defs = `<radialGradient id="${id}g" cx="0.45" cy="0.45" r="0.6">${stops}</radialGradient><clipPath id="${id}c"><path d="${body}"/></clipPath><clipPath id="${id}fc"><path d="${fringe}"/></clipPath>`;
+  const eyeY = sp.eyeSide === 'right' ? 1 : -1;
+  const eye = (x, y) => `<circle cx="${x}" cy="${y}" r="9" fill="${sp.iris || '#D9C27A'}" stroke="${ln}" stroke-width="1.3"/><circle cx="${x}" cy="${y}" r="5" fill="#0D0E11"/><circle cx="${x - 2}" cy="${y - 2}" r="1.8" fill="#FFF"/>`;
+  const mouth = sp.bigMouth ? `<path d="M40,${cy + 2} q22,${eyeY * -4} 40,${eyeY * -10}" fill="none" stroke="${ln}" stroke-width="2.4" stroke-linecap="round"/>` : `<path d="M40,${cy} q8,${eyeY * -3} 14,${eyeY * -6}" fill="none" stroke="${ln}" stroke-width="2" stroke-linecap="round"/>`;
+  return svgWrap(`<path d="${fringe}" fill="${sp.finColor}"/><g clip-path="url(#${id}fc)" stroke="${ln}" stroke-width="1" opacity="0.3">${rays}</g><path d="${fringe}" fill="none" stroke="${ln}" stroke-width="1.4"/>
+<path d="${tail}" fill="${sp.finColor}" stroke="${ln}" stroke-width="1.6"/>
+<path d="${body}" fill="url(#${id}g)"/><g clip-path="url(#${id}c)">${spots}</g><path d="${body}" fill="none" stroke="${ln}" stroke-width="2"/>
+<path d="M90,${cy - 60} Q110,${cy} 90,${cy + 60}" fill="none" stroke="${ln}" stroke-width="1.6" opacity="0.35"/>
+<path d="M95,${cy} C150,${cy - 26} 260,${cy - 4} 330,${cy}" fill="none" stroke="${ln}" stroke-width="1.4" opacity="0.4"/>
+${mouth}${eye(70, cy + eyeY * 14)}${eye(86, cy + eyeY * 32)}`, defs);
+}
+
+// ---------- エビ（テナガエビ）----------
+function drawShrimp(sp) {
+  const id = 'f' + (++_fid), ln = sp.line, cy = 112;
+  let segs = '';
+  const pts = [[150, cy], [190, cy - 4], [228, cy - 2], [262, cy + 6], [292, cy + 18], [316, cy + 34]];
+  pts.forEach(([x, y], i) => { const r = 30 - i * 3.5; segs += `<ellipse cx="${x}" cy="${y}" rx="${r + 6}" ry="${r}" fill="url(#${id}g)" stroke="${ln}" stroke-width="1.5"/>`; });
+  const tail = `M318,${cy + 44} L360,${cy + 40} L372,${cy + 64} L330,${cy + 64} Z M322,${cy + 48} L350,${cy + 76} L330,${cy + 82} Z`;
+  const cara = `M70,${cy - 4} Q80,${cy - 34} 130,${cy - 34} Q170,${cy - 32} 172,${cy} Q170,${cy + 30} 120,${cy + 30} Q80,${cy + 28} 70,${cy - 4} Z`;
+  const claw = (s) => `<path d="M100,${cy + 20 * s} Q60,${cy + 50 * s} 10,${cy + 40 * s}" fill="none" stroke="${ln}" stroke-width="7" stroke-linecap="round"/><path d="M100,${cy + 20 * s} Q60,${cy + 50 * s} 10,${cy + 40 * s}" fill="none" stroke="${sp.grad[0]}" stroke-width="4.5" stroke-linecap="round"/><path d="M16,${cy + 40 * s} q-14,${-6 * s} -14,${-14 * s} M16,${cy + 40 * s} q-14,${4 * s} -12,${12 * s}" stroke="${ln}" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+  let legs = ''; for (let i = 0; i < 5; i++) legs += `<path d="M${130 + i * 26},${cy + 26} l-6,26" stroke="${ln}" stroke-width="2" stroke-linecap="round"/>`;
+  const stops = sp.grad.map((c, i) => `<stop offset="${(i / (sp.grad.length - 1)) * 100}%" stop-color="${c}"/>`).join('');
+  return svgWrap(`<path d="M78,${cy - 18} Q20,${cy - 80} -10,${cy - 60}" fill="none" stroke="${ln}" stroke-width="1.6"/><path d="M80,${cy - 22} Q60,${cy - 100} 120,${cy - 110}" fill="none" stroke="${ln}" stroke-width="1.4"/>
+${claw(1)}${claw(-0.4)}${legs}<path d="${tail}" fill="${sp.grad[1]}" stroke="${ln}" stroke-width="1.5"/>${segs.split('</ellipse>').reverse().join('')}
+<path d="${cara}" fill="url(#${id}g)" stroke="${ln}" stroke-width="1.8"/><path d="M72,${cy - 10} L40,${cy - 16}" stroke="${ln}" stroke-width="3" stroke-linecap="round"/>
+<circle cx="88" cy="${cy - 18}" r="7" fill="#15161B"/><circle cx="86" cy="${cy - 20}" r="2" fill="#FFF"/>`, `<linearGradient id="${id}g" x1="0" y1="0" x2="0" y2="1">${stops}</linearGradient>`);
+}
+
+// ---------- もようの どうぐ ----------
+const all = (...fs) => (c) => fs.map(f => f(c)).join('');
+const bandLine = (k, color, w, op = 0.85, from = 20) => ({ top, bot, x0, x1, yAt }) => {
+  const p = []; for (let x = x0 + from; x <= x1 + 6; x += 8) p.push([x, yAt(top, x) * (1 - k) + yAt(bot, x) * k]);
+  return `<path d="${smooth(p)}" fill="none" stroke="${color}" stroke-width="${w}" stroke-linecap="round" opacity="${op}"/>`;
+};
+const spots = (seed, n, c, rMin, rMax, area) => (ctx) => {
+  const r = rnd(seed); let o = '';
+  for (let i = 0; i < n; i++) {
+    const x = ctx.x0 + (ctx.x1 - ctx.x0) * (area.x0 + (area.x1 - area.x0) * r());
+    const t = ctx.yAt(ctx.top, x), b = ctx.yAt(ctx.bot, x);
+    o += `<circle cx="${f1(x)}" cy="${f1(t + (b - t) * (area.y0 + (area.y1 - area.y0) * r()))}" r="${f1(rMin + (rMax - rMin) * r())}" fill="${c}"/>`;
+  }
+  return o;
+};
+const vbars = (n, from, to, c, op, w = 12, k0 = 0, k1 = 1) => ({ top, bot, x0, x1, yAt }) => {
+  let o = ''; for (let i = 0; i < n; i++) { const x = x0 + (x1 - x0) * (from + (to - from) * i / Math.max(1, n - 1)); const t = yAt(top, x), b = yAt(bot, x); o += `<rect x="${f1(x - w / 2)}" y="${f1(t + (b - t) * k0)}" width="${w}" height="${f1((b - t) * (k1 - k0))}" rx="${w / 2}" fill="${c}" opacity="${op}"/>`; } return o;
+};
+const blotch = (seed, n, c, op, rx = 14, ry = 10) => (ctx) => {
+  const r = rnd(seed); let o = '';
+  for (let i = 0; i < n; i++) { const x = ctx.x0 + (ctx.x1 - ctx.x0) * (0.12 + 0.85 * r()); const t = ctx.yAt(ctx.top, x), b = ctx.yAt(ctx.bot, x); o += `<ellipse cx="${f1(x)}" cy="${f1(t + (b - t) * r() * 0.8)}" rx="${f1(rx * (0.6 + r()))}" ry="${f1(ry * (0.6 + r()))}" fill="${c}" opacity="${op}"/>`; }
+  return o;
+};
+const finlets = (c, n = 7) => ({ top, bot, x0, x1, yAt }) => { let o = ''; for (let i = 0; i < n; i++) { const x = x0 + (x1 - x0) * (0.7 + i * 0.038); o += `<path d="M${f1(x)},${f1(yAt(top, x) + 2)} l6,-10 l4,10 Z M${f1(x)},${f1(yAt(bot, x) - 2)} l6,10 l4,-10 Z" fill="${c}" stroke="#13203A" stroke-width="1" stroke-linejoin="round"/>`; } return o; };
+const spines = (from, to, n, h, c, op = 0.7) => ({ top, x0, x1, yAt }) => { let o = ''; for (let i = 0; i < n; i++) { const x = x0 + (x1 - x0) * (from + (to - from) * i / (n - 1)), y = yAt(top, x); o += `<line x1="${f1(x)}" y1="${f1(y)}" x2="${f1(x + 5)}" y2="${f1(y - h)}" stroke="${c}" stroke-width="1.5" opacity="${op}"/>`; } return o; };
+const tailSpots = (seed, c) => ({ x1, cy, tx, H }) => { const r = rnd(seed); let o = ''; for (let i = 0; i < 16; i++) o += `<circle cx="${f1(x1 + 6 + (tx - x1 - 12) * r())}" cy="${f1(cy + (r() - 0.5) * H * 1.2)}" r="${f1(1.3 + r() * 1.2)}" fill="${c}"/>`; return o; };
+
+// =========================================================
+// ▼▼ さかなの データ ▼▼
+//   a: とれる ばしょ（seto せとうちかい / nihon にほんかい / taihei たいへいよう / hokkai ほっかいどう / kawa かわ）
+//   m: つりかた（uki うきづり / lure ルアー / egi エギング）
+//   band: すんでる ふかさ（top うえ / mid まんなか / bot そこ）
+//   sz: おおきさ cm ／ p: ふつうの おおきさの ときの ねだん（えん）／ shun: しゅん（つき）
+//   t: よく つれる じかん（night よる）／ pow: ひく ちから 1〜5 ／ rare: めずらしさ 1〜5
+// =========================================================
+const AP = {
+  jack: (o) => ({ ped: 6, dt: 40, db: 36, ta: 0.95, tb: 1.2, ba: 0.95, bb: 1.25, tail: 'fork', tailL: 58, tailH: 50, eyeX: 0.11, eyeY: -5, eyeR: 10, mouth: 15, scale: 6, scaleOp: 0.15,
+    fins: [{ edge: 'top', from: 0.3, to: 0.42, h: 22, peak: 0.25 }, { edge: 'top', from: 0.44, to: 0.8, h: 14, peak: 0.06, sweep: 0.3 }, { edge: 'bot', from: 0.5, to: 0.8, h: 12, peak: 0.08 }], ...o }),
+  tuna: (o) => ({ ped: 6, dt: 52, db: 50, ta: 0.75, tb: 1.25, ba: 0.8, bb: 1.25, tail: 'lunate', tailL: 70, tailH: 62, eyeX: 0.11, eyeY: -6, eyeR: 9, mouth: 14, mouthY: 2, pecL: 50, pecY: 6, scale: 5, scaleOp: 0.12,
+    fins: [{ edge: 'top', from: 0.3, to: 0.5, h: 22, peak: 0.08, sweep: 0.4, backH: 0.1 }, { edge: 'top', from: 0.56, to: 0.66, h: 30, peak: 0.25, sweep: 0.7 }, { edge: 'bot', from: 0.57, to: 0.67, h: 28, peak: 0.25, sweep: 0.7 }], ...o }),
+  bream: (o) => ({ ped: 7, dt: 62, db: 50, ta: 0.6, tb: 1.25, ba: 1.0, bb: 1.1, tail: 'fork', tailL: 60, tailH: 52, mouthY: 14, eyeX: 0.15, eyeY: -12, eyeR: 10, mouth: 10, scale: 10, scaleOp: 0.25,
+    fins: [{ edge: 'top', from: 0.26, to: 0.8, h: 20, peak: 0.1, sweep: 0.1, backH: 0.55, concave: 0.05 }, { edge: 'bot', from: 0.6, to: 0.8, h: 22, peak: 0.12 }, { edge: 'bot', from: 0.3, to: 0.36, h: 18, peak: 0.3 }], ...o }),
+  rock: (o) => ({ ped: 10, dt: 42, db: 34, ta: 0.7, tb: 1.1, ba: 0.9, bb: 1.1, tail: 'round', tailL: 44, tailH: 34, eyeX: 0.15, eyeY: -14, eyeR: 12, mouth: 20, mouthY: 4, scale: 7, scaleOp: 0.2,
+    fins: [{ edge: 'top', from: 0.24, to: 0.82, h: 24, peak: 0.1, sweep: 0.1, backH: 0.7, concave: 0.15 }, { edge: 'bot', from: 0.62, to: 0.8, h: 18, peak: 0.2 }, { edge: 'bot', from: 0.3, to: 0.36, h: 18, peak: 0.3 }], ...o }),
+  trout: (o) => ({ ped: 7, dt: 33, db: 30, ta: 1.0, tb: 1.2, ba: 1.0, bb: 1.2, tail: 'trunc', tailL: 46, tailH: 34, eyeX: 0.1, eyeY: -4, eyeR: 8, mouth: 15, scale: 4, scaleOp: 0.15,
+    fins: [{ edge: 'top', from: 0.36, to: 0.5, h: 24, peak: 0.2 }, { edge: 'top', from: 0.8, to: 0.85, h: 9, peak: 0.6 }, { edge: 'bot', from: 0.66, to: 0.8, h: 15, peak: 0.12 }, { edge: 'bot', from: 0.46, to: 0.53, h: 13, peak: 0.3 }], ...o }),
+  carp: (o) => ({ ped: 12, dt: 46, db: 38, ta: 0.75, tb: 1.2, ba: 0.9, bb: 1.2, tail: 'fork', tailL: 54, tailH: 44, eyeX: 0.12, eyeY: -6, eyeR: 7, mouth: 10, mouthY: 6, scale: 13, scaleOp: 0.32,
+    fins: [{ edge: 'top', from: 0.36, to: 0.72, h: 20, peak: 0.08, sweep: 0.2, backH: 0.4 }, { edge: 'bot', from: 0.68, to: 0.78, h: 16, peak: 0.2 }, { edge: 'bot', from: 0.46, to: 0.52, h: 14, peak: 0.3 }], ...o }),
+  bass: (o) => ({ ped: 10, dt: 42, db: 38, ta: 0.85, tb: 1.2, ba: 0.95, bb: 1.2, tail: 'trunc', tailL: 48, tailH: 40, eyeX: 0.13, eyeY: -8, eyeR: 9, mouth: 26, mouthY: 4, scale: 8, scaleOp: 0.22,
+    fins: [{ edge: 'top', from: 0.28, to: 0.52, h: 24, peak: 0.15, sweep: 0.2, backH: 0.35 }, { edge: 'top', from: 0.54, to: 0.76, h: 22, peak: 0.3 }, { edge: 'bot', from: 0.62, to: 0.78, h: 18, peak: 0.2 }, { edge: 'bot', from: 0.32, to: 0.38, h: 16, peak: 0.3 }], ...o }),
+  slim: (o) => ({ ped: 6, dt: 24, db: 22, ta: 1.1, tb: 1.2, ba: 1.1, bb: 1.2, tail: 'fork', tailL: 46, tailH: 32, eyeX: 0.08, eyeY: -3, eyeR: 7, mouth: 10, scale: 5, scaleOp: 0.18,
+    fins: [{ edge: 'top', from: 0.34, to: 0.46, h: 16, peak: 0.25 }, { edge: 'top', from: 0.5, to: 0.7, h: 12, peak: 0.15 }, { edge: 'bot', from: 0.55, to: 0.75, h: 11, peak: 0.12 }], ...o }),
+  eel: (o) => ({ ped: 3, dt: 16, db: 14, ta: 0.5, tb: 0.9, ba: 0.5, bb: 0.9, tail: 'none', eyeX: 0.06, eyeY: -4, eyeR: 5, mouth: 12, pecL: 16, pecY: 4, pecX: 0.13, gillX: 0.12, scaleOp: 0, gill: false,
+    fins: [{ edge: 'top', from: 0.32, to: 1.0, h: 8, peak: 0.02, sweep: 0.2, backH: 0.6, back: 6 }, { edge: 'bot', from: 0.45, to: 1.0, h: 8, peak: 0.02, sweep: 0.2, backH: 0.6, back: 6 }], ...o }),
+  puffer: (o) => ({ ped: 6, dt: 40, db: 44, ta: 0.7, tb: 1.6, ba: 0.7, bb: 1.6, tail: 'round', tailL: 36, tailH: 26, eyeX: 0.13, eyeY: -12, eyeR: 9, mouth: 6, mouthY: 2, scaleOp: 0, pecL: 22, pecY: -2, pecX: 0.3,
+    fins: [{ edge: 'top', from: 0.66, to: 0.74, h: 14, peak: 0.4 }, { edge: 'bot', from: 0.68, to: 0.75, h: 12, peak: 0.4 }], ...o }),
+};
+
+const SPECIES = [
+  // ---------------- せとうちかい ----------------
+  { k: 'madai', n: 'マダイ', a: ['seto', 'nihon', 'taihei'], m: ['uki', 'lure'], band: 'bot', sz: [25, 90], p: 900, shun: [3, 4, 5, 11], pow: 3, rare: 2,
+    info: 'あかい からだに あおい てんてん。「さかなの おうさま」と よばれるよ', eat: 'さしみ・たいめし・しおやき',
+    art: AP.bream({ iris: '#E7B04A', scale: 11, scaleOp: 0.28, grad: ['#D9476A', '#EB6F87', '#F6A8B2', '#FCE1E2', '#FFF3F1'], line: '#8F2843', finColor: '#F08A9A', tailColor: '#E86F86',
+      over: spines(0.27, 0.72, 11, 20, '#B23A58'), tailDeco: ({ x1, cy, tx, H }) => `<path d="M${tx},${cy - H} Q${tx - 8},${cy - H * 0.35} ${x1 + 30},${cy} Q${tx - 8},${cy + H * 0.35} ${tx},${cy + H}" fill="none" stroke="#4A2330" stroke-width="4" opacity="0.55"/>`,
+      deco: spots(7, 26, '#5BC3E6', 1.8, 3.2, { x0: 0.3, x1: 0.85, y0: 0.08, y1: 0.42 }) }) },
+  { k: 'kurodai', n: 'クロダイ', a: ['seto', 'nihon'], m: ['uki', 'lure'], band: 'bot', sz: [25, 55], p: 350, shun: [12, 1, 2], pow: 3, rare: 2,
+    info: 'にしにほんでは「チヌ」と よぶよ。かしこくて なかなか つれない', eat: 'しおやき・さしみ',
+    art: AP.bream({ iris: '#C8A050', grad: ['#3E4650', '#5E6874', '#A9B1B8', '#DDE1E3', '#F2F3F4'], line: '#252B31', finColor: '#4A525C', tailColor: '#4A525C', over: spines(0.27, 0.72, 11, 20, '#252B31', 0.5), deco: vbars(6, 0.3, 0.85, '#252B31', 0.08, 14) }) },
+  { k: 'mebaru', n: 'メバル', a: ['seto', 'nihon'], m: ['uki', 'lure'], band: 'mid', sz: [12, 30], p: 220, shun: [2, 3, 4], t: 'night', pow: 1, rare: 1,
+    info: 'めが とっても おおきい。よるに うえを むいて えさを まってるよ', eat: 'につけ・からあげ',
+    art: AP.rock({ tail: 'trunc', eyeR: 15, iris: '#D8B860', grad: ['#4A4038', '#6E6254', '#B5A894', '#E4DCCD', '#F4EFE6'], line: '#2E2620', finColor: '#6B5E50', deco: vbars(5, 0.3, 0.85, '#2E2620', 0.18, 16, 0, 0.6) }) },
+  { k: 'kasago', n: 'カサゴ', a: ['seto', 'nihon', 'taihei'], m: ['uki', 'lure'], band: 'bot', sz: [12, 30], p: 260, shun: [12, 1, 2], pow: 1, rare: 1,
+    info: 'いわの すきまに かくれてる。あたまに トゲが いっぱい あるよ', eat: 'からあげ・みそしる',
+    art: AP.rock({ iris: '#E0A050', grad: ['#8A2E1C', '#B0482E', '#D88A62', '#F0C4A0', '#F8E2CC'], line: '#5A1C10', finColor: '#B85A3E', deco: all(blotch(4, 14, '#5A1C10', 0.35), spots(8, 30, '#FFF2DC', 1.5, 3.5, { x0: 0.2, x1: 0.95, y0: 0.1, y1: 0.8 })), over: spines(0.26, 0.6, 9, 18, '#5A1C10') }) },
+  { k: 'aji', n: 'マアジ', a: ['seto', 'nihon', 'taihei'], m: ['uki'], band: 'mid', sz: [15, 40], p: 90, shun: [5, 6, 7, 8], pow: 1, rare: 1,
+    info: 'しっぽの ちかくに「ぜいご」という トゲトゲの うろこが あるよ', eat: 'アジフライ・たたき・ひもの',
+    art: AP.jack({ iris: '#D9C27A', eyeR: 12, mouth: 16, scale: 7, scaleOp: 0.22, grad: ['#4C6A55', '#7E9A84', '#C6D3CB', '#EEF2EF', '#FAFBFA'], line: '#2F4537', finColor: '#C9C79A', tailColor: '#B7B68C',
+      deco: all(({ top, bot, x0, x1, yAt }) => {
+        const pts = []; for (let x = x0 + 70; x <= x1 + 4; x += 6) { const k = Math.min(1, Math.max(0, (x - (x0 + 120)) / 60)); pts.push([x, (yAt(top, x) * 0.62 + yAt(bot, x) * 0.38) * (1 - k) + (yAt(top, x) * 0.5 + yAt(bot, x) * 0.5) * k]); }
+        let o = `<path d="${smooth(pts)}" fill="none" stroke="#5B6E61" stroke-width="2" opacity="0.6"/>`;
+        pts.forEach(([x, y]) => { if (x > x0 + 150) o += `<path d="M${x - 3},${f1(y)} l3,-4 l3,4 l-3,4 Z" fill="#E7EEEA" stroke="#5B6E61" stroke-width="0.9"/>`; });
+        return o;
+      }, ({ x0, x1, top, yAt }) => { const x = x0 + (x1 - x0) * 0.23; return `<ellipse cx="${x}" cy="${f1(yAt(top, x) + 16)}" rx="5" ry="4" fill="#2A332D"/>`; }) }) },
+  { k: 'saba', n: 'マサバ', a: ['seto', 'nihon', 'taihei'], m: ['uki', 'lure'], band: 'mid', sz: [25, 45], p: 150, shun: [9, 10, 11, 12], pow: 2, rare: 1,
+    info: 'せなかに なみなみの もようが あるよ。むれで およぐ', eat: 'しめさば・みそに・しおやき',
+    art: AP.tuna({ dt: 36, db: 33, tailL: 56, tailH: 44, tail: 'fork', iris: '#B8C0C8', grad: ['#1F5C5A', '#3D8A84', '#B9D3D4', '#EEF4F4', '#F9FBFB'], line: '#163E3D', finColor: '#7E9C9A', pecColor: '#5E8482',
+      fins: [{ edge: 'top', from: 0.3, to: 0.44, h: 18, peak: 0.2 }, { edge: 'top', from: 0.55, to: 0.64, h: 14, peak: 0.25 }, { edge: 'bot', from: 0.57, to: 0.66, h: 13, peak: 0.25 }],
+      over: finlets('#9AB0AE', 5), deco: ({ top, bot, x0, x1, yAt }) => { let o = ''; for (let i = 0; i < 16; i++) { const x = x0 + 60 + i * 17, y = yAt(top, x); o += `<path d="M${x},${f1(y + 2)} q6,10 -2,18 q-6,8 2,16" fill="none" stroke="#123A39" stroke-width="3.2" opacity="0.75"/>`; } return o; } }) },
+  { k: 'kisu', n: 'シロギス', a: ['seto', 'nihon'], m: ['uki'], band: 'bot', sz: [12, 28], p: 120, shun: [6, 7, 8], pow: 1, rare: 1,
+    info: 'すなはまの そこに いる。「うみの おじょうさま」と よばれるよ', eat: 'てんぷら',
+    art: AP.slim({ dt: 22, db: 20, ta: 1.2, mouth: 8, iris: '#D2C8B0', grad: ['#C9B79C', '#DDD0BB', '#F1EADF', '#FAF7F2', '#FFFFFF'], line: '#8A7A62', finColor: '#E6DCC8', tailColor: '#DCCFB6' }) },
+  { k: 'kawahagi', n: 'カワハギ', a: ['seto', 'nihon', 'taihei'], m: ['uki'], band: 'bot', sz: [15, 30], p: 300, shun: [10, 11, 12], pow: 2, rare: 2,
+    info: 'かわを べりっと はいで たべる。えさとりの めいじん', eat: 'きもあえ・さしみ・につけ',
+    art: { ped: 7, dt: 54, db: 50, ta: 0.85, tb: 1.15, ba: 0.9, bb: 1.15, tail: 'trunc', tailL: 40, tailH: 30, mouthY: 6, eyeX: 0.22, eyeY: -16, eyeR: 8, mouth: 6, scaleOp: 0, gillX: 0.3, pecX: 0.33, pecL: 22,
+      iris: '#C8B860', grad: ['#7E7E5E', '#A8A584', '#D3CFB6', '#ECE8D8'], line: '#4A4A34', finColor: '#C8C2A0',
+      fins: [{ edge: 'top', from: 0.5, to: 0.86, h: 16, peak: 0.15 }, { edge: 'bot', from: 0.5, to: 0.86, h: 16, peak: 0.15 }],
+      over: ({ top, x0, x1, yAt }) => { const x = x0 + (x1 - x0) * 0.28, y = yAt(top, x); return `<path d="M${x},${f1(y)} l6,-34 l4,0 l-2,34 Z" fill="#6A6A4E" stroke="#4A4A34" stroke-width="1.2"/>`; },
+      deco: blotch(12, 10, '#4A4A34', 0.25, 16, 12) } },
+  { k: 'kyusen', n: 'キュウセン', a: ['seto', 'nihon'], m: ['uki'], band: 'bot', sz: [12, 25], p: 70, shun: [6, 7, 8], pow: 1, rare: 1,
+    info: 'ベラの なかま。よるは すなに もぐって ねむるよ', eat: 'てんぷら・なんばんづけ',
+    art: AP.slim({ dt: 26, db: 22, tail: 'round', tailL: 38, tailH: 26, mouth: 8, iris: '#E0B050', grad: ['#4F8E6A', '#79B08E', '#D7E3C2', '#F3E9C8'], line: '#2E5A40', finColor: '#A8C890',
+      fins: [{ edge: 'top', from: 0.3, to: 0.82, h: 12, peak: 0.05, sweep: 0.1, backH: 0.7 }, { edge: 'bot', from: 0.55, to: 0.82, h: 11, peak: 0.05, backH: 0.7 }],
+      deco: all(bandLine(0.4, '#D45A6A', 3, 0.7, 30), bandLine(0.55, '#3A6EA0', 3, 0.6, 30), bandLine(0.7, '#D45A6A', 2.5, 0.5, 40)) }) },
+  { k: 'suzuki', n: 'スズキ', a: ['seto', 'nihon', 'taihei'], m: ['lure'], band: 'mid', sz: [40, 90], p: 600, shun: [6, 7, 8], pow: 3, rare: 2, grow: [[60, 'フッコ'], [999, 'スズキ']],
+    info: 'おおきく なると なまえが かわる「しゅっせうお」。ルアーで ねらうよ', eat: 'あらい・ムニエル・しおやき',
+    art: AP.bass({ tail: 'fork', iris: '#C8CCD2', grad: ['#4A5B6C', '#7D8E9E', '#C6D0D8', '#EEF2F4', '#FBFCFC'], line: '#2C3844', finColor: '#7E8A96', tailColor: '#6E7A86', deco: bandLine(0.4, '#5A6878', 1.6, 0.5, 70) }) },
+  { k: 'sawara', n: 'サワラ', a: ['seto', 'nihon'], m: ['lure'], band: 'top', sz: [50, 100], p: 1000, shun: [12, 1, 2, 4, 5], pow: 3, rare: 2, grow: [[60, 'サゴシ'], [999, 'サワラ']],
+    info: 'ほそながくて はが するどい。はるの せとうちの めいぶつ', eat: 'さいきょうやき・たたき',
+    art: AP.tuna({ dt: 28, db: 26, ta: 1.0, tb: 1.2, ba: 1.0, bb: 1.2, tail: 'fork', tailL: 56, tailH: 40, eyeR: 7, mouth: 18, iris: '#C8D0D8', grad: ['#2F4E6E', '#5A7EA0', '#C1D0DD', '#F0F4F7', '#FAFBFC'], line: '#1E344C', finColor: '#5A7290', pecColor: '#4A6280',
+      fins: [{ edge: 'top', from: 0.32, to: 0.6, h: 12, peak: 0.1 }, { edge: 'top', from: 0.62, to: 0.7, h: 14, peak: 0.25 }, { edge: 'bot', from: 0.62, to: 0.7, h: 13, peak: 0.25 }],
+      over: finlets('#8EA2B8', 6), deco: all(spots(21, 50, '#36506C', 1.8, 3, { x0: 0.25, x1: 0.95, y0: 0.2, y1: 0.55 })) }) },
+  { k: 'tachiuo', n: 'タチウオ', a: ['seto', 'taihei'], m: ['lure', 'uki'], band: 'mid', sz: [70, 130], p: 600, shun: [8, 9, 10], t: 'night', pow: 2, rare: 2,
+    info: 'かたなみたいに ぎんいろで ほそながい。たって およぐよ', eat: 'しおやき・ムニエル',
+    art: AP.eel({ ped: 1, dt: 22, db: 20, ta: 0.6, tb: 1.4, ba: 0.6, bb: 1.4, eyeR: 9, eyeX: 0.07, eyeY: -5, mouth: 18, iris: '#D8DDE2', grad: ['#A9B4C0', '#DDE3E8', '#F7F9FA', '#DDE3E8'], line: '#6E7A86', finColor: '#E6ECF0',
+      fins: [{ edge: 'top', from: 0.12, to: 1.0, h: 10, peak: 0.02, sweep: 0.2, backH: 0.4, op: 0.6 }],
+      over: ({ x0 }) => { let o = ''; for (let i = 0; i < 4; i++) o += `<path d="M${x0 + 4 + i * 6},${110 - 2} l2,-5 l2,5" fill="#FFF" stroke="#6E7A86" stroke-width="0.8"/>`; return o; } }) },
+  { k: 'buri', n: 'ブリ', a: ['seto', 'nihon', 'taihei'], m: ['lure'], band: 'mid', sz: [30, 100], p: 1600, shun: [12, 1, 2], pow: 4, rare: 2, grow: [[40, 'ツバス'], [60, 'ハマチ'], [80, 'メジロ'], [999, 'ブリ']], areaSz: { seto: [30, 70] },
+    info: 'おおきく なるたびに なまえが かわる「しゅっせうお」。ツバス→ハマチ→メジロ→ブリ', eat: 'ぶりしゃぶ・てりやき・おすし',
+    art: AP.jack({ dt: 40, db: 38, tailL: 64, tailH: 52, eyeR: 9, mouth: 14, iris: '#C9B24E', scale: 5, scaleOp: 0.12, grad: ['#2B5A6E', '#3D7F92', '#A9C9CF', '#E8EFF0', '#F8FAFA'], line: '#1B3D4B', finColor: '#C9B04A', tailColor: '#D6B83E',
+      fins: [{ edge: 'top', from: 0.32, to: 0.4, h: 12, peak: 0.3, color: '#3D6E80' }, { edge: 'top', from: 0.42, to: 0.75, h: 22, peak: 0.08, sweep: 0.3, backH: 0.2 }, { edge: 'bot', from: 0.6, to: 0.76, h: 18, peak: 0.1, sweep: 0.3 }],
+      deco: bandLine(0.45, '#F0CE3A', 9, 0.9, 22) }) },
+  { k: 'kusafugu', n: 'クサフグ', a: ['seto', 'nihon', 'taihei'], m: ['uki'], band: 'bot', sz: [10, 20], p: 10, pow: 1, rare: 1, poison: true,
+    info: 'どくが あるから たべちゃ だめ！おこると ぷくーっと ふくらむよ', eat: 'たべられない（どく）',
+    art: AP.puffer({ iris: '#7AC0A0', grad: ['#5E6B3E', '#7F8A56', '#E8E6D6', '#FFFFFF'], line: '#3A4426', finColor: '#C8C89A', deco: spots(33, 34, '#F4F2E0', 1.5, 3.2, { x0: 0.12, x1: 0.85, y0: 0.05, y1: 0.42 }) }) },
+  { k: 'makogarei', n: 'マコガレイ', a: ['seto'], m: ['uki'], band: 'bot', sz: [15, 40], p: 350, shun: [6, 7, 8], pow: 2, rare: 2,
+    info: '「ひだり ヒラメに みぎ カレイ」。めが みぎがわに あるよ', eat: 'につけ・からあげ',
+    art: { kind: 'flat', eyeSide: 'right', grad: ['#8A7A5A', '#6E5F44', '#5A4C36'], line: '#3A3020', finColor: '#7A6A4C', iris: '#D0C080', spots: 36 } },
+  { k: 'hirame', n: 'ヒラメ', a: ['seto', 'nihon', 'taihei', 'hokkai'], m: ['lure', 'uki'], band: 'bot', sz: [35, 90], p: 1600, shun: [12, 1, 2], pow: 3, rare: 3,
+    info: 'すなに かくれて まちぶせ。めが ひだりがわに あって、くちが おおきい', eat: 'さしみ・えんがわ・こぶじめ',
+    art: { kind: 'flat', eyeSide: 'left', bigMouth: true, grad: ['#7A6A4E', '#5E5038', '#4A3E2C'], line: '#2E2618', finColor: '#6A5A40', iris: '#D8C070', spots: 48, seed: 8 } },
+  { k: 'anago', n: 'マアナゴ', a: ['seto', 'nihon'], m: ['uki'], band: 'bot', sz: [30, 70], p: 350, shun: [6, 7, 8], t: 'night', pow: 2, rare: 2,
+    info: 'よるに すなから でてくる。よこに しろい てんてんが ならんでるよ', eat: 'あなごめし・てんぷら',
+    art: AP.eel({ iris: '#C8C0A8', grad: ['#6B5A44', '#8C7A60', '#D8CDB8', '#F2ECE0'], line: '#3E3222', finColor: '#A8957A', deco: ({ top, bot, x0, x1, yAt }) => { let o = ''; for (let x = x0 + 30; x < x1 - 10; x += 12) o += `<circle cx="${x}" cy="${f1(yAt(top, x) * 0.6 + yAt(bot, x) * 0.4)}" r="1.8" fill="#FFF" opacity="0.9"/>`; return o; } }) },
+  { k: 'haze', n: 'マハゼ', a: ['seto'], m: ['uki'], band: 'bot', sz: [8, 20], p: 50, shun: [9, 10, 11], pow: 1, rare: 1,
+    info: 'かこうの すなの うえに いる。こどもでも たくさん つれるよ', eat: 'てんぷら・かんろに',
+    art: AP.slim({ ped: 8, dt: 22, db: 20, ta: 0.7, tb: 1.1, ba: 0.8, bb: 1.1, tail: 'round', tailL: 36, tailH: 22, eyeX: 0.12, eyeY: -12, eyeR: 7, mouth: 14, iris: '#C8B890', grad: ['#9A8A68', '#B8A884', '#E2D8C2', '#F6F2EA'], line: '#5A4C34', finColor: '#C8BA98',
+      fins: [{ edge: 'top', from: 0.3, to: 0.42, h: 18, peak: 0.3 }, { edge: 'top', from: 0.48, to: 0.78, h: 14, peak: 0.1, backH: 0.6 }, { edge: 'bot', from: 0.52, to: 0.78, h: 11, peak: 0.1, backH: 0.6 }],
+      deco: blotch(15, 12, '#5A4C34', 0.35, 10, 7) }) },
+  { k: 'aoriika', n: 'アオリイカ', a: ['seto', 'taihei'], m: ['egi'], band: 'mid', sz: [20, 50], p: 1300, shun: [4, 5, 6, 9, 10], pow: 2, rare: 2,
+    info: 'イカの おうさま。からだの ふちに ぐるっと ひれが あるよ', eat: 'さしみ・いかそうめん',
+    art: { kind: 'squid', finType: 'full', grad: ['#C9A98E', '#D9BEA6', '#EADBCB'], line: '#6E4E38', finColor: '#E2CDB8', dotColor: '#7A3A22', armColor: '#D4B8A0' } },
+  { k: 'kouika', n: 'コウイカ', a: ['seto'], m: ['egi'], band: 'bot', sz: [15, 30], p: 550, shun: [2, 3, 4], pow: 2, rare: 2,
+    info: 'からだの なかに かたい「こう」が ある。すみを たくさん はくよ', eat: 'さしみ・すみに',
+    art: { kind: 'squid', finType: 'frill', mantleW: 48, mantleEnd: 380, grad: ['#7A6650', '#9A8468', '#C8B49A'], line: '#4A3A28', finColor: '#B8A488', dotColor: '#3A2A18', armColor: '#9A8468', armL: 70, tentL: 110,
+      deco: ({ mx0, mx1, mw, cy }) => { let o = ''; for (let x = mx0 + 20; x < mx1 - 30; x += 14) o += `<path d="M${x},${cy - mw} q6,${mw * 0.5} 0,${mw * 0.9}" stroke="#3A2A18" stroke-width="3" fill="none" opacity="0.45"/>`; return o; } } },
+  { k: 'madako', n: 'マダコ', a: ['seto', 'taihei'], m: ['egi'], band: 'bot', sz: [30, 70], p: 800, shun: [6, 7, 8], pow: 3, rare: 2,
+    info: 'あしが 8ほん。いわに すいつくから ひっぱるのが たいへん！', eat: 'たこやき・たこめし・さしみ',
+    art: { kind: 'octo', grad: ['#9C5A40', '#B87456', '#D59A7A'], line: '#5A2A18', sucker: '#F1D2C0' } },
+
+  // ---------------- にほんかい ----------------
+  { k: 'hiramasa', n: 'ヒラマサ', a: ['nihon', 'taihei'], m: ['lure'], band: 'mid', sz: [60, 120], p: 2800, shun: [6, 7, 8], pow: 5, rare: 3,
+    info: 'ブリに にてるけど もっと ちからもち。つりびとの あこがれ', eat: 'さしみ・おすし',
+    art: AP.jack({ dt: 36, db: 34, tailL: 66, tailH: 52, eyeR: 8, mouth: 14, iris: '#C9B24E', scale: 5, scaleOp: 0.12, grad: ['#2E5D72', '#4C8299', '#B9D2D8', '#EFF4F5', '#FAFCFC'], line: '#1B3D4B', finColor: '#A8A060', tailColor: '#BFAE5E',
+      fins: [{ edge: 'top', from: 0.32, to: 0.4, h: 10, peak: 0.3, color: '#3D6E80' }, { edge: 'top', from: 0.42, to: 0.76, h: 22, peak: 0.08, sweep: 0.3, backH: 0.2 }, { edge: 'bot', from: 0.6, to: 0.77, h: 18, peak: 0.1, sweep: 0.3 }],
+      deco: bandLine(0.47, '#E8C83A', 6, 0.7, 30) }) },
+  { k: 'nodoguro', n: 'ノドグロ', a: ['nihon'], m: ['uki'], band: 'bot', sz: [20, 40], p: 1800, shun: [9, 10, 11], pow: 2, rare: 3,
+    info: 'ほんとうの なまえは アカムツ。のどの おくが まっくろ だよ', eat: 'しおやき・にざかな',
+    art: AP.bream({ dt: 50, db: 42, ta: 0.75, eyeR: 15, eyeY: -8, mouthY: 6, mouth: 16, iris: '#E8C060', grad: ['#C9384A', '#E0606C', '#F2A8AC', '#FBE3E2'], line: '#7A1C2A', finColor: '#E88890', tailColor: '#D8606C',
+      fins: [{ edge: 'top', from: 0.3, to: 0.48, h: 22, peak: 0.2 }, { edge: 'top', from: 0.5, to: 0.75, h: 18, peak: 0.15 }, { edge: 'bot', from: 0.58, to: 0.76, h: 16, peak: 0.15 }] }) },
+  { k: 'amadai', n: 'アマダイ', a: ['nihon'], m: ['uki'], band: 'bot', sz: [25, 50], p: 1400, shun: [11, 12, 1, 2], pow: 2, rare: 3,
+    info: 'おでこが しかくくて、めの したに ぎんいろの さんかくが あるよ', eat: 'わかさやき・こぶじめ',
+    art: AP.slim({ ped: 8, dt: 38, db: 28, ta: 0.45, tb: 1.15, ba: 0.9, bb: 1.15, tail: 'trunc', tailL: 44, tailH: 32, eyeX: 0.13, eyeY: -12, eyeR: 9, mouth: 12, mouthY: 6, iris: '#E8C060', grad: ['#D46A6A', '#E8908A', '#F4C6B4', '#FBEADF'], line: '#7A2C2C', finColor: '#F0B0A0', tailColor: '#E8C060',
+      fins: [{ edge: 'top', from: 0.28, to: 0.86, h: 14, peak: 0.05, sweep: 0.1, backH: 0.8 }, { edge: 'bot', from: 0.5, to: 0.86, h: 12, peak: 0.05, backH: 0.8 }],
+      over: ({ ex, ey }) => `<path d="M${ex - 6},${ey + 14} l14,0 l-6,10 Z" fill="#F4F4F0" stroke="#7A2C2C" stroke-width="1"/>`, deco: vbars(6, 0.35, 0.85, '#F0D060', 0.3, 10, 0, 0.5) }) },
+  { k: 'kijihata', n: 'キジハタ', a: ['nihon', 'seto'], m: ['lure', 'uki'], band: 'bot', sz: [20, 45], p: 1400, shun: [6, 7, 8], pow: 3, rare: 3,
+    info: 'せとうちでは「アコウ」と よぶ。オレンジの てんてんが きれい', eat: 'にざかな・なべ',
+    art: AP.rock({ eyeR: 10, iris: '#E0A040', grad: ['#9A6A4A', '#B8865E', '#E0B892', '#F4E0CA'], line: '#5A3A22', finColor: '#C89A70', tailColor: '#B8865E', deco: spots(41, 55, '#F08A3A', 1.8, 3.2, { x0: 0.05, x1: 0.98, y0: 0.05, y1: 0.85 }) }) },
+  { k: 'hatahata', n: 'ハタハタ', a: ['nihon'], m: ['uki'], band: 'bot', sz: [15, 25], p: 90, shun: [11, 12], pow: 1, rare: 2,
+    info: 'うろこが ない さかな。かみなりの きせつに やってくるよ', eat: 'しおやき・しょっつるなべ',
+    art: AP.slim({ ped: 6, dt: 30, db: 26, ta: 0.7, tail: 'trunc', tailL: 38, tailH: 26, eyeX: 0.12, eyeY: -10, eyeR: 9, mouth: 10, mouthY: -4, scaleOp: 0, pecL: 46, pecY: 6, iris: '#C8C0B0', grad: ['#9A8A6E', '#B5A68A', '#EAE2D2', '#FFFFFF'], line: '#5A4C38', finColor: '#D8CCB4',
+      deco: blotch(18, 10, '#5A4C38', 0.35, 14, 6) }) },
+  { k: 'yariika', n: 'ヤリイカ', a: ['nihon'], m: ['egi'], band: 'mid', sz: [20, 40], p: 450, shun: [1, 2, 3], t: 'night', pow: 1, rare: 2,
+    info: 'やりの さきみたいに とがった ほそながい イカ', eat: 'さしみ・いかめし',
+    art: { kind: 'squid', finType: 'tri', mantleW: 28, mantleEnd: 425, grad: ['#D8B8A8', '#E6CFC2', '#F3E8E1'], line: '#7A5040', dotColor: '#9A4A30', armColor: '#E2C8B8', armL: 60, tentL: 100, dots: 50 } },
+  { k: 'surumeika', n: 'スルメイカ', a: ['nihon', 'hokkai'], m: ['egi'], band: 'mid', sz: [20, 35], p: 280, shun: [6, 7, 8, 9], t: 'night', pow: 1, rare: 1,
+    info: 'ほすと「するめ」に なるよ。よる ひかりに あつまる', eat: 'いかそうめん・するめ',
+    art: { kind: 'squid', finType: 'tri', mantleW: 34, grad: ['#B57A62', '#C9927A', '#E0BFAE'], line: '#6A3828', dotColor: '#6A2818', armColor: '#C9927A', armL: 75, tentL: 120 } },
+
+  // ---------------- たいへいよう ----------------
+  { k: 'kuromaguro', n: 'クロマグロ', a: ['taihei'], m: ['lure'], band: 'mid', sz: [100, 250], p: 60000, shun: [12, 1, 2], pow: 5, rare: 5,
+    info: 'さかなの なかでも とくに おおきくて はやい。「ほんマグロ」とも いうよ', eat: 'おすし（あかみ・ちゅうとろ・おおとろ）',
+    art: AP.tuna({ iris: '#6E7A8C', grad: ['#1C2B4A', '#2D4675', '#8FA6C4', '#DCE5EF', '#F4F7FA'], line: '#13203A', finColor: '#2D3F66', pecColor: '#24365C',
+      fins: [{ edge: 'top', from: 0.3, to: 0.5, h: 22, peak: 0.08, sweep: 0.4, backH: 0.1 }, { edge: 'top', from: 0.56, to: 0.66, h: 30, peak: 0.25, sweep: 0.7, color: '#3A5180' }, { edge: 'bot', from: 0.57, to: 0.67, h: 28, peak: 0.25, sweep: 0.7, color: '#C9D2DE' }],
+      over: finlets('#F2C531'), deco: ({ top, x0, x1, yAt }) => { const p = []; for (let x = x0 + 30; x <= x1; x += 10) p.push([x, yAt(top, x) + 26 + (x - x0) * 0.02]); return `<path d="${smooth(p)}" fill="none" stroke="#6E88B3" stroke-width="3" opacity="0.35"/>`; } }) },
+  { k: 'kihada', n: 'キハダ', a: ['taihei'], m: ['lure'], band: 'mid', sz: [60, 150], p: 9000, shun: [6, 7, 8, 9], pow: 5, rare: 4,
+    info: 'きいろい ながい ひれが めじるし。あたたかい うみの マグロ', eat: 'おすし・ツナかん',
+    art: AP.tuna({ dt: 46, db: 44, iris: '#7A8696', grad: ['#24365E', '#3D5C8C', '#AFC0D4', '#E9EEF4', '#F6F8FA'], line: '#16244A', finColor: '#E8C030', pecColor: '#2D4675',
+      fins: [{ edge: 'top', from: 0.3, to: 0.48, h: 20, peak: 0.08, sweep: 0.4, color: '#2D4675' }, { edge: 'top', from: 0.55, to: 0.63, h: 62, peak: 0.2, sweep: 0.9 }, { edge: 'bot', from: 0.56, to: 0.64, h: 58, peak: 0.2, sweep: 0.9 }],
+      over: finlets('#F2C531'), deco: bandLine(0.42, '#E8C030', 5, 0.55, 50) }) },
+  { k: 'katsuo', n: 'カツオ', a: ['taihei'], m: ['lure'], band: 'top', sz: [40, 80], p: 1400, shun: [4, 5, 9, 10], pow: 4, rare: 2,
+    info: 'おなかに しまもようが ある。はるの「はつがつお」が ゆうめい', eat: 'たたき・かつおぶし',
+    art: AP.tuna({ dt: 46, db: 46, tailL: 62, tailH: 54, iris: '#8090A0', grad: ['#1E2C4A', '#34507A', '#B5C4D6', '#EEF2F6', '#F8FAFC'], line: '#121E36', finColor: '#3A5078', pecColor: '#2A3E64',
+      over: finlets('#5A6E90', 6), deco: all(bandLine(0.62, '#2A3A58', 3.5, 0.55, 90), bandLine(0.72, '#2A3A58', 3.5, 0.55, 90), bandLine(0.82, '#2A3A58', 3.5, 0.5, 100)) }) },
+  { k: 'shiira', n: 'シイラ', a: ['taihei', 'nihon'], m: ['lure'], band: 'top', sz: [60, 140], p: 700, shun: [7, 8, 9], pow: 4, rare: 2,
+    info: 'みどりと きいろに ひかる。おでこが ぐっと でっぱってるよ', eat: 'フライ・ムニエル',
+    art: AP.slim({ ped: 6, dt: 42, db: 30, ta: 0.4, tb: 1.25, ba: 0.9, bb: 1.25, tailL: 62, tailH: 50, eyeX: 0.08, eyeY: 0, eyeR: 8, mouth: 14, mouthY: 10, iris: '#C8D060', grad: ['#2E7D6A', '#4FAE7E', '#C8D86A', '#F3E9A0'], line: '#1E4E40', finColor: '#3E8EA0', tailColor: '#D8C850',
+      fins: [{ edge: 'top', from: 0.06, to: 0.86, h: 20, peak: 0.1, sweep: 0.1, backH: 0.6, concave: 0.05 }, { edge: 'bot', from: 0.5, to: 0.86, h: 16, peak: 0.05, backH: 0.6 }],
+      deco: spots(51, 40, '#2E6E9A', 1.5, 3, { x0: 0.1, x1: 0.9, y0: 0.15, y1: 0.75 }) }) },
+  { k: 'kanpachi', n: 'カンパチ', a: ['taihei'], m: ['lure'], band: 'mid', sz: [50, 110], p: 3200, shun: [7, 8, 9], pow: 5, rare: 3,
+    info: 'めの ところに「八」の じの ような くろい すじが あるよ', eat: 'さしみ・おすし',
+    art: AP.jack({ dt: 44, db: 40, tailL: 62, tailH: 52, eyeR: 9, mouth: 14, iris: '#C8A050', scale: 5, scaleOp: 0.12, grad: ['#6A5E4A', '#8C8064', '#D9D0BE', '#F6F2EA'], line: '#3A3020', finColor: '#A89060', tailColor: '#B8A060',
+      fins: [{ edge: 'top', from: 0.32, to: 0.4, h: 10, peak: 0.3 }, { edge: 'top', from: 0.42, to: 0.76, h: 26, peak: 0.08, sweep: 0.3, backH: 0.2 }, { edge: 'bot', from: 0.6, to: 0.77, h: 20, peak: 0.1, sweep: 0.3 }],
+      over: ({ ex, ey }) => `<path d="M${ex - 26},${ey - 22} L${ex + 20},${ey + 6}" stroke="#3A3020" stroke-width="6" stroke-linecap="round" opacity="0.6"/>`, deco: bandLine(0.45, '#D8B850', 5, 0.5, 40) }) },
+  { k: 'ishidai', n: 'イシダイ', a: ['taihei', 'nihon'], m: ['uki'], band: 'bot', sz: [30, 60], p: 1600, shun: [6, 7, 8], pow: 4, rare: 3,
+    info: 'くろい しまが 7ほん。かたい くちばしで サザエも かみくだく', eat: 'さしみ・あらい',
+    art: AP.bream({ dt: 64, db: 54, iris: '#D0C090', grad: ['#A9AEA4', '#C9CCC2', '#E8E9E2', '#F4F4F0'], line: '#2C3036', finColor: '#6E7270', tailColor: '#5A5E5E', mouth: 8,
+      over: spines(0.27, 0.6, 10, 22, '#2C3036', 0.6), deco: vbars(7, 0.1, 0.92, '#2C3036', 0.85, 13) }) },
+  { k: 'mejina', n: 'メジナ', a: ['taihei', 'nihon', 'seto'], m: ['uki'], band: 'mid', sz: [25, 50], p: 450, shun: [12, 1, 2], pow: 3, rare: 2,
+    info: 'いそづりの にんきもの。「グレ」とも よぶよ', eat: 'さしみ・しおやき',
+    art: AP.bream({ dt: 56, db: 48, eyeY: -8, mouthY: 8, iris: '#7AA0C8', grad: ['#24303A', '#36444E', '#5A6870', '#8A969C'], line: '#141C22', finColor: '#3A4650', tailColor: '#36424C', scale: 8 }) },
+  { k: 'isaki', n: 'イサキ', a: ['taihei', 'nihon'], m: ['uki'], band: 'mid', sz: [25, 45], p: 600, shun: [6, 7], pow: 2, rare: 2,
+    info: 'なつが しゅん。こどもの ときは よこじまが あるよ', eat: 'しおやき・さしみ',
+    art: AP.bass({ tail: 'fork', mouth: 12, eyeR: 10, iris: '#C8B888', grad: ['#6C7258', '#8E9476', '#D3D5C2', '#F2F2EA'], line: '#3A3E2C', finColor: '#8E9476', deco: all(bandLine(0.3, '#E8E4C8', 4, 0.5, 40), bandLine(0.5, '#E8E4C8', 4, 0.5, 40)) }) },
+  { k: 'kinmedai', n: 'キンメダイ', a: ['taihei'], m: ['uki'], band: 'bot', sz: [25, 45], p: 2200, shun: [12, 1, 2], pow: 2, rare: 3,
+    info: 'ふかい うみに すむ。きんいろに ひかる おおきな め！', eat: 'にざかな・しゃぶしゃぶ',
+    art: AP.bream({ dt: 52, db: 46, eyeR: 18, eyeY: -6, eyeX: 0.13, mouthY: 4, mouth: 14, iris: '#F2C640', grad: ['#D8202E', '#EA4A4E', '#F48A86', '#FBD0C8'], line: '#7A0E16', finColor: '#F06A6A', tailColor: '#E84050',
+      fins: [{ edge: 'top', from: 0.3, to: 0.72, h: 20, peak: 0.1, sweep: 0.1, backH: 0.6 }, { edge: 'bot', from: 0.56, to: 0.78, h: 18, peak: 0.12 }], tailL: 70, tailH: 60 }) },
+
+  // ---------------- ほっかいどう ----------------
+  { k: 'sake', n: 'シロザケ', a: ['hokkai'], m: ['lure', 'uki'], band: 'mid', sz: [55, 85], p: 1800, shun: [9, 10, 11], pow: 4, rare: 2, ikura: true,
+    info: 'うまれた かわに かえってくる。メスの おなかには いくらが いっぱい！', eat: 'しおやき・ちゃんちゃんやき・いくらどん',
+    art: AP.trout({ dt: 38, db: 34, tailL: 52, tailH: 40, eyeR: 7, mouth: 18, iris: '#B8C0C8', grad: ['#4C5E6E', '#7A8C9A', '#C8D0D6', '#F2F4F5'], line: '#2A3642', finColor: '#7A8894', tailColor: '#6A7884', tail: 'fork',
+      deco: vbars(6, 0.25, 0.9, '#8A6A7A', 0.15, 16, 0.2, 0.9) }) },
+  { k: 'karafuto', n: 'カラフトマス', a: ['hokkai'], m: ['lure'], band: 'mid', sz: [40, 60], p: 600, shun: [7, 8, 9], pow: 3, rare: 2,
+    info: 'せなかと しっぽに くろい まるい てんてんが あるよ', eat: 'しおやき・フライ',
+    art: AP.trout({ dt: 36, db: 32, iris: '#B8C0C8', grad: ['#4E6474', '#7E92A0', '#CED6DC', '#F4F6F7'], line: '#2A3A46', finColor: '#7E8E9A', tailColor: '#6E7E8A', tail: 'fork', tailL: 50, tailH: 40,
+      deco: spots(61, 40, '#1E262E', 2, 4, { x0: 0.3, x1: 1.0, y0: 0.02, y1: 0.35 }), tailDeco: tailSpots(62, '#1E262E') }) },
+  { k: 'hokke', n: 'ホッケ', a: ['hokkai'], m: ['uki', 'lure'], band: 'mid', sz: [25, 45], p: 350, shun: [3, 4, 5], pow: 2, rare: 1,
+    info: 'ひらいて ほした「ひらき」が ゆうめい。きたの うみの さかな', eat: 'ひらきの しおやき',
+    art: AP.slim({ ped: 6, dt: 30, db: 28, ta: 0.9, tailL: 44, tailH: 34, eyeR: 9, mouth: 14, iris: '#C8C090', grad: ['#6A7050', '#8E9470', '#D8D8C4', '#F6F4EC'], line: '#3A3E2A', finColor: '#A8A888',
+      fins: [{ edge: 'top', from: 0.26, to: 0.84, h: 14, peak: 0.05, sweep: 0.1, backH: 0.7 }, { edge: 'bot', from: 0.5, to: 0.84, h: 12, peak: 0.05, backH: 0.7 }], deco: vbars(5, 0.3, 0.85, '#3A3E2A', 0.28, 22, 0, 0.7) }) },
+  { k: 'nishin', n: 'ニシン', a: ['hokkai'], m: ['uki'], band: 'top', sz: [25, 35], p: 180, shun: [3, 4, 5], pow: 1, rare: 2,
+    info: 'たまごは「かずのこ」。むかしは たくさん とれたよ', eat: 'しおやき・にしんそば',
+    art: AP.slim({ dt: 28, db: 28, eyeR: 9, iris: '#C8D0D8', grad: ['#2E5A80', '#5A86A8', '#CBD9E3', '#F4F7F9'], line: '#1E3A54', finColor: '#A8B8C8', tailColor: '#8EA2B6', fins: [{ edge: 'top', from: 0.42, to: 0.56, h: 16, peak: 0.25 }, { edge: 'bot', from: 0.68, to: 0.78, h: 10, peak: 0.2 }] }) },
+  { k: 'kurosoi', n: 'クロソイ', a: ['hokkai'], m: ['lure', 'uki'], band: 'bot', sz: [25, 50], p: 700, shun: [10, 11, 12], t: 'night', pow: 2, rare: 2,
+    info: 'くろっぽい メバルの なかま。よるに よく つれるよ', eat: 'にざかな・さしみ',
+    art: AP.rock({ eyeR: 12, iris: '#B8A070', grad: ['#30333A', '#4A4E56', '#8A8E94', '#C9CCCF'], line: '#16181C', finColor: '#4A4E56', over: spines(0.26, 0.6, 9, 18, '#16181C') }) },
+  { k: 'ainame', n: 'アイナメ', a: ['hokkai', 'seto'], m: ['lure', 'uki'], band: 'bot', sz: [25, 45], p: 550, shun: [3, 4, 5], pow: 2, rare: 2,
+    info: 'いわばに すむ。そくせんが 5ほんも あるよ', eat: 'につけ・からあげ',
+    art: AP.slim({ ped: 8, dt: 32, db: 28, ta: 0.8, tail: 'trunc', tailL: 40, tailH: 30, eyeR: 8, mouth: 12, iris: '#C8A868', grad: ['#7A5C3C', '#957452', '#CDB08E', '#EADCC6'], line: '#4A3420', finColor: '#A8865E',
+      fins: [{ edge: 'top', from: 0.25, to: 0.55, h: 16, peak: 0.1, backH: 0.4 }, { edge: 'top', from: 0.55, to: 0.86, h: 14, peak: 0.1, backH: 0.6 }, { edge: 'bot', from: 0.55, to: 0.86, h: 12, peak: 0.05, backH: 0.7 }],
+      deco: all(blotch(71, 14, '#4A3420', 0.35, 14, 9), bandLine(0.2, '#E8D8B8', 1.2, 0.6, 60), bandLine(0.4, '#E8D8B8', 1.2, 0.6, 60), bandLine(0.6, '#E8D8B8', 1.2, 0.6, 60)) }) },
+  { k: 'madara', n: 'マダラ', a: ['hokkai', 'nihon'], m: ['uki', 'lure'], band: 'bot', sz: [50, 100], p: 1600, shun: [12, 1, 2], pow: 3, rare: 2,
+    info: 'あごに ひげが 1ぽん。おなかが おおきくて なんでも たべる', eat: 'たらちり・しらこ',
+    art: { ...AP.slim({}), ped: 7, dt: 38, db: 36, ta: 0.75, tb: 1.25, ba: 0.85, bb: 1.25, tail: 'trunc', tailL: 40, tailH: 34, eyeX: 0.1, eyeY: -8, eyeR: 8, mouth: 16, mouthY: 2, barbel: 1, barbelL: 18, iris: '#C8C0A0', scale: 4, scaleOp: 0.1,
+      grad: ['#7A6A4E', '#9A8A6A', '#D9D0BC', '#F6F2EA'], line: '#4A3C28', finColor: '#A89878',
+      fins: [{ edge: 'top', from: 0.3, to: 0.42, h: 16, peak: 0.3 }, { edge: 'top', from: 0.46, to: 0.62, h: 14, peak: 0.3 }, { edge: 'top', from: 0.66, to: 0.82, h: 12, peak: 0.3 }, { edge: 'bot', from: 0.46, to: 0.62, h: 12, peak: 0.3 }, { edge: 'bot', from: 0.66, to: 0.82, h: 11, peak: 0.3 }],
+      deco: all(blotch(81, 26, '#5A4A30', 0.3, 7, 5), bandLine(0.42, '#F2ECDC', 2, 0.7, 50)) } },
+  { k: 'ohyou', n: 'オヒョウ', a: ['hokkai'], m: ['lure', 'uki'], band: 'bot', sz: [80, 200], p: 9000, shun: [4, 5, 6], pow: 5, rare: 4,
+    info: 'カレイの なかまで いちばん おおきい。2メートルを こえることも！', eat: 'フライ・ムニエル',
+    art: { kind: 'flat', eyeSide: 'right', tail: 'lunate', grad: ['#6E6A4E', '#56523C', '#46422F'], line: '#2A2818', finColor: '#5E5A42', iris: '#C8C080', spots: 30, seed: 13 } },
+  { k: 'mizudako', n: 'ミズダコ', a: ['hokkai'], m: ['egi'], band: 'bot', sz: [80, 300], p: 3500, shun: [12, 1, 2], pow: 5, rare: 3,
+    info: 'せかいで いちばん おおきい タコ。あしを ひろげると 3メートルも！', eat: 'さしみ・しゃぶしゃぶ',
+    art: { kind: 'octo', grad: ['#B4483A', '#C8604C', '#DE8A72'], line: '#6A2018', sucker: '#F6D8CC', seed: 21, dotColor: '#7A2418' } },
+  { k: 'itou', n: 'イトウ', a: ['hokkai'], m: ['lure'], band: 'mid', sz: [50, 120], p: 3000, shun: [4, 5, 6], pow: 5, rare: 5,
+    info: 'ほっかいどうの かわに すむ「まぼろしの さかな」。とても だいじに されてるよ', eat: 'だいじな さかな なので にがそう',
+    art: AP.trout({ dt: 30, db: 28, ta: 0.85, eyeR: 7, mouth: 22, iris: '#B8A880', grad: ['#5E5A4E', '#827E70', '#D0C8BA', '#F2EEE6'], line: '#36322A', finColor: '#8E8676', tailColor: '#9A6A5A',
+      deco: spots(91, 70, '#2A2620', 1.2, 2.4, { x0: 0.05, x1: 1.0, y0: 0.05, y1: 0.55 }), tailDeco: tailSpots(92, '#2A2620') }) },
+
+  // ---------------- かわ ----------------
+  { k: 'ayu', n: 'アユ', a: ['kawa'], m: ['uki', 'lure'], band: 'mid', sz: [15, 28], p: 350, shun: [6, 7, 8], pow: 2, rare: 1,
+    info: 'きれいな かわの いしに ついた コケを たべる。スイカの においが するよ', eat: 'しおやき',
+    art: { ped: 6, dt: 30, db: 28, ta: 1.0, tb: 1.2, ba: 1.0, bb: 1.25, tail: 'fork', tailL: 52, tailH: 38, iris: '#C7B060', scale: 4, scaleOp: 0.15,
+      grad: ['#6C7A3E', '#9AA466', '#D2D6B3', '#F0F0E2', '#FBFBF5'], line: '#3E4824', finColor: '#D8C15A', tailColor: '#C9B354', eyeX: 0.09, eyeY: -4, eyeR: 7.5, mouth: 12,
+      fins: [{ edge: 'top', from: 0.38, to: 0.5, h: 26, peak: 0.2, sweep: 0.3 }, { edge: 'top', from: 0.82, to: 0.86, h: 9, peak: 0.6, color: '#8A9254' }, { edge: 'bot', from: 0.68, to: 0.82, h: 15, peak: 0.12, color: '#E8D37A' }, { edge: 'bot', from: 0.47, to: 0.53, h: 12, peak: 0.3 }],
+      deco: ({ x0, x1, top, bot, yAt }) => { const x = x0 + (x1 - x0) * 0.3; return `<ellipse cx="${x}" cy="${f1(yAt(top, x) * 0.6 + yAt(bot, x) * 0.4)}" rx="14" ry="8" fill="#F5D33A" opacity="0.95"/>`; } } },
+  { k: 'yamame', n: 'ヤマメ', a: ['kawa'], m: ['lure', 'uki'], band: 'mid', sz: [15, 35], p: 450, shun: [4, 5, 6], pow: 2, rare: 2,
+    info: 'よこに だえんの もよう「パーマーク」が ならぶ。かわの じょうりゅうに すむよ', eat: 'しおやき・からあげ',
+    art: AP.trout({ iris: '#C9A25E', grad: ['#5E6B4C', '#8C9473', '#D3CFBF', '#F2E9E2', '#FBF6F3'], line: '#38402C', finColor: '#C9B9A0', tailColor: '#B6A78E',
+      deco: all(({ top, bot, x0, x1, yAt }) => { let o = ''; for (let i = 0; i < 9; i++) { const x = x0 + (x1 - x0) * (0.2 + i * 0.085); o += `<ellipse cx="${f1(x)}" cy="${f1(yAt(top, x) * 0.5 + yAt(bot, x) * 0.5)}" rx="9" ry="13" fill="#5E6E8E" opacity="0.55"/>`; } return o; },
+        bandLine(0.55, '#E6A7A1', 7, 0.6, 40), spots(3, 24, '#2A2F25', 1.2, 2.4, { x0: 0.15, x1: 0.95, y0: 0.05, y1: 0.3 })) }) },
+  { k: 'amago', n: 'アマゴ', a: ['kawa'], m: ['lure', 'uki'], band: 'mid', sz: [15, 35], p: 450, shun: [4, 5, 6], pow: 2, rare: 2,
+    info: 'ヤマメに にてるけど、からだに あかい てんてんが あるよ。ひろしまの かわにも いる', eat: 'しおやき・かんろに',
+    art: AP.trout({ iris: '#C9A25E', grad: ['#5A6A50', '#889478', '#D2D0C0', '#F2EAE2', '#FBF6F3'], line: '#36402C', finColor: '#C8B8A0', tailColor: '#B4A68E',
+      deco: all(({ top, bot, x0, x1, yAt }) => { let o = ''; for (let i = 0; i < 9; i++) { const x = x0 + (x1 - x0) * (0.2 + i * 0.085); o += `<ellipse cx="${f1(x)}" cy="${f1(yAt(top, x) * 0.5 + yAt(bot, x) * 0.5)}" rx="9" ry="13" fill="#5E6E8E" opacity="0.5"/>`; } return o; },
+        spots(101, 26, '#E0402E', 1.8, 2.8, { x0: 0.18, x1: 0.95, y0: 0.25, y1: 0.7 }), spots(102, 18, '#2A2F25', 1.2, 2.2, { x0: 0.15, x1: 0.95, y0: 0.05, y1: 0.28 })) }) },
+  { k: 'iwana', n: 'イワナ', a: ['kawa'], m: ['lure', 'uki'], band: 'bot', sz: [20, 45], p: 500, shun: [6, 7, 8], pow: 2, rare: 3,
+    info: 'かわの いちばん うえの つめたい ところに すむ。しろい てんてんが あるよ', eat: 'しおやき・こつざけ',
+    art: AP.trout({ dt: 32, db: 30, iris: '#C0A060', grad: ['#3E4A3A', '#5E6A54', '#A8A88A', '#E8C9A0'], line: '#222A1E', finColor: '#8A8A70', tailColor: '#6E705A',
+      deco: spots(111, 60, '#E8E2C8', 1.8, 3.2, { x0: 0.12, x1: 1.0, y0: 0.05, y1: 0.7 }) }) },
+  { k: 'sakuramasu', n: 'サクラマス', a: ['kawa'], m: ['lure'], band: 'mid', sz: [40, 65], p: 3500, shun: [3, 4, 5], pow: 4, rare: 4,
+    info: 'ヤマメが うみに いって おおきく なって かえってきた すがた。さくらの ころに のぼるよ', eat: 'しおやき・ますずし',
+    art: AP.trout({ dt: 36, db: 34, tail: 'fork', tailL: 50, tailH: 40, iris: '#B8C0C8', grad: ['#4A5E72', '#7890A4', '#C9D4DE', '#F2F5F8'], line: '#2A3A4A', finColor: '#8A9AA8', tailColor: '#7A8A98',
+      deco: all(bandLine(0.5, '#E6A0A8', 18, 0.35, 30), spots(121, 24, '#2A3A4A', 1.2, 2.2, { x0: 0.15, x1: 0.95, y0: 0.05, y1: 0.3 })) }) },
+  { k: 'nijimasu', n: 'ニジマス', a: ['kawa'], m: ['lure', 'uki'], band: 'mid', sz: [25, 60], p: 350, shun: [10, 11, 12, 1, 2], pow: 3, rare: 1,
+    info: 'からだに にじいろの おびが ある。くろい てんてんが しっぽまで あるよ', eat: 'しおやき・ムニエル',
+    art: AP.trout({ ped: 8, dt: 38, db: 36, ta: 1.0, tb: 1.15, ba: 1.0, bb: 1.15, tailL: 50, tailH: 40, mouth: 16, eyeY: -5, iris: '#C9A25E', grad: ['#4E6A60', '#7F988C', '#C9CFC6', '#EFEAE6', '#FBF8F6'], line: '#2F4239', finColor: '#B9B19C', tailColor: '#A9A28E',
+      tailDeco: tailSpots(5, '#23291F'), deco: all(bandLine(0.53, '#E2667E', 16, 0.6), spots(11, 60, '#23291F', 1.4, 2.8, { x0: 0.12, x1: 1.0, y0: 0.04, y1: 0.62 })) }) },
+  { k: 'hiroshima', n: 'ひろしまサーモン', a: ['kawa'], m: ['lure', 'uki'], band: 'mid', sz: [50, 80], p: 1600, shun: [11, 12, 1, 2, 3], pow: 4, rare: 3,
+    info: 'ひろしまで そだてられた おおきな マスの なかま。みが きれいな ピンク いろ', eat: 'さしみ・おすし・ムニエル',
+    art: AP.trout({ ped: 9, dt: 42, db: 40, ta: 0.95, tb: 1.15, ba: 0.95, bb: 1.15, tailL: 52, tailH: 42, mouth: 17, eyeY: -6, iris: '#C0B080', grad: ['#56707A', '#88A0A8', '#D2DADC', '#F6F2F0', '#FDFBFA'], line: '#2E444C', finColor: '#A0AEB2', tailColor: '#90A0A6',
+      tailDeco: tailSpots(15, '#2A363C'), deco: all(bandLine(0.52, '#EE8A98', 16, 0.35), spots(131, 30, '#2A363C', 1.4, 2.4, { x0: 0.15, x1: 1.0, y0: 0.04, y1: 0.4 })) }) },
+  { k: 'oikawa', n: 'オイカワ', a: ['kawa'], m: ['uki'], band: 'top', sz: [8, 15], p: 25, shun: [6, 7, 8], pow: 1, rare: 1,
+    info: 'なつの オスは あおと ピンクで とっても きれい', eat: 'てんぷら・なんばんづけ',
+    art: AP.slim({ dt: 26, db: 24, iris: '#D0A060', grad: ['#5E8C8C', '#88B0A8', '#E2D2D0', '#F8F0EE'], line: '#2E5050', finColor: '#E88A70', tailColor: '#C8B8A0',
+      fins: [{ edge: 'top', from: 0.42, to: 0.56, h: 18, peak: 0.25 }, { edge: 'bot', from: 0.6, to: 0.8, h: 22, peak: 0.15 }], deco: vbars(9, 0.25, 0.9, '#3E7C98', 0.45, 9, 0, 0.75) }) },
+  { k: 'ugui', n: 'ウグイ', a: ['kawa'], m: ['uki'], band: 'mid', sz: [15, 35], p: 35, shun: [3, 4, 5], pow: 1, rare: 1,
+    info: 'はるに なると おなかに あかい すじが でるよ', eat: 'からあげ・かんろに',
+    art: AP.slim({ dt: 28, db: 26, iris: '#C8B890', grad: ['#56604E', '#7E8870', '#CFD2C4', '#F2F2EC'], line: '#2E3428', finColor: '#A8AA96', deco: bandLine(0.7, '#D86A5A', 6, 0.4, 50) }) },
+  { k: 'koi', n: 'コイ', a: ['kawa'], m: ['uki'], band: 'bot', sz: [40, 90], p: 250, shun: [12, 1, 2], pow: 4, rare: 2,
+    info: 'くちに ひげが 2ほん。ちからが つよくて ながいき', eat: 'あらい・こいこく',
+    art: AP.carp({ barbel: 2, barbelL: 16, iris: '#D8B860', grad: ['#5E5A3A', '#7E7A52', '#C2B88A', '#EEE3BE'], line: '#3A3620', finColor: '#8E8458', tailColor: '#7E7650' }) },
+  { k: 'funa', n: 'ギンブナ', a: ['kawa'], m: ['uki'], band: 'bot', sz: [15, 35], p: 60, shun: [12, 1, 2], pow: 2, rare: 1,
+    info: '「つりは フナに はじまり フナに おわる」と いわれるよ', eat: 'ふなずし・かんろに',
+    art: AP.carp({ dt: 44, db: 36, iris: '#C8C0A0', grad: ['#6A6E58', '#8E9278', '#D2D4C6', '#F2F2EC'], line: '#3A3E2C', finColor: '#8A8E78' }) },
+  { k: 'namazu', n: 'ナマズ', a: ['kawa'], m: ['lure', 'uki'], band: 'bot', sz: [35, 70], p: 250, shun: [5, 6, 7], t: 'night', pow: 3, rare: 2,
+    info: 'ながい ひげが 4ほん（おとなは 2ほん）。よる えものを さがすよ', eat: 'かばやき・てんぷら',
+    art: { ped: 6, dt: 26, db: 24, ta: 0.45, tb: 1.3, ba: 0.6, bb: 1.3, tail: 'round', tailL: 30, tailH: 22, eyeX: 0.1, eyeY: -8, eyeR: 4.5, mouth: 26, mouthY: 4, barbel: 2, barbelL: 52, scaleOp: 0, pecL: 30, pecY: 10, gillX: 0.2,
+      iris: '#C8B070', grad: ['#4E4A3E', '#6A6654', '#B4AE98', '#E6E0D0'], line: '#2A2820', finColor: '#6A6654',
+      fins: [{ edge: 'top', from: 0.3, to: 0.38, h: 12, peak: 0.4 }, { edge: 'bot', from: 0.42, to: 0.98, h: 12, peak: 0.03, sweep: 0.1, backH: 0.8 }],
+      deco: blotch(141, 18, '#2A2820', 0.3, 16, 10) } },
+  { k: 'bass', n: 'ブラックバス', a: ['kawa'], m: ['lure'], band: 'mid', sz: [25, 60], p: 120, shun: [4, 5, 6], pow: 3, rare: 2,
+    info: 'おおきな くちで なんでも たべる。もともと アメリカの さかな', eat: 'フライ',
+    art: AP.bass({ iris: '#D08040', grad: ['#4E6A3A', '#76925A', '#C9D3A8', '#F0F0DC'], line: '#2A3A1E', finColor: '#7A8E5E', deco: ({ top, bot, x0, x1, yAt }) => { let o = ''; for (let x = x0 + 70; x < x1; x += 22) o += `<ellipse cx="${x}" cy="${f1(yAt(top, x) * 0.48 + yAt(bot, x) * 0.52)}" rx="12" ry="8" fill="#2A3A1E" opacity="0.45"/>`; return o; } }) },
+  { k: 'bluegill', n: 'ブルーギル', a: ['kawa'], m: ['uki'], band: 'mid', sz: [10, 22], p: 15, shun: [6, 7, 8], pow: 1, rare: 1,
+    info: 'えらの はしっこが こんいろ。アメリカから きた さかな', eat: 'フライ',
+    art: AP.bream({ dt: 58, db: 52, ta: 0.75, mouthY: 4, mouth: 8, eyeR: 9, iris: '#C87040', tail: 'trunc', tailL: 40, tailH: 34, scale: 7, grad: ['#4E5E6E', '#6E7E7A', '#B8B898', '#E8C888'], line: '#2A343E', finColor: '#6E7880', tailColor: '#6E7880',
+      over: ({ x0, x1, top, bot, yAt }) => { const x = x0 + (x1 - x0) * 0.25; return `<ellipse cx="${x}" cy="${f1(yAt(top, x) * 0.55 + yAt(bot, x) * 0.45)}" rx="7" ry="9" fill="#1A2A4A"/>`; }, deco: vbars(7, 0.3, 0.88, '#2A343E', 0.22, 12) }) },
+  { k: 'unagi', n: 'ニホンウナギ', a: ['kawa'], m: ['uki'], band: 'bot', sz: [40, 90], p: 2200, shun: [7, 8], t: 'night', pow: 3, rare: 3,
+    info: 'とおい みなみの うみで うまれて かわに のぼってくるよ', eat: 'うなじゅう・かばやき',
+    art: AP.eel({ iris: '#C8B890', grad: ['#30352C', '#4A5240', '#C8C6A0', '#F0EEDC'], line: '#1A1E16', finColor: '#5A6248' }) },
+  { k: 'tenagaebi', n: 'テナガエビ', a: ['kawa'], m: ['uki'], band: 'bot', sz: [7, 12], p: 40, shun: [6, 7], pow: 1, rare: 1,
+    info: 'からだより ながい ハサミを もってるよ', eat: 'からあげ',
+    art: { kind: 'shrimp', grad: ['#8A7A5A', '#A89878', '#D6CCB4'], line: '#4A3E28' } },
+];
+const SP_BY = Object.fromEntries(SPECIES.map(s => [s.k, s]));
+
+// ---------- ばしょ ----------
+const AREAS = [
+  { k: 'seto', n: 'せとうちかい', icon: '🏝️', price: 0, sky: ['#8FD3FF', '#CDEBFF'], sea: ['#2E9CC8', '#0E5A86', '#0A3A5C'], sand: '#D9C49A', desc: 'しまが いっぱいの おだやかな うみ' },
+  { k: 'kawa', n: 'かわ', icon: '🏞️', price: 0, sky: ['#9AD8FF', '#D8F1FF'], sea: ['#5AB8B0', '#2E7A70', '#1E5048'], sand: '#B8A888', river: true, desc: 'やまから ながれる きれいな かわ' },
+  { k: 'nihon', n: 'にほんかい', icon: '🌊', price: 2000, sky: ['#8AB8E0', '#C8DDF0'], sea: ['#2A6E9E', '#123E66', '#0A2442'], sand: '#B8A890', desc: 'ふゆは あれる、さかなが おいしい うみ' },
+  { k: 'taihei', n: 'たいへいよう', icon: '🐳', price: 5000, sky: ['#6FC8FF', '#BFE8FF'], sea: ['#1E7EC8', '#0A4A8A', '#062E5E'], sand: '#C8B890', desc: 'マグロが およぐ ひろい うみ' },
+  { k: 'hokkai', n: 'ほっかいどう', icon: '❄️', price: 10000, sky: ['#A8C8E8', '#E0EEF8'], sea: ['#2E6A8A', '#164A66', '#0C2E44'], sand: '#A8A090', desc: 'つめたい きたの うみ' },
+];
+const AREA_BY = Object.fromEntries(AREAS.map(a => [a.k, a]));
+const METHODS = [
+  { k: 'uki', n: 'うきづり', icon: '🎣', price: 0, desc: 'うきが しずんだら タップ！' },
+  { k: 'lure', n: 'ルアー', icon: '🐟', price: 300, desc: 'リールを ぐるぐる まいて さかなを さそう' },
+  { k: 'egi', n: 'エギング', icon: '🦑', price: 600, desc: 'しゃくって しずめて イカ・タコを ねらう' },
+];
+const METHOD_BY = Object.fromEntries(METHODS.map(m => [m.k, m]));
+const RODS = [
+  { n: 'ふつうの さお', price: 0, power: 1, limit: 1.0 },
+  { n: 'じょうぶな さお', price: 1500, power: 1.5, limit: 1.25 },
+  { n: 'つよい さお', price: 6000, power: 2.2, limit: 1.6 },
+  { n: 'マグロざお', price: 20000, power: 3.2, limit: 2.2 },
+];
+const COOLERS = [{ n: 'ちいさい クーラー', cap: 6, price: 0 }, { n: 'おおきい クーラー', cap: 15, price: 800 }, { n: 'ジャンボ クーラー', cap: 30, price: 3000 }];
+
+const PARTNERS = [
+  { id: 134, n: 'シャワーズ' }, { id: 7, n: 'ゼニガメ' }, { id: 54, n: 'コダック' }, { id: 79, n: 'ヤドン' },
+  { id: 61, n: 'ニョロゾ' }, { id: 91, n: 'パルシェン' }, { id: 184, n: 'マリルリ' }, { id: 729, n: 'アシレーヌ' },
+];
+
+// ---------- しゅん・じかん ----------
+function seasonOf(month) { return [12, 1, 2].includes(month) ? 'ふゆ' : month <= 5 ? 'はる' : month <= 8 ? 'なつ' : 'あき'; }
+function timeOfDay(h) { return h >= 5 && h < 9 ? 'あさ' : h < 16 ? 'ひる' : h < 19 ? 'ゆうがた' : 'よる'; }
+function displayName(sp, size) {
+  if (!sp.grow) return sp.n;
+  const g = sp.grow.find(([lim]) => size < lim);
+  return g ? g[1] : sp.n;
+}
+function sizeRange(sp, area) { return (sp.areaSz && sp.areaSz[area]) || sp.sz; }
+function priceOf(sp, size, month) {
+  const mid = (sp.sz[0] + sp.sz[1]) / 2;
+  const shun = sp.shun && sp.shun.includes(month) ? 1.5 : 1;
+  const v = sp.p * Math.pow(size / mid, 2.2) * shun;
+  return Math.max(5, Math.round(v / 10) * 10);
+}
+
+
+// ▼▼ よみあげ（こえ）▼▼
+const VOICE_PREFS = {
+  en: ["Samantha", "Karen", "Google US English", "Microsoft Aria", "Microsoft Jenny", "Microsoft Zira"],
+  ja: ["Kyoko", "O-Ren", "Google 日本語", "Microsoft Nanami", "Microsoft Haruka"]
+};
+const VOICE_SETTINGS = { en: { rate: 0.8, pitch: 1.1 }, ja: { rate: 0.95, pitch: 1.1 } };
+const hasSpeech = ('speechSynthesis' in window) && (typeof SpeechSynthesisUtterance !== 'undefined');
+let synthVoices = [];
+let speechToken = 0;
+let speechTimers = [];
+let currentUtterance = null; // とちゅうで こえが きえないように さんしょうを もっておく
+
+function loadVoices() { if (hasSpeech) synthVoices = window.speechSynthesis.getVoices(); }
+if (hasSpeech) { loadVoices(); window.speechSynthesis.onvoiceschanged = loadVoices; }
+
+function pickVoice(lang) {
+  if (synthVoices.length === 0) loadVoices();
+  const norm = (v) => (v.lang || '').replace('_', '-').toLowerCase();
+  const lc = lang.toLowerCase(), base = lc.split('-')[0];
+  const matches = synthVoices.filter(v => norm(v).startsWith(base));
+  const exact = matches.find(v => norm(v) === lc);
+  if (!VOICE_PREFS[lang] && exact) return exact;
+  for (const name of (VOICE_PREFS[lang] || [])) {
+    const v = matches.find(v => v.name.includes(name));
+    if (v) return v;
+  }
+  const region = lang === 'en' ? 'en-us' : 'ja-jp';
+  return matches.find(v => norm(v) === region) || matches[0] || null;
+}
+
+function stopSpeech() {
+  speechToken++;
+  speechTimers.forEach(clearTimeout); speechTimers = [];
+  if (hasSpeech && (window.speechSynthesis.speaking || window.speechSynthesis.pending)) window.speechSynthesis.cancel();
+}
+
+// parts: [{ text: "...", lang: "en" | "ja", pauseAfter: ミリびょう }]
+function speakSequence(parts) {
+  if (!hasSpeech || isMuted) return;
+  const wasBusy = window.speechSynthesis.speaking || window.speechSynthesis.pending;
+  stopSpeech();
+  const token = speechToken;
+  const list = parts.filter(p => p && p.text && String(p.text).trim());
+  const playAt = (i) => {
+    if (token !== speechToken || i >= list.length) return;
+    const p = list[i];
+    const msg = new SpeechSynthesisUtterance(p.text);
+    msg.lang = p.lang === 'en' ? 'en-US' : (p.lang === 'ja' ? 'ja-JP' : p.lang);
+    const voice = pickVoice(p.lang);
+    if (voice) msg.voice = voice;
+    const s = VOICE_SETTINGS[p.lang] || { rate: 0.85, pitch: 1.05 };
+    msg.rate = s.rate; msg.pitch = s.pitch;
+    msg.onend = () => {
+      if (token !== speechToken) return;
+      speechTimers.push(setTimeout(() => playAt(i + 1), p.pauseAfter || 0));
+    };
+    currentUtterance = msg;
+    window.speechSynthesis.speak(msg);
+  };
+  // とめた ちょくごに すぐ しゃべると むしされる たんまつが あるので すこし まつ
+  if (wasBusy) speechTimers.push(setTimeout(() => playAt(0), 120));
+  else playAt(0);
+}
+function speakText(text, lang) { speakSequence([{ text, lang }]); }
+function speakEnglishVoice(text) { speakText(text, 'en'); }
+function speakJapaneseVoice(text) { speakText(text, 'ja'); }
+// ことばの ( ___ ) を「ま」に して よむ
+function speakWithBlank(text, lang) {
+  const parts = text.split('( ___ )');
+  speakSequence([{ text: parts[0].trim(), lang, pauseAfter: 900 }, { text: (parts[1] || '').trim(), lang }]);
+}
+
+function unlockSpeech() {
+  document.removeEventListener('touchend', unlockSpeech, true);
+  document.removeEventListener('click', unlockSpeech, true);
+  if (!hasSpeech || window.speechSynthesis.speaking) return;
+  const u = new SpeechSynthesisUtterance(' '); u.volume = 0;
+  window.speechSynthesis.speak(u);
+}
+document.addEventListener('touchend', unlockSpeech, true);
+document.addEventListener('click', unlockSpeech, true);
+
+
+const APP_ID = 'fishing';
+let isMuted = loadProgress(APP_ID + '-muted') === true;
+// すすみぐあいの ほぞん
+function saveProgress(key, data) { try { localStorage.setItem(key, JSON.stringify(data)); } catch (e) {} }
+function loadProgress(key) { try { const s = localStorage.getItem(key); return s ? JSON.parse(s) : null; } catch (e) { return null; } }
+
+// ▼▼ ポケモンの リアクション ▼▼
+const EMOTE_SVG = {
+  heart: '<svg viewBox="0 0 24 24"><path fill="#FF4F81" d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.2 0 3.6 1.3 4.3 2.4.7-1.1 2.1-2.4 4.3-2.4 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z"/></svg>',
+  note: '<svg viewBox="0 0 24 24"><path fill="#4E8BFF" d="M9 3.5l11-2v13.2a3.3 3.3 0 1 1-2-3V6.1l-7 1.3v9.3a3.3 3.3 0 1 1-2-3z"/></svg>',
+  star: '<svg viewBox="0 0 24 24"><path fill="#FFB800" d="M12 2l2.9 6.3 6.9.7-5.2 4.6 1.5 6.8L12 16.9 5.9 20.4l1.5-6.8L2.2 9l6.9-.7z"/></svg>',
+  bang: '<svg viewBox="0 0 24 24"><rect x="9.6" y="2.5" width="4.8" height="13" rx="2.4" fill="#FF6A3D"/><circle cx="12" cy="19.5" r="2.6" fill="#FF6A3D"/></svg>'
+};
+function emote(img, kind) {
+  const r = img.getBoundingClientRect();
+  const e = document.createElement('div');
+  e.className = 'emote'; e.innerHTML = EMOTE_SVG[kind];
+  e.style.left = (r.left + r.width * 0.92) + 'px'; e.style.top = (r.top + r.height * 0.32) + 'px';
+  document.body.appendChild(e);
+  e.animate([
+    { transform: 'translate(-50%, 10px) scale(0.2)', opacity: 0 },
+    { transform: 'translate(-50%, -6px) scale(1.15)', opacity: 1, offset: 0.25 },
+    { transform: 'translate(-50%, -10px) scale(1)', opacity: 1, offset: 0.75 },
+    { transform: 'translate(-50%, -24px) scale(0.9)', opacity: 0 }
+  ], { duration: 1100, easing: 'ease-out' }).onfinish = () => e.remove();
+}
+function tapRipple(x, y, color) {
+  for (let i = 0; i < 2; i++) {
+    const r = document.createElement('div');
+    r.className = 'tap-ripple'; r.style.left = x + 'px'; r.style.top = y + 'px';
+    if (color) r.style.borderColor = color;
+    document.body.appendChild(r);
+    r.animate([{ transform: 'translate(-50%, -50%) scale(0.2)', opacity: 0.9 }, { transform: 'translate(-50%, -50%) scale(1.6)', opacity: 0 }],
+      { duration: 600, delay: i * 120, fill: 'backwards', easing: 'cubic-bezier(0.2, 0.7, 0.3, 1)' }).onfinish = () => r.remove();
+  }
+}
+function soundRings(img) {
+  const c = elementCenter(img);
+  for (let i = 0; i < 3; i++) {
+    const r = document.createElement('div');
+    r.className = 'tap-ripple sound'; r.style.left = c.x + 'px'; r.style.top = c.y + 'px';
+    document.body.appendChild(r);
+    r.animate([{ transform: 'translate(-50%, -50%) scale(0.6)', opacity: 0.8 }, { transform: 'translate(-50%, -50%) scale(2.4)', opacity: 0 }],
+      { duration: 900, delay: i * 180, fill: 'backwards', easing: 'ease-out' }).onfinish = () => r.remove();
+  }
+}
+// ぷにっ ・ ぴょんぴょん ・ くるっ（ふりかえる）
+const POKE_MOVES = {
+  squish: [
+    { transform: 'scale(1, 1)' }, { transform: 'scale(1.18, 0.82) translateY(10px)', offset: 0.2 }, { transform: 'scale(0.9, 1.12) translateY(-12px)', offset: 0.45 },
+    { transform: 'scale(1.06, 0.95)', offset: 0.7 }, { transform: 'scale(1, 1)' }
+  ],
+  hop: [
+    { transform: 'translateY(0) scale(1, 1)' }, { transform: 'translateY(4px) scale(1.1, 0.9)', offset: 0.08 }, { transform: 'translateY(-34px) scale(0.95, 1.05)', offset: 0.25 },
+    { transform: 'translateY(2px) scale(1.12, 0.88)', offset: 0.45 }, { transform: 'translateY(-22px) scale(0.97, 1.03)', offset: 0.65 }, { transform: 'translateY(0) scale(1.06, 0.94)', offset: 0.85 }, { transform: 'translateY(0) scale(1, 1)' }
+  ],
+  turn: [
+    { transform: 'scaleX(1)' }, { transform: 'scaleX(-1) translateY(-8px)', offset: 0.25 }, { transform: 'scaleX(-1) translateY(-8px)', offset: 0.6 }, { transform: 'scaleX(1)' }
+  ],
+  wiggle: [
+    { transform: 'rotate(0)' }, { transform: 'rotate(-8deg) scale(1.04)', offset: 0.2 }, { transform: 'rotate(8deg) scale(1.04)', offset: 0.4 },
+    { transform: 'rotate(-6deg)', offset: 0.6 }, { transform: 'rotate(4deg)', offset: 0.8 }, { transform: 'rotate(0)' }
+  ]
+};
+function pokeMove(img, move, duration) {
+  if (img._fx) img._fx.cancel();
+  img._fx = img.animate(POKE_MOVES[move], { duration, easing: 'ease-in-out' });
+  return img._fx;
+}
+function playCry(id, volume = 0.5) {
+  if (isMuted) return;
+  try { const a = new Audio(`https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/${id}.ogg`); a.volume = volume; a.play().catch(() => {}); } catch (e) {}
+}
+// タップ リアクション（4しゅるいから ランダム）
+let lastPokeReaction = '';
+function pokeReaction(img, point, pokeId) {
+  const c = elementCenter(img);
+  const x = point ? point.x : c.x, y = point ? point.y : c.y;
+  tapRipple(x, y);
+  const kinds = ['love', 'hop', 'turn', 'cry'].filter(k => k !== lastPokeReaction);
+  const k = kinds[Math.floor(Math.random() * kinds.length)];
+  lastPokeReaction = k;
+  if (k === 'love') {
+    pokeMove(img, 'squish', 650); emote(img, 'heart'); sfx('boing');
+    burst(x, y - 10, { count: 9, spread: 80, shapes: ['heart'], colors: ['#FF6B9A', '#FF8FB1', '#FF4F81'] });
+  } else if (k === 'hop') {
+    pokeMove(img, 'hop', 900); emote(img, 'note'); sfx('hop');
+    setTimeout(() => { const cc = elementCenter(img); floatNotes(cc.x, cc.y - 30); }, 150);
+  } else if (k === 'turn') {
+    pokeMove(img, 'turn', 900); emote(img, 'star'); sfx('twinkle');
+    burst(c.x, c.y - 20, { count: 10, spread: 100, shapes: ['star'], colors: ['#FFD23F', '#FFB800', '#FFF0A0'] });
+  } else {
+    pokeMove(img, 'wiggle', 700); emote(img, 'bang'); soundRings(img); playCry(pokeId);
+  }
+}
+function floatNotes(x, y) {
+  ['♪', '♫', '♪'].forEach((t, i) => {
+    const n = document.createElement('div');
+    n.className = 'float-note'; n.innerText = t; n.style.left = (x + (i - 1) * 30) + 'px'; n.style.top = y + 'px';
+    n.style.color = ['#4E8BFF', '#B05CFF', '#FF6A3D'][i];
+    document.body.appendChild(n);
+    n.animate([{ transform: 'translate(-50%, 0) scale(0.4)', opacity: 0 }, { transform: 'translate(-50%, -20px) scale(1.1)', opacity: 1, offset: 0.3 }, { transform: `translate(calc(-50% + ${(i - 1) * 14}px), -70px) rotate(${(i - 1) * 20}deg)`, opacity: 0 }],
+      { duration: 1100, delay: i * 120, fill: 'backwards', easing: 'ease-out' }).onfinish = () => n.remove();
+  });
+}
+
+// ▼▼ えんしゅつ ▼▼
+const PARTICLE_COLORS = ['#FF6B9A', '#FFD23F', '#5BC0EB', '#9BE564', '#FF9F1C', '#B388FF'];
+function burst(cx, cy, opts = {}) {
+  const n = opts.count || 14, spread = opts.spread || 80, shapes = opts.shapes || ['star', 'heart', ''];
+  for (let i = 0; i < n; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle ' + shapes[i % shapes.length];
+    p.style.background = p.style.color = (opts.colors || PARTICLE_COLORS)[i % (opts.colors || PARTICLE_COLORS).length];
+    p.style.left = cx + 'px'; p.style.top = cy + 'px';
+    document.body.appendChild(p);
+    const ang = Math.random() * Math.PI * 2, dist = spread * (0.5 + Math.random() * 0.7);
+    const tx = Math.cos(ang) * dist, ty = Math.sin(ang) * dist - 30;
+    const a = p.animate([
+      { transform: 'translate(-50%, -50%) scale(0.3)', opacity: 1 },
+      { transform: `translate(calc(-50% + ${tx}px), calc(-50% + ${ty}px)) scale(1) rotate(${Math.random() * 300}deg)`, opacity: 1, offset: 0.7 },
+      { transform: `translate(calc(-50% + ${tx}px), calc(-50% + ${ty + 25}px)) scale(0.8)`, opacity: 0 }
+    ], { duration: 750 + Math.random() * 350, easing: 'cubic-bezier(0.2, 0.7, 0.3, 1)' });
+    a.onfinish = () => p.remove();
+  }
+}
+function confetti() {
+  for (let i = 0; i < 28; i++) {
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    c.style.left = (Math.random() * 100) + 'vw';
+    c.style.background = PARTICLE_COLORS[i % PARTICLE_COLORS.length];
+    document.body.appendChild(c);
+    const drift = (Math.random() - 0.5) * 120;
+    const a = c.animate([
+      { transform: 'translate(0, 0) rotate(0)', opacity: 1 },
+      { transform: `translate(${drift}px, 105vh) rotate(${540 + Math.random() * 540}deg)`, opacity: 0.9 }
+    ], { duration: 1400 + Math.random() * 900, delay: Math.random() * 250, easing: 'cubic-bezier(0.3, 0.4, 0.6, 1)' });
+    a.onfinish = () => c.remove();
+  }
+}
+function elementCenter(el) { const r = el.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; }
+
+
+function sfx(t) { snd('tap'); }
+// =========================================================
+// ▼▼ つりアプリ ほんたい ▼▼
+// =========================================================
+const $ = (id) => document.getElementById(id);
+const rand = (a, b) => a + Math.random() * (b - a);
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+const NOW = () => new Date();
+function vib(ms) { try { if (navigator.vibrate) navigator.vibrate(ms); } catch (e) {} }
+
+// ---------- え（データURL）は いちど つくったら とっておく ----------
+const IMG_CACHE = {};
+function fishImg(k, shadow) {
+  const key = k + (shadow ? ':' + shadow : '');
+  if (!IMG_CACHE[key]) {
+    let svg = drawFish(SP_BY[k].art);
+    if (shadow) svg = toShadow(svg, shadow === true ? '#0B2A3C' : shadow);
+    IMG_CACHE[key] = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+  }
+  return IMG_CACHE[key];
+}
+function getPokemonImageUrl(id) { return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/${id}.gif`; }
+function playCry(id, volume = 0.45) {
+  if (isMuted) return;
+  try { const a = new Audio(`https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/${id}.ogg`); a.volume = volume; a.play().catch(() => {}); } catch (e) {}
+}
+
+// ---------- こうかおん ----------
+let actx = null;
+function snd(type) {
+  if (isMuted) return;
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    if (actx.state === 'suspended') actx.resume();
+    const t = actx.currentTime;
+    const tone = (f1, f2, st, dur, vol = 0.14, wave = 'triangle') => {
+      const o = actx.createOscillator(), g = actx.createGain(); o.type = wave;
+      o.frequency.setValueAtTime(f1, t + st); o.frequency.exponentialRampToValueAtTime(f2, t + st + dur);
+      g.gain.setValueAtTime(0.0001, t + st); g.gain.exponentialRampToValueAtTime(vol, t + st + 0.015); g.gain.exponentialRampToValueAtTime(0.0001, t + st + dur);
+      o.connect(g); g.connect(actx.destination); o.start(t + st); o.stop(t + st + dur + 0.05);
+    };
+    const noise = (st, dur, vol, freq) => {
+      const len = Math.floor(actx.sampleRate * dur), buf = actx.createBuffer(1, len, actx.sampleRate), d = buf.getChannelData(0);
+      for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / len);
+      const s = actx.createBufferSource(), f = actx.createBiquadFilter(), g = actx.createGain();
+      f.type = 'lowpass'; f.frequency.value = freq; g.gain.value = vol; s.buffer = buf;
+      s.connect(f); f.connect(g); g.connect(actx.destination); s.start(t + st);
+    };
+    if (type === 'cast') { noise(0, 0.35, 0.25, 2400); tone(900, 300, 0, 0.35, 0.05, 'sine'); }
+    if (type === 'splash') { noise(0, 0.45, 0.5, 900); tone(300, 120, 0, 0.2, 0.06, 'sine'); }
+    if (type === 'tick') tone(1800, 1600, 0, 0.03, 0.05, 'square');
+    if (type === 'nibble') tone(420, 260, 0, 0.12, 0.12, 'sine');
+    if (type === 'bite') { tone(260, 120, 0, 0.25, 0.2, 'sine'); noise(0, 0.25, 0.3, 700); }
+    if (type === 'hit') { tone(520, 1040, 0, 0.12, 0.14); tone(780, 1560, 0.1, 0.18, 0.14); }
+    if (type === 'swish') noise(0, 0.22, 0.25, 3000);
+    if (type === 'snap') { tone(1400, 200, 0, 0.18, 0.12, 'sawtooth'); }
+    if (type === 'coin') { tone(988, 988, 0, 0.08, 0.1, 'square'); tone(1319, 1319, 0.08, 0.22, 0.1, 'square'); }
+    if (type === 'catch') { [523, 659, 784, 1047].forEach((f, i) => tone(f, f, i * 0.1, 0.2, 0.12)); tone(1319, 1568, 0.42, 0.5, 0.1, 'sine'); }
+    if (type === 'miss') tone(330, 200, 0, 0.35, 0.1);
+    if (type === 'tap') tone(660, 880, 0, 0.08, 0.08, 'sine');
+  } catch (e) {}
+}
+
+// ---------- ほぞん（ひとりずつ）----------
+const PLAYERS = [{ k: 'ibu', n: 'いぶちゃん', face: '👧', color: '#FF8FB1' }, { k: 'mii', n: 'みーちゃん', face: '👧', color: '#8FC8FF' }];
+let player = null, save = null;
+function freshSave(k) { return { money: 300, rod: 0, cooler: 0, methods: ['uki'], areas: ['seto', 'kawa'], zukan: {}, box: [], partner: 7, easy: k === 'mii', total: 0 }; }
+function loadSave(k) { const s = loadProgress('fishing-save-' + k); return Object.assign(freshSave(k), s || {}); }
+function store() { if (player) saveProgress('fishing-save-' + player.k, save); }
+function setMoney(v) { save.money = Math.max(0, Math.round(v)); store(); updateMoney(); }
+function updateMoney() { ['home-money', 'fish-money', 'shop-money'].forEach(id => { const el = $(id); if (el) el.textContent = `💰 ${save.money.toLocaleString()}えん`; }); }
+function boxCap() { return COOLERS[save.cooler].cap; }
+let toastT = null;
+function toast(msg) { const t = $('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2200); }
+function speak(text) { speakText(text, 'ja'); }
+
+// ---------- がめん きりかえ ----------
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.toggle('show', s.id === id));
+  if (id !== 'fish') stopLoop();
+}
+
+// ---------- タイトル ----------
+function renderTitle() {
+  $('title-fish').innerHTML = ['madai', 'buri', 'aoriika'].map(k => `<img src="${fishImg(k)}" alt="">`).join('');
+  $('players').innerHTML = PLAYERS.map(p => {
+    const s = loadSave(p.k), n = Object.keys(s.zukan).length;
+    return `<button class="player" data-k="${p.k}" style="box-shadow:0 12px 26px rgba(0,0,0,0.2), inset 0 -8px 0 ${p.color}"><span class="face">${p.face}</span><b>${p.n}</b><small>ずかん ${n}/${SPECIES.length}</small><small>💰 ${s.money.toLocaleString()}えん</small></button>`;
+  }).join('');
+  $('players').querySelectorAll('.player').forEach(b => b.onclick = () => { player = PLAYERS.find(p => p.k === b.dataset.k); save = loadSave(player.k); snd('tap'); renderHome(); show('home'); speak(`${player.n}、いっしょに つりに いこう！`); });
+}
+
+// ---------- みなと ----------
+function partnerOf() { return PARTNERS.find(p => p.id === save.partner) || PARTNERS[1]; }
+const HOME_LINES = ['きょうは なにを つる？', 'おおきい さかな つりたいね！', 'ずかんを うめよう！', 'クーラーの さかなは おみせで うれるよ', 'しゅんの さかなは たかく うれるよ！'];
+function renderHome() {
+  $('home-name').textContent = player.n;
+  updateMoney();
+  const p = partnerOf();
+  $('home-partner').src = getPokemonImageUrl(p.id);
+  $('home-bubble').textContent = pick(HOME_LINES);
+  const n = Object.keys(save.zukan).length;
+  $('home-stats').innerHTML = `<span class="chip">📖 ずかん ${n}/${SPECIES.length}</span><span class="chip">🧊 クーラー ${save.box.length}/${boxCap()}</span><span class="chip">🎣 ${RODS[save.rod].n}</span>`;
+  $('easy-sw').classList.toggle('on', !!save.easy);
+  $('mute-btn').textContent = isMuted ? '🔇 おと なし' : '🔈 おと あり';
+}
+$('home-back').onclick = () => { renderTitle(); show('title'); };
+$('home-partner').onclick = (e) => {
+  const p = partnerOf(); playCry(p.id);
+  if (typeof pokeReaction === 'function') pokeReaction($('home-partner'), { x: e.clientX, y: e.clientY }, p.id);
+  $('home-bubble').textContent = pick(HOME_LINES);
+};
+$('go-btn').onclick = () => { snd('tap'); renderMap(); show('map'); };
+$('zukan-btn').onclick = () => { snd('tap'); zukanTab = 'all'; renderZukan(); show('zukan'); };
+$('shop-btn').onclick = () => { snd('tap'); shopTab = save.box.length ? 'sell' : 'tool'; renderShop(); show('shop'); };
+$('easy-btn').onclick = () => { save.easy = !save.easy; store(); renderHome(); toast(save.easy ? 'かんたん：いとが きれないよ' : 'ふつう：ひっぱりすぎると いとが きれるよ'); };
+$('mute-btn').onclick = () => { isMuted = !isMuted; saveProgress(APP_ID + '-muted', isMuted); if (isMuted) stopSpeech(); renderHome(); };
+$('partner-btn').onclick = () => openPicker();
+function openPicker() {
+  $('picker-grid').innerHTML = PARTNERS.map(p => `<button class="pick ${p.id === save.partner ? 'on' : ''}" data-id="${p.id}"><img src="${getPokemonImageUrl(p.id)}" alt=""><span>${p.n}</span></button>`).join('');
+  $('picker-grid').querySelectorAll('.pick').forEach(b => b.onclick = () => {
+    save.partner = +b.dataset.id; store(); $('picker').classList.remove('show'); renderHome();
+    const p = partnerOf(); playCry(p.id); speak(`${p.n}と いっしょに つりに いこう！`);
+  });
+  $('picker').classList.add('show');
+}
+$('picker-close').onclick = () => $('picker').classList.remove('show');
+
+// ---------- マップ ----------
+let selArea = 'seto', selMethod = 'uki';
+function poolFor(area, method) { return SPECIES.filter(s => s.a.includes(area) && s.m.includes(method)); }
+function renderMap() {
+  const now = NOW(), m = now.getMonth() + 1;
+  $('map-season').textContent = `${{ はる: '🌸', なつ: '🌻', あき: '🍁', ふゆ: '⛄' }[seasonOf(m)]} ${seasonOf(m)}・${timeOfDay(now.getHours())}`;
+  if (!save.areas.includes(selArea)) selArea = 'seto';
+  $('area-list').innerHTML = AREAS.map(a => {
+    const have = save.areas.includes(a.k);
+    const list = SPECIES.filter(s => s.a.includes(a.k)), got = list.filter(s => save.zukan[s.k]).length;
+    return `<button class="area ${have ? '' : 'locked'} ${a.k === selArea ? 'sel' : ''}" data-k="${a.k}" style="background:linear-gradient(160deg, ${a.sea[0]}, ${a.sea[2]})"><span class="ico">${a.icon}</span><b>${a.n}</b><small>${a.desc}</small><small>ずかん ${got}/${list.length}</small>${have ? '' : `<span class="lock">🔒 ふねの きっぷ ${a.price.toLocaleString()}えん</span>`}</button>`;
+  }).join('');
+  $('area-list').querySelectorAll('.area').forEach(b => b.onclick = () => {
+    const k = b.dataset.k;
+    if (!save.areas.includes(k)) { toast('おみせで ふねの きっぷを かってね'); speak('おみせで ふねの きっぷを かってね'); return; }
+    selArea = k; snd('tap'); speak(AREA_BY[k].n); renderMap();
+  });
+  const usable = METHODS.filter(mm => poolFor(selArea, mm.k).length);
+  if (!usable.some(mm => mm.k === selMethod) || !save.methods.includes(selMethod)) selMethod = 'uki';
+  $('methods').innerHTML = METHODS.map(mm => {
+    const ok = save.methods.includes(mm.k), here = poolFor(selArea, mm.k).length > 0;
+    return `<button class="method ${ok && here ? '' : 'locked'} ${mm.k === selMethod ? 'sel' : ''}" data-k="${mm.k}"><span class="ico">${mm.icon}</span>${mm.n}<small>${!here ? 'ここでは できない' : ok ? mm.desc : `🔒 おみせで ${mm.price}えん`}</small></button>`;
+  }).join('');
+  $('methods').querySelectorAll('.method').forEach(b => b.onclick = () => {
+    const k = b.dataset.k;
+    if (!poolFor(selArea, k).length) { toast('ここでは できないよ'); return; }
+    if (!save.methods.includes(k)) { toast('おみせで どうぐを かってね'); return; }
+    selMethod = k; snd('tap'); speak(METHOD_BY[k].n); renderMap();
+  });
+}
+$('map-back').onclick = () => { renderHome(); show('home'); };
+$('start-btn').onclick = () => { snd('tap'); startFishing(selArea, selMethod); };
+
+// =========================================================
+// ▼▼ つりの がめん ▼▼
+// =========================================================
+const G = { on: false };
+let rafId = 0, lastT = 0;
+function geo() {
+  const sc = $('scene'), W = sc.clientWidth, H = sc.clientHeight;
+  const surf = H * 0.36, bot = H * 0.93;
+  return { W, H, surf, bot, pier: 0.2, tipX: W * 0.26, tipY: surf - H * 0.19, unit: Math.min(W, H * 1.1) };
+}
+const dpx = (g, d) => g.surf + d * (g.bot - g.surf);
+const BANDS = { top: [0.05, 0.3], mid: [0.25, 0.62], bot: [0.62, 0.86] };
+
+function farSvg(area) {
+  const a = AREA_BY[area];
+  if (area === 'seto') return `<svg viewBox="0 0 1000 100" preserveAspectRatio="none" width="100%" height="100%"><path d="M0 100 L0 80 Q60 40 140 70 Q190 30 260 72 L320 100 Z" fill="#5E9E78"/><path d="M380 100 Q460 20 560 66 Q600 50 640 74 L660 100 Z" fill="#6AAE84"/><path d="M720 100 Q800 50 880 72 Q930 40 1000 70 L1000 100 Z" fill="#4E8E6A"/><path d="M470 52 l6 -30 l6 30 Z" fill="#E8524A" opacity="0.8"/></svg>`;
+  if (area === 'nihon') return `<svg viewBox="0 0 1000 100" preserveAspectRatio="none" width="100%" height="100%"><path d="M0 100 L0 30 L60 34 L110 20 L170 46 L220 40 L260 70 L300 100 Z" fill="#4A5A64"/><path d="M700 100 L760 60 L820 64 L880 36 L940 44 L1000 30 L1000 100 Z" fill="#56666E"/></svg>`;
+  if (area === 'taihei') return `<svg viewBox="0 0 1000 100" preserveAspectRatio="none" width="100%" height="100%"><path d="M780 96 l60 0 l-8 -8 l-40 0 Z M800 88 l0 -14 l14 0 l0 14 Z" fill="#5A6E80"/><path d="M0 100 L0 94 L1000 94 L1000 100 Z" fill="#9AC8E8"/></svg>`;
+  if (area === 'hokkai') return `<svg viewBox="0 0 1000 100" preserveAspectRatio="none" width="100%" height="100%"><path d="M0 100 L0 70 L120 20 L240 74 L360 30 L480 80 L520 100 Z" fill="#6E8A9E"/><path d="M90 32 L120 20 L150 34 L130 40 Z M330 40 L360 30 L390 44 L365 48 Z" fill="#FFF"/><path d="M640 100 L760 40 L880 76 L1000 50 L1000 100 Z" fill="#7E98AA"/><path d="M730 54 L760 40 L790 54 Z" fill="#FFF"/></svg>`;
+  return `<svg viewBox="0 0 1000 100" preserveAspectRatio="none" width="100%" height="100%"><path d="M0 100 L0 20 Q120 0 220 30 Q300 10 400 40 L460 100 Z" fill="#3E8A56"/><path d="M560 100 L620 40 Q720 0 820 26 Q900 6 1000 24 L1000 100 Z" fill="#4A9A62"/><path d="M0 100 L0 60 Q150 50 300 80 L380 100 Z" fill="#2E7044"/><path d="M640 100 Q760 60 1000 66 L1000 100 Z" fill="#2E7044"/></svg>`;
+}
+function bedSvg(area) {
+  const stone = area === 'kawa';
+  const base = AREA_BY[area].sand;
+  let rocks = '';
+  const r = rnd(area.length * 7);
+  for (let i = 0; i < (stone ? 18 : 7); i++) { const x = r() * 1000, w = stone ? 30 + r() * 50 : 40 + r() * 90; rocks += `<ellipse cx="${f1(x)}" cy="${f1(96 - r() * 8)}" rx="${f1(w)}" ry="${f1(w * 0.45)}" fill="${stone ? pick(['#8E8A7E', '#A8A294', '#76726A']) : pick(['#7E7466', '#958A78'])}"/>`; }
+  return `<svg viewBox="0 0 1000 100" preserveAspectRatio="none" width="100%" height="100%"><path d="M0 100 L0 60 Q200 40 400 62 Q620 80 800 56 Q900 46 1000 58 L1000 100 Z" fill="${base}"/>${rocks}</svg>`;
+}
+function weedSvg(kind, h) {
+  if (kind === 'reed') return `<svg viewBox="0 0 30 100" width="${h * 0.3}" height="${h}"><path d="M15 100 Q10 50 16 0" stroke="#5E8A3A" stroke-width="4" fill="none"/><path d="M15 100 Q22 60 26 20" stroke="#6E9A46" stroke-width="3" fill="none"/></svg>`;
+  const c = kind === 'kelp' ? '#7A6A2E' : '#3E9A5A';
+  return `<svg viewBox="0 0 40 100" width="${h * 0.4}" height="${h}"><path d="M20 100 Q6 80 18 60 Q30 40 16 20 Q10 10 20 0" stroke="${c}" stroke-width="7" fill="none" stroke-linecap="round"/><path d="M22 100 Q34 76 26 56 Q20 40 30 24" stroke="${c}" stroke-width="5" fill="none" stroke-linecap="round" opacity="0.8"/></svg>`;
+}
+function pierSvg(area) {
+  if (area === 'kawa') return `<svg viewBox="0 0 200 100" preserveAspectRatio="none" width="100%" height="100%"><path d="M0 0 L150 0 Q190 10 200 40 L210 100 L0 100 Z" fill="#7E6A4E"/><path d="M0 0 L150 0 Q175 4 190 16 L0 16 Z" fill="#5EA04A"/><ellipse cx="170" cy="40" rx="26" ry="14" fill="#8E8A7E"/><ellipse cx="120" cy="30" rx="20" ry="10" fill="#A8A294"/></svg>`;
+  return `<svg viewBox="0 0 200 100" preserveAspectRatio="none" width="100%" height="100%"><rect x="0" y="0" width="200" height="12" fill="#A0703C"/><rect x="0" y="12" width="200" height="4" fill="#6E4A24"/>${[20, 80, 140, 188].map(x => `<rect x="${x}" y="16" width="10" height="84" fill="#6E4A24"/>`).join('')}</svg>`;
+}
+
+function buildScene(area) {
+  const a = AREA_BY[area], now = NOW(), tod = timeOfDay(now.getHours());
+  const skyCols = tod === 'よる' ? ['#0E1A3A', '#2A3A6A'] : tod === 'ゆうがた' ? ['#FF9E7A', '#FFD9A8'] : tod === 'あさ' ? ['#FFC8A8', a.sky[1]] : a.sky;
+  const weedKind = area === 'kawa' ? 'reed' : area === 'hokkai' ? 'kelp' : 'weed';
+  let weeds = ''; for (let i = 0; i < 7; i++) weeds += `<div class="weed" style="left:${8 + i * 13 + Math.random() * 6}%;animation-delay:${-Math.random() * 3}s">${weedSvg(weedKind, 60 + Math.random() * 60)}</div>`;
+  let bubbles = ''; for (let i = 0; i < 6; i++) bubbles += `<div class="bubble-dot" style="left:${25 + Math.random() * 70}%;bottom:${5 + Math.random() * 10}%;animation-duration:${5 + Math.random() * 5}s;animation-delay:${-Math.random() * 8}s"></div>`;
+  let stars = ''; if (tod === 'よる') for (let i = 0; i < 24; i++) stars += `<i style="position:absolute;left:${Math.random() * 100}%;top:${Math.random() * 80}%;width:3px;height:3px;border-radius:50%;background:#FFF;opacity:${0.4 + Math.random() * 0.6}"></i>`;
+  const sun = tod === 'よる' ? 'background:#FFF6C8;box-shadow:0 0 30px #FFF6C8' : tod === 'ゆうがた' ? 'background:#FF7A3D;box-shadow:0 0 40px #FFB070' : 'background:#FFE27A;box-shadow:0 0 40px #FFE27A';
+  $('scene').innerHTML = `
+    <div class="sky" style="height:36%;background:linear-gradient(180deg, ${skyCols[0]}, ${skyCols[1]})">${stars}
+      <div class="sunmoon" style="right:12%;top:14%;width:4.5rem;height:4.5rem;${sun}"></div>
+      ${tod === 'よる' ? '' : `<div class="cloud" style="top:16%;animation-duration:70s;animation-delay:-20s"></div><div class="cloud" style="top:34%;animation-duration:95s;animation-delay:-60s;transform:scale(0.7)"></div>`}
+      <div class="far" style="bottom:0;height:${area === 'kawa' ? 40 : 22}%">${farSvg(area)}</div>
+    </div>
+    <div class="water" style="top:36%;background:linear-gradient(180deg, ${a.sea[0]}, ${a.sea[1]} 55%, ${a.sea[2]})">
+      <svg class="rays" style="top:0;height:70%" viewBox="0 0 100 100" preserveAspectRatio="none" width="100%"><path d="M20 0 L30 0 L48 100 L30 100 Z M55 0 L62 0 L76 100 L64 100 Z M80 0 L86 0 L96 100 L88 100 Z" fill="#FFF" opacity="0.07"/></svg>
+      <div class="seabed" style="height:16%">${bedSvg(area)}</div>
+      ${weeds}${bubbles}
+    </div>
+    <svg class="surface" style="top:calc(36% - 0.6rem)" viewBox="0 0 120 10" preserveAspectRatio="none"><path d="M0 5 Q5 0 10 5 T20 5 T30 5 T40 5 T50 5 T60 5 T70 5 T80 5 T90 5 T100 5 T110 5 T120 5 L120 10 L0 10 Z" fill="${a.sea[0]}"/><path d="M0 5 Q5 0 10 5 T20 5 T30 5 T40 5 T50 5 T60 5 T70 5 T80 5 T90 5 T100 5 T110 5 T120 5" fill="none" stroke="#FFF" stroke-width="0.8" opacity="0.7"/></svg>
+    <div id="fish-layer" style="position:absolute;inset:0"></div>
+    <div class="pier-el" style="top:calc(36% - 1.2rem);width:22%;height:${area === 'kawa' ? 64 : 62}%">${pierSvg(area)}</div>
+    <img class="partner-fish" id="fish-partner" alt="">
+    <div class="say" id="say"></div>
+    ${tod === 'よる' ? '<div class="night-veil"></div>' : ''}`;
+  const p = partnerOf();
+  const pi = $('fish-partner');
+  pi.src = getPokemonImageUrl(p.id);
+  pi.onclick = (e) => { playCry(p.id); if (typeof pokeReaction === 'function') pokeReaction(pi, { x: e.clientX, y: e.clientY }, p.id); };
+}
+function layoutPartner() {
+  const g = geo(), pi = $('fish-partner'); if (!pi) return;
+  const h = Math.min(g.H * 0.11, g.W * 0.13, 120);
+  pi.style.height = h + 'px'; pi.style.left = (g.W * 0.01) + 'px'; pi.style.top = (g.surf - h - g.H * 0.012) + 'px';
+  const s = $('say'); s.style.left = (g.W * 0.03) + 'px'; s.style.top = (g.surf - h - g.H * 0.075) + 'px';
+}
+let sayT = null;
+function say(text, voice = true) {
+  const s = $('say'); if (!s) return;
+  s.textContent = text; s.classList.add('show');
+  clearTimeout(sayT); sayT = setTimeout(() => s.classList.remove('show'), 2400);
+  if (voice) speak(text);
+}
+function bigMsg(text, color) {
+  const el = $('big-msg'); el.textContent = text;
+  el.style.textShadow = `0 4px 0 ${color || '#F2545B'}, 0 0 18px ${color || '#F2545B'}`;
+  el.animate([{ opacity: 0, transform: 'translate(-50%,-50%) scale(0.4)' }, { opacity: 1, transform: 'translate(-50%,-50%) scale(1.15)', offset: 0.25 }, { opacity: 1, transform: 'translate(-50%,-50%) scale(1)', offset: 0.75 }, { opacity: 0, transform: 'translate(-50%,-60%) scale(1)' }], { duration: 1300, easing: 'ease-out' });
+}
+function splashAt(x, y, big) {
+  for (let i = 0; i < (big ? 3 : 2); i++) {
+    const s = document.createElement('div'); s.className = 'splash'; s.style.left = x + 'px'; s.style.top = y + 'px';
+    $('scene').appendChild(s);
+    s.animate([{ transform: 'scale(0.3)', opacity: 1 }, { transform: `scale(${big ? 2.6 : 1.8})`, opacity: 0 }], { duration: 700, delay: i * 140, fill: 'backwards', easing: 'ease-out' }).onfinish = () => s.remove();
+  }
+  if (big) burst(x, y - 10, { count: 10, spread: 60, shapes: [''], colors: ['#FFFFFF', '#CDEBFF', '#9AD8FF'] });
+}
+
+// ---------- さかなを だす ----------
+function weightOf(sp, month, night) {
+  let w = [0, 10, 6, 3, 1.4, 0.5][sp.rare];
+  if (sp.shun && sp.shun.includes(month)) w *= 2.2;
+  if (sp.t === 'night') w *= night ? 2 : 0.35;
+  return w;
+}
+function spawnFish(g) {
+  const now = NOW(), month = now.getMonth() + 1, night = timeOfDay(now.getHours()) === 'よる';
+  const pool = poolFor(G.area, G.method);
+  const tot = pool.reduce((s, sp) => s + weightOf(sp, month, night), 0);
+  let r = Math.random() * tot, sp = pool[0];
+  for (const s of pool) { r -= weightOf(s, month, night); if (r <= 0) { sp = s; break; } }
+  const [mn, mx] = sizeRange(sp, G.area);
+  const size = Math.round((mn + (mx - mn) * Math.pow(Math.random(), 1.7)) * 10) / 10;
+  const band = BANDS[sp.band];
+  const f = { sp, size, x: rand(0.35, 1.05), d: rand(band[0], band[1]), tx: rand(0.3, 0.95), td: rand(band[0], band[1]), dir: -1, st: 'swim', cool: rand(0, 2), t: Math.random() * 10 };
+  const el = document.createElement('div'); el.className = 'fish-sprite';
+  const wpx = fishPx(g, sp, size);
+  el.style.width = wpx + 'px'; el.style.height = (wpx / 2) + 'px';
+  el.innerHTML = `<img src="${fishImg(sp.k, true)}" alt="" style="opacity:0.55">`;
+  $('fish-layer').appendChild(el);
+  f.el = el; f.w = wpx;
+  G.fishes.push(f);
+}
+function fishPx(g, sp, size) {
+  let k = size / 100;
+  if (sp.art.kind === 'squid' || sp.art.kind === 'octo') k *= 1.4;
+  if (sp.art.kind === 'shrimp') k *= 3;
+  return clamp(k * g.unit * 0.42, g.unit * 0.08, g.unit * 0.62);
+}
+function removeFish(f) { f.el.remove(); G.fishes = G.fishes.filter(x => x !== f); }
+
+// ---------- はじめる ----------
+function startFishing(area, method) {
+  Object.assign(G, { on: true, area, method, phase: 'idle', fishes: [], bx: 0.5, bd: 0, t: 0, waitT: 0, reel: 0, reelAcc: 0, held: false, knob: 0, tickAcc: 0, fallT: 0, dip: 0, sink: 0, fight: null, hookFish: null, power: 0, aimT: 0, fly: null, biteT: 0, lastLine: 0 });
+  show('fish');
+  buildScene(area);
+  $('fish-where').textContent = `${AREA_BY[area].icon} ${AREA_BY[area].n}・${METHOD_BY[method].n}`;
+  updateMoney(); updateCool();
+  layoutPartner();
+  const g = geo();
+  for (let i = 0; i < 6; i++) spawnFish(g);
+  setAct('なげる', 'blue');
+  $('fight').classList.remove('show');
+  const p = partnerOf();
+  setTimeout(() => say(method === 'egi' ? 'エギを なげて、しゃくって しずめてね！' : method === 'lure' ? 'なげたら ぐるぐる まいてね！' : 'なげて、うきが しずんだら あわせてね！'), 400);
+  playCry(p.id, 0.35);
+  lastT = performance.now();
+  cancelAnimationFrame(rafId);
+  rafId = requestAnimationFrame(loop);
+}
+function stopLoop() { G.on = false; cancelAnimationFrame(rafId); }
+function updateCool() { $('fish-cool').textContent = `🧊 ${save.box.length}/${boxCap()}`; }
+$('fish-back').onclick = () => { stopLoop(); renderMap(); show('map'); };
+window.addEventListener('resize', () => { if (G.on) { layoutPartner(); const g = geo(); G.fishes.forEach(f => { f.w = fishPx(g, f.sp, f.size); f.el.style.width = f.w + 'px'; f.el.style.height = f.w / 2 + 'px'; }); } });
+
+function setAct(label, cls, glow) {
+  const b = $('act'); b.textContent = label;
+  b.className = 'act' + (cls ? ' ' + cls : '') + (glow ? ' glow' : '');
+}
+
+// ---------- ボタン ----------
+$('act').addEventListener('pointerdown', (e) => { e.preventDefault(); onAct(); });
+function onAct() {
+  if (!G.on) return;
+  const ph = G.phase;
+  if (ph === 'idle') { G.phase = 'aim'; G.aimT = 0; $('power').classList.add('show'); setAct('いまだ！', '', true); snd('tap'); return; }
+  if (ph === 'aim') { doCast(); return; }
+  if (ph === 'bite') { hookIt(); return; }
+  if (ph === 'wait') {
+    if (G.method === 'egi') { shakuri(); return; }
+    if (G.method === 'uki') {
+      const nib = G.fishes.find(f => f.st === 'nibble');
+      if (nib && !save.easy) { nib.st = 'flee'; nib.cool = 4; snd('miss'); say('はやすぎた〜！ うきが しずむまで まってね'); }
+      else if (!nib) { G.dip = 0.6; say('うきが しずむまで まってね', false); }
+      return;
+    }
+  }
+}
+function doCast() {
+  const g = geo();
+  $('power').classList.remove('show');
+  const p = G.power;
+  const tx = 0.34 + p * 0.6;
+  G.fly = { t: 0, x0: g.tipX / g.W, tx };
+  G.phase = 'fly'; setAct('…', '', false); $('act').classList.add('hide');
+  snd('cast');
+}
+function landed() {
+  const g = geo();
+  G.bx = G.fly.tx; G.bd = 0; G.fly = null;
+  splashAt(G.bx * g.W, g.surf, false); snd('splash');
+  G.phase = 'wait'; G.waitT = 0; G.dip = 0; G.sink = 0; G.fallT = G.method === 'egi' ? 4 : 0;
+  $('act').classList.remove('hide');
+  if (G.method === 'uki') setAct('あわせる', '');
+  else if (G.method === 'egi') setAct('しゃくる', 'blue');
+  else setAct('まいてね →', 'blue');
+  if (G.method === 'lure') $('act').classList.add('hide');
+}
+function shakuri() {
+  G.bd = Math.max(0.04, G.bd - 0.12); G.bx = Math.max(G.pierMin || 0.22, G.bx - 0.03); G.fallT = 3.4; G.jerk = 0.4;
+  snd('swish');
+  if (G.bx <= 0.24) retrieve();
+}
+function retrieve() {
+  G.phase = 'idle'; G.fishes.forEach(f => { if (f.st !== 'swim') { f.st = 'swim'; f.cool = 1.5; } });
+  setAct('なげる', 'blue'); $('act').classList.remove('hide');
+}
+function hookIt() {
+  const f = G.hookFish;
+  if (!f) { retrieve(); return; }
+  vib(120); snd('hit'); bigMsg('ヒット！');
+  startFight(f);
+}
+
+// ---------- リール ----------
+(function setupReel() {
+  const reel = $('reel');
+  let lastAng = null;
+  const ang = (e) => { const r = reel.getBoundingClientRect(); return Math.atan2(e.clientY - (r.top + r.height / 2), e.clientX - (r.left + r.width / 2)); };
+  reel.addEventListener('pointerdown', (e) => { e.preventDefault(); reel.setPointerCapture(e.pointerId); lastAng = ang(e); G.held = true; });
+  reel.addEventListener('pointermove', (e) => {
+    if (lastAng === null) return;
+    const a = ang(e); let d = a - lastAng;
+    if (d > Math.PI) d -= Math.PI * 2; if (d < -Math.PI) d += Math.PI * 2;
+    lastAng = a; G.reelAcc += Math.abs(d); G.knob += d;
+  });
+  const up = () => { lastAng = null; G.held = false; };
+  reel.addEventListener('pointerup', up); reel.addEventListener('pointercancel', up);
+})();
+
+// ---------- まいフレーム ----------
+function loop(now) {
+  if (!G.on) return;
+  const dt = Math.min(0.05, (now - lastT) / 1000); lastT = now;
+  G.t += dt;
+  const g = geo();
+  // リールの はやさ（1びょうに なんかい まわしたか）
+  const inst = G.reelAcc / (Math.PI * 2) / Math.max(dt, 0.001); G.reelAcc = 0;
+  G.reelRaw = (G.reelRaw || 0) * 0.82 + inst * 0.18;
+  let reel = Math.min(3, G.reelRaw);
+  if (G.held && reel < 0.45) { reel = 0.45; G.knob += 0.45 * Math.PI * 2 * dt; }
+  G.reel = reel;
+  G.tickAcc += reel * dt * 4; if (G.tickAcc > 1) { G.tickAcc = 0; snd('tick'); }
+  $('knob').style.transform = `rotate(${G.knob}rad)`;
+
+  if (G.phase === 'aim') {
+    G.aimT += dt; G.power = (Math.sin(G.aimT * 2.6 - Math.PI / 2) + 1) / 2;
+    $('power-bar').style.width = (G.power * 100) + '%';
+    if (G.aimT > 3.2) doCast();
+  } else if (G.phase === 'fly') {
+    G.fly.t += dt / 0.7;
+    if (G.fly.t >= 1) landed();
+  } else if (G.phase === 'wait' || G.phase === 'bite') updateWait(g, dt);
+  else if (G.phase === 'fight') updateFight(g, dt);
+
+  updateFishes(g, dt);
+  drawLines(g);
+  rafId = requestAnimationFrame(loop);
+}
+
+function updateWait(g, dt) {
+  G.waitT += dt;
+  const m = G.method;
+  if (m === 'uki') {
+    G.bd = 0.5;
+    if (G.reel > 0.3 && G.phase === 'wait') { G.bx -= G.reel * 0.07 * dt; G.fishes.forEach(f => { if (f.st !== 'swim' && f.st !== 'flee') { f.st = 'swim'; f.cool = 1.5; } }); }
+  } else if (m === 'lure') {
+    if (G.reel > 0.05) { G.bx -= G.reel * 0.085 * dt; const td = clamp(0.62 - G.reel * 0.22, 0.06, 0.8); G.bd += (td - G.bd) * dt * 1.5; }
+    else G.bd = Math.min(0.82, G.bd + 0.09 * dt);
+  } else if (m === 'egi') {
+    if (G.reel > 0.05) G.bx -= G.reel * 0.04 * dt;
+    G.bd = clamp(G.bd + (G.jerk > 0 ? -0.35 : 0.2) * dt, 0.03, 0.86);
+    G.jerk = Math.max(0, (G.jerk || 0) - dt);
+    G.fallT = Math.max(0, G.fallT - dt);
+  }
+  if (G.bx <= 0.23 && G.phase === 'wait') { retrieve(); return; }
+  if (G.phase === 'bite') {
+    G.biteT -= dt;
+    if (G.biteT <= 0) {
+      const f = G.hookFish; G.hookFish = null;
+      if (f) { f.st = 'flee'; f.cool = 5; }
+      G.sink = 0; G.phase = 'wait'; snd('miss');
+      say(m === 'egi' ? 'はなれちゃった… もういちど しゃくってみよう' : 'えさを とられちゃった…');
+      setAct(m === 'egi' ? 'しゃくる' : 'あわせる', m === 'egi' ? 'blue' : '');
+      if (m === 'uki') { G.waitT = 0; }
+    }
+  }
+  // さかなの きょうみ
+  G.checkT = (G.checkT || 0) - dt;
+  if (G.checkT <= 0 && G.phase === 'wait') {
+    G.checkT = 0.4;
+    const busy = G.fishes.some(f => f.st === 'chase' || f.st === 'nibble' || f.st === 'hug');
+    if (!busy) {
+      const cands = G.fishes.filter(f => f.st === 'swim' && f.cool <= 0 && Math.abs(f.x - G.bx) < 0.4);
+      let p = 0;
+      if (m === 'uki' && G.waitT > 1.2) p = 0.35;
+      if (m === 'lure' && G.reel > 0.2 && G.bd > 0.03) p = 0.45;
+      if (m === 'egi' && G.bd > 0.15) p = G.fallT > 0 ? 0.6 : 0.15;
+      if (cands.length && Math.random() < p) { const f = pick(cands); f.st = 'chase'; f.chaseT = 0; }
+    }
+  }
+}
+
+function updateFishes(g, dt) {
+  for (const f of G.fishes.slice()) {
+    f.t += dt; f.cool = Math.max(0, f.cool - dt);
+    const sp = 0.035 + f.sp.pow * 0.006;
+    let tx = f.tx, td = f.td, speed = sp;
+    if (f.st === 'swim') {
+      if (Math.abs(f.x - f.tx) < 0.02) { const b = BANDS[f.sp.band]; f.tx = rand(0.26, 1.0); f.td = rand(b[0], b[1]); }
+    } else if (f.st === 'flee') {
+      tx = 1.25; speed = sp * 3;
+      if (f.x > 1.15) { removeFish(f); spawnFish(g); continue; }
+    } else if (f.st === 'chase' || f.st === 'nibble' || f.st === 'hug') {
+      const head = f.w / g.W * 0.5;
+      tx = G.bx + head * 0.9; td = G.bd + 0.02; speed = sp * (G.method === 'uki' ? 1.6 : 2.6);
+      f.chaseT += dt;
+      const near = Math.abs(f.x - tx) < 0.02 && Math.abs(f.d - td) < 0.06;
+      if (f.st === 'chase') {
+        if (G.method === 'lure') {
+          if (G.reel < 0.1) { f.lose = (f.lose || 0) + dt; if (f.lose > 1.6) { f.st = 'swim'; f.cool = 3; f.lose = 0; } } else f.lose = 0;
+          if (near && G.reel > 0.12 && Math.random() < dt * 1.6) { G.hookFish = f; f.st = 'hooked'; hookIt(); }
+        } else if (G.method === 'uki') {
+          if (near) { f.st = 'nibble'; f.nib = 1 + Math.floor(Math.random() * (save.easy ? 2 : 3)); f.nibT = rand(0.5, 1.0); }
+        } else if (G.method === 'egi') {
+          if (G.fallT <= 0 && f.chaseT > 7) { f.st = 'swim'; f.cool = 2; }
+          else if (near && (G.fallT > 0 || Math.random() < dt * 0.5)) { f.st = 'hug'; startBite(f, 'グンッ！ あわせて！'); }
+        }
+        if (f.chaseT > 9) { f.st = 'swim'; f.cool = 3; }
+      } else if (f.st === 'nibble' && G.phase === 'wait') {
+        f.nibT -= dt;
+        if (f.nibT <= 0) {
+          if (f.nib > 0) { f.nib--; f.nibT = rand(0.6, 1.1); G.dip = 0.5; snd('nibble'); }
+          else startBite(f, 'いまだ！ あわせて！');
+        }
+      }
+    } else if (f.st === 'hooked') { continue; }
+    // うごく
+    const dx = tx - f.x, dd = td - f.d;
+    f.x += clamp(dx, -speed * dt, speed * dt);
+    f.d += clamp(dd, -speed * (f.st === 'swim' ? 0.6 : 1.2) * dt, speed * (f.st === 'swim' ? 0.6 : 1.2) * dt);
+    if (Math.abs(dx) > 0.004) f.dir = dx > 0 ? 1 : -1;
+    placeFish(g, f);
+  }
+  while (G.fishes.length < 6 && G.phase !== 'fight') spawnFish(g);
+}
+function placeFish(g, f, extra = '') {
+  const x = f.x * g.W - f.w / 2, y = dpx(g, f.d) - f.w / 4 + Math.sin(f.t * 2) * 3;
+  f.el.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) scaleX(${f.dir > 0 ? -1 : 1})${extra}`;
+  const mark = f.st === 'chase' || f.st === 'nibble' || f.st === 'hug' || f.st === 'hooked';
+  if (mark !== !!f.marked) { f.marked = mark; f.el.querySelector('img').style.opacity = mark ? 0.72 : 0.55; }
+}
+function startBite(f, msg) {
+  G.phase = 'bite'; G.hookFish = f; G.biteT = save.easy ? 3.2 : 2.2; G.sink = 1;
+  vib(200); snd('bite');
+  setAct('あわせる！', '', true);
+  bigMsg(G.method === 'egi' ? 'グンッ！' : 'いまだ！');
+  say(msg, true);
+}
+
+// ---------- やりとり ----------
+function startFight(f) {
+  const g = geo();
+  f.st = 'hooked';
+  const sp = f.sp, [mn, mx] = sp.sz;
+  const sf = clamp((f.size - mn) / Math.max(1, mx - mn), 0, 1);
+  const S = sp.pow * (0.65 + 0.35 * sf);
+  const dist = 8 + (G.bx - 0.2) * 40 + S * 4;
+  G.fight = { f, S, dist, max: dist, stam: 1, run: true, phaseT: 0.8, tension: 0, danger: 0, sayCd: 0 };
+  G.phase = 'fight';
+  $('act').classList.add('hide');
+  $('fight').classList.add('show');
+  splashAt(f.x * g.W, g.surf, true);
+  say(pick(['きたきた！ まいて まいて！', 'おもい！ がんばって！', 'ぐるぐる まいて！']));
+}
+function updateFight(g, dt) {
+  const F = G.fight, rod = RODS[save.rod];
+  F.phaseT -= dt; F.sayCd -= dt;
+  if (F.phaseT <= 0) {
+    F.run = !F.run && Math.random() < 0.35 + F.stam * 0.6;
+    F.phaseT = F.run ? rand(0.7, 1.6) * (0.5 + F.stam) : rand(1.3, 2.4);
+    if (F.run) { snd('splash'); if (F.f.d < 0.35) splashAt(F.f.x * g.W, g.surf, true); }
+  }
+  const reel = G.reel;
+  const pull = F.run ? (0.2 + F.S * 0.18) * (0.35 + 0.65 * F.stam) : 0.04 + F.S * 0.02;
+  let ten = (pull * (reel > 0.15 ? 1 : 0.5) + reel * 0.12) / rod.limit;
+  if (save.easy) ten = Math.min(ten, 0.92);
+  F.tension += (ten - F.tension) * Math.min(1, dt * 6);
+  // ひっぱりすぎると いとが でていく（ドラグ）
+  let slip = 0;
+  if (F.tension > 0.82) slip = (F.tension - 0.82) * 6;
+  const heavy = 0.8 + F.S * 0.32;
+  F.dist += (pull * (F.run ? 3.2 : 0.5) + slip - reel * rod.power * 2.7 / heavy * (F.run ? 0.3 : 1)) * dt;
+  F.dist = clamp(F.dist, 0, F.max + 25);
+  F.stam = Math.max(0, F.stam - dt * (F.run ? 0.05 : 0.02) * (1 + reel * 0.6) * rod.power / (0.4 + F.S * 0.35));
+  if (!save.easy && F.tension > 1.0 && reel > 0.5) F.danger += dt; else F.danger = Math.max(0, F.danger - dt * 0.7);
+  // ことば
+  if (F.sayCd <= 0) {
+    if (F.tension > 0.85 && !save.easy) { say('ひっぱられてる！ いまは まかないで！'); F.sayCd = 3; }
+    else if (!F.run && reel < 0.2) { say('いまだよ！ まいて まいて！'); F.sayCd = 3.5; }
+  }
+  $('fight-msg').textContent = F.tension > 0.85 ? (save.easy ? 'がんばれ〜！' : 'あぶない！ ちょっと まって！') : F.run ? 'ひいてる！' : 'まいて まいて！';
+  $('fight-dist').textContent = `あと ${Math.ceil(F.dist)}m`;
+  $('tension').style.left = (clamp(F.tension, 0, 1.15) / 1.15 * 100) + '%';
+  $('dist-bar').style.width = (100 - clamp(F.dist / F.max, 0, 1) * 100) + '%';
+  // さかなの いち
+  const f = F.f, k = clamp(F.dist / F.max, 0, 1.4);
+  f.x = 0.24 + (G.bx - 0.2) * k + Math.sin(G.t * 9) * (F.run ? 0.01 : 0.004);
+  f.d = clamp(0.08 + (BANDS[f.sp.band][0] + 0.1) * k + Math.sin(G.t * 3) * 0.04, 0.04, 0.88);
+  f.dir = F.run ? 1 : -1;
+  f.t += dt;
+  placeFish(g, f, ` rotate(${Math.sin(G.t * (F.run ? 22 : 8)) * (F.run ? 10 : 4)}deg)`);
+  if (F.danger > 1.1) { lineBreak(); return; }
+  if (F.dist <= 0.3) landFish();
+}
+function lineBreak() {
+  const F = G.fight; G.fight = null;
+  snd('snap'); vib(300); bigMsg('いとが きれた…', '#5A6E80');
+  say('あ〜… ざんねん！ つぎは ひかれてる ときは まかないでね');
+  F.f.st = 'flee'; F.f.cool = 5;
+  $('fight').classList.remove('show');
+  G.phase = 'idle'; G.hookFish = null;
+  setTimeout(() => { if (G.on) { setAct('なげる', 'blue'); $('act').classList.remove('hide'); } }, 1200);
+}
+function landFish() {
+  const F = G.fight; G.fight = null;
+  const g = geo(), f = F.f;
+  $('fight').classList.remove('show');
+  G.phase = 'land';
+  splashAt(f.x * g.W, g.surf, true); snd('splash');
+  f.el.querySelector('img').src = fishImg(f.sp.k); f.el.querySelector('img').style.opacity = 1;
+  const x0 = f.x * g.W - f.w / 2, y0 = dpx(g, f.d) - f.w / 4;
+  f.el.animate([{ transform: `translate(${x0}px, ${y0}px)` }, { transform: `translate(${g.W / 2 - f.w / 2}px, ${g.surf - g.H * 0.2}px) rotate(-12deg)` }], { duration: 650, easing: 'cubic-bezier(.2,.8,.3,1)', fill: 'forwards' }).onfinish = () => {
+    removeFish(f);
+    showResult(f);
+  };
+}
+
+// ---------- いとと さお ----------
+function drawLines(g) {
+  const svg = $('lines');
+  let tipX = g.tipX, tipY = g.tipY;
+  const F = G.fight;
+  if (F) { tipX += F.tension * g.W * 0.03; tipY += F.tension * g.H * 0.06; }
+  const baseX = g.W * 0.15, baseY = g.surf + g.H * 0.03;
+  const midX = (baseX + tipX) / 2 + (F ? F.tension * 10 : 0), midY = (baseY + tipY) / 2 - 6 + (F ? F.tension * 30 : 0);
+  let out = `<path d="M${baseX},${baseY} Q${midX},${midY} ${tipX},${tipY}" stroke="#2A2A30" stroke-width="7" fill="none" stroke-linecap="round"/><path d="M${baseX},${baseY} Q${midX},${midY} ${tipX},${tipY}" stroke="#E8524A" stroke-width="3" fill="none" stroke-linecap="round" stroke-dasharray="40 200"/>`;
+  out += `<circle cx="${baseX + 18}" cy="${baseY - 8}" r="9" fill="#5A6E80"/>`;
+  let ex = null, ey = null;
+  if (G.phase === 'fly' && G.fly) {
+    const t = G.fly.t, x = (G.fly.x0 + (G.fly.tx - G.fly.x0) * t) * g.W, y = tipY + (g.surf - tipY) * t - Math.sin(t * Math.PI) * g.H * 0.18;
+    ex = x; ey = y;
+  } else if (G.phase === 'wait' || G.phase === 'bite') {
+    ex = G.bx * g.W; ey = G.method === 'uki' ? g.surf : dpx(g, G.bd);
+  } else if (F) {
+    const f = F.f; ex = f.x * g.W - (f.dir > 0 ? -1 : 1) * f.w * 0.45; ey = dpx(g, f.d);
+  }
+  if (ex !== null) {
+    const sag = F ? 0 : 30;
+    out += `<path d="M${tipX},${tipY} Q${(tipX + ex) / 2},${Math.max(tipY, ey) + sag} ${ex},${ey}" stroke="#FFFFFF" stroke-width="2" fill="none" opacity="0.9"/>`;
+    if (G.method === 'uki' && !F) {
+      G.dip = Math.max(0, G.dip - 0.03);
+      const fy = ey + G.dip * 14 + G.sink * 26 + Math.sin(G.t * 3) * 2;
+      const hy = dpx(g, 0.5);
+      if (G.phase !== 'fly') out += `<line x1="${ex}" y1="${fy}" x2="${ex}" y2="${hy}" stroke="#FFF" stroke-width="1.2" opacity="0.6"/><circle cx="${ex}" cy="${hy}" r="4" fill="#E8B87A"/>`;
+      out += `<g transform="translate(${ex},${fy})"><ellipse cx="0" cy="0" rx="7" ry="13" fill="#FFF" stroke="#333" stroke-width="1.2"/><path d="M-7,0 A7,13 0 0 1 7,0 Z" transform="translate(0,-0.5)" fill="#F2545B"/><line x1="0" y1="-13" x2="0" y2="-22" stroke="#333" stroke-width="2"/></g>`;
+    } else if (G.method === 'lure' && !F) {
+      out += `<g transform="translate(${ex},${ey})"><ellipse cx="6" cy="0" rx="14" ry="5" fill="#C8D8E8" stroke="#2A3A4A" stroke-width="1.2"/><path d="M18,0 l8,-6 l0,12 Z" fill="#E8524A"/><circle cx="-3" cy="-1" r="2" fill="#111"/></g>`;
+    } else if (G.method === 'egi' && !F) {
+      const ang = G.jerk > 0 ? -35 : 20;
+      out += `<g transform="translate(${ex},${ey}) rotate(${ang})"><ellipse cx="8" cy="0" rx="16" ry="6" fill="#FF8A3D" stroke="#8A3A10" stroke-width="1.2"/><path d="M22,0 l9,-7 M22,0 l9,0 M22,0 l9,7" stroke="#8A3A10" stroke-width="1.6"/><path d="M-6,-4 l-6,-6 M-6,4 l-6,6" stroke="#8A3A10" stroke-width="2"/><circle cx="-4" cy="-1" r="2" fill="#111"/></g>`;
+    }
+  }
+  svg.innerHTML = out;
+}
+
+// ---------- けっか ----------
+let lastCatch = null;
+function showResult(f) {
+  const sp = f.sp, month = NOW().getMonth() + 1;
+  const name = displayName(sp, f.size);
+  const rec = save.zukan[sp.k];
+  const isNew = !rec, isRec = rec && f.size > rec.max;
+  if (!rec) save.zukan[sp.k] = { n: 0, max: 0, first: Date.now() };
+  save.zukan[sp.k].n++; save.zukan[sp.k].max = Math.max(save.zukan[sp.k].max, f.size);
+  save.total = (save.total || 0) + 1;
+  const ikura = sp.ikura && Math.random() < 0.5;
+  const price = priceOf(sp, f.size, month);
+  lastCatch = { k: sp.k, size: f.size, price, ikura };
+  store();
+  const shun = sp.shun && sp.shun.includes(month);
+  const [mn, mx] = sp.sz;
+  const full = save.box.length >= boxCap();
+  $('result-box').innerHTML = `
+    <div class="badges">${isNew ? '<span class="badge new">✨ はじめて つれた！</span>' : ''}${isRec ? '<span class="badge rec">🏆 しんきろく！</span>' : ''}${shun ? '<span class="badge shun">しゅん！ たかく うれる</span>' : ''}${sp.poison ? '<span class="badge warn">どく！ たべられない</span>' : ''}${ikura ? '<span class="badge rec">🟠 メス！ いくらが とれた</span>' : ''}</div>
+    <div class="res-fish"><img src="${fishImg(sp.k)}" alt=""></div>
+    <p class="res-name">${name}</p>
+    ${name !== sp.n ? `<p class="res-sub">（${sp.n}の なかま）</p>` : ''}
+    <div class="res-size">${f.size} cm</div>
+    <div class="ruler"><i style="width:${clamp((f.size - mn) / (mx - mn), 0.03, 1) * 100}%"></i></div>
+    <p class="info">${sp.info}<br>🍽️ ${sp.eat}</p>
+    <div class="res-actions">
+      <button class="btn green" id="r-keep" ${full || sp.poison ? 'disabled' : ''}>🧊 もちかえる<small>${full ? 'クーラー いっぱい' : `${save.box.length}/${boxCap()}`}</small></button>
+      <button class="btn sun" id="r-sell" ${sp.poison ? 'disabled' : ''}>💰 うる<small>${price.toLocaleString()}えん</small></button>
+      <button class="btn" id="r-free">🌊 にがす<small>またね〜</small></button>
+    </div>`;
+  $('result').classList.add('show');
+  snd('catch'); confetti(); vib([60, 40, 60]);
+  const p = partnerOf();
+  playCry(p.id, 0.35);
+  setTimeout(() => speak(`${name}！ ${Math.round(f.size)}センチ！${isNew ? ' はじめて つれたね！' : isRec ? ' しんきろく！' : ''}`), 300);
+  $('r-keep').onclick = () => { save.box.push({ k: sp.k, size: f.size, price, ikura: false }); if (ikura) save.box.push({ k: 'ikura', size: 0, price: Math.round(price * 0.6 / 10) * 10, ikura: true }); store(); closeResult('クーラーに いれたよ'); };
+  $('r-sell').onclick = () => { setMoney(save.money + price + (ikura ? Math.round(price * 0.6 / 10) * 10 : 0)); snd('coin'); closeResult(`${price.toLocaleString()}えんで うれた！`); };
+  $('r-free').onclick = () => { closeResult('ばいばい〜 げんきでね'); };
+}
+function closeResult(msg) {
+  $('result').classList.remove('show');
+  toast(msg); updateCool(); updateMoney();
+  G.phase = 'idle'; G.hookFish = null;
+  setAct('なげる', 'blue'); $('act').classList.remove('hide');
+  const g = geo(); while (G.fishes.length < 6) spawnFish(g);
+}
+
+// ---------- ずかん ----------
+let zukanTab = 'all';
+function renderZukan() {
+  const n = Object.keys(save.zukan).length;
+  $('zukan-count').textContent = `${n} / ${SPECIES.length}`;
+  $('zukan-tabs').innerHTML = [['all', 'ぜんぶ']].concat(AREAS.map(a => [a.k, a.icon + ' ' + a.n])).map(([k, t]) => `<button data-k="${k}" class="${zukanTab === k ? 'on' : ''}">${t}</button>`).join('');
+  $('zukan-tabs').querySelectorAll('button').forEach(b => b.onclick = () => { zukanTab = b.dataset.k; renderZukan(); });
+  const list = SPECIES.filter(s => zukanTab === 'all' || s.a.includes(zukanTab));
+  $('zgrid').innerHTML = list.map(s => {
+    const r = save.zukan[s.k];
+    return r ? `<button class="zc" data-k="${s.k}"><div class="pic"><img src="${fishImg(s.k)}" alt="" loading="lazy"></div>${s.n}<small>さいだい ${r.max}cm・${r.n}ひき</small></button>`
+      : `<button class="zc unk" data-k="${s.k}"><div class="pic"><img src="${fishImg(s.k, '#9DB4C4')}" alt="" loading="lazy"></div>？？？<small>${s.a.map(a => AREA_BY[a].icon).join('')}</small></button>`;
+  }).join('');
+  $('zgrid').querySelectorAll('.zc').forEach(b => b.onclick = () => openZ(b.dataset.k));
+}
+function openZ(k) {
+  const s = SP_BY[k], r = save.zukan[k];
+  const where = s.a.map(a => AREA_BY[a].n).join('・'), how = s.m.map(m => METHOD_BY[m].n).join('・');
+  const months = Array.from({ length: 12 }, (_, i) => `<span class="${s.shun && s.shun.includes(i + 1) ? 'on' : ''}">${i + 1}</span>`).join('');
+  if (!r) {
+    $('zdetail-box').innerHTML = `<div class="res-fish"><img src="${fishImg(k, '#9DB4C4')}" alt=""></div><p class="res-name">？？？</p>
+      <dl class="zinfo"><dt>どこ</dt><dd>${where}</dd><dt>つりかた</dt><dd>${how}</dd>${s.t === 'night' ? '<dt>じかん</dt><dd>よるに よく つれる</dd>' : ''}</dl><button class="btn" id="z-close">とじる</button>`;
+    speak(`まだ つれてないよ。${where}で ${how}で ねらってみよう`);
+  } else {
+    $('zdetail-box').innerHTML = `<div class="res-fish"><img src="${fishImg(k)}" alt=""></div><p class="res-name">${s.n}</p>
+      ${s.grow ? `<p class="res-sub">${s.grow.map(g => g[1]).join(' → ')}</p>` : ''}
+      <dl class="zinfo"><dt>どこ</dt><dd>${where}</dd><dt>つりかた</dt><dd>${how}</dd><dt>おおきさ</dt><dd>${s.sz[0]}〜${s.sz[1]}cm くらい</dd><dt>きろく</dt><dd>🏆 ${r.max}cm（${r.n}ひき つった）</dd>${s.t === 'night' ? '<dt>じかん</dt><dd>よるに よく つれる</dd>' : ''}</dl>
+      <div><b>しゅん</b><div class="months">${months}</div></div>
+      <p class="info">${s.info}<br>🍽️ ${s.eat}</p><button class="btn" id="z-close">とじる</button>`;
+    speak(`${s.n}。${s.info}`);
+  }
+  $('zdetail').classList.add('show');
+  $('z-close').onclick = () => { $('zdetail').classList.remove('show'); stopSpeech(); };
+}
+$('zukan-back').onclick = () => { renderHome(); show('home'); };
+
+// ---------- おみせ ----------
+let shopTab = 'sell';
+function renderShop() {
+  updateMoney();
+  $('shop-tabs').querySelectorAll('button').forEach(b => { b.classList.toggle('on', b.dataset.t === shopTab); b.onclick = () => { shopTab = b.dataset.t; renderShop(); }; });
+  const L = $('shop-list');
+  if (shopTab === 'sell') {
+    if (!save.box.length) { L.innerHTML = `<p class="hint">クーラーは からっぽ。つった さかなを「もちかえる」と ここで うれるよ</p>`; return; }
+    const sum = save.box.reduce((s, b) => s + b.price, 0);
+    L.innerHTML = `<button class="btn sun" id="sell-all">💰 ぜんぶ うる（${sum.toLocaleString()}えん）</button>` + save.box.map((b, i) => {
+      const nm = b.k === 'ikura' ? 'いくら' : displayName(SP_BY[b.k], b.size);
+      const ico = b.k === 'ikura' ? '🟠' : `<img class="fishimg" src="${fishImg(b.k)}" alt="">`;
+      return `<div class="item"><span class="ico">${ico}</span><span class="txt">${nm}<small>${b.k === 'ikura' ? 'シロザケの たまご' : b.size + 'cm'}</small></span><button class="btn sun" data-i="${i}">${b.price.toLocaleString()}えん</button></div>`;
+    }).join('');
+    $('sell-all').onclick = () => { setMoney(save.money + sum); save.box = []; store(); snd('coin'); toast(`${sum.toLocaleString()}えん に なった！`); speak(`${sum}えん に なったよ！`); renderShop(); };
+    L.querySelectorAll('.item .btn').forEach(b => b.onclick = () => { const it = save.box.splice(+b.dataset.i, 1)[0]; setMoney(save.money + it.price); store(); snd('coin'); renderShop(); });
+    return;
+  }
+  const rows = [];
+  if (shopTab === 'tool') {
+    METHODS.filter(m => m.price).forEach(m => rows.push({ ico: m.icon, n: m.n + 'セット', d: m.desc, price: m.price, have: save.methods.includes(m.k), buy: () => save.methods.push(m.k) }));
+    RODS.forEach((r, i) => { if (i) rows.push({ ico: '🎣', n: r.n, d: `まく ちから ×${r.power}・いとが きれにくい`, price: r.price, have: save.rod >= i, lock: save.rod < i - 1, buy: () => { save.rod = i; } }); });
+    COOLERS.forEach((c, i) => { if (i) rows.push({ ico: '🧊', n: c.n, d: `さかなが ${c.cap}ひき はいる`, price: c.price, have: save.cooler >= i, lock: save.cooler < i - 1, buy: () => { save.cooler = i; } }); });
+  } else {
+    AREAS.filter(a => a.price).forEach(a => rows.push({ ico: a.icon, n: a.n + 'への きっぷ', d: a.desc, price: a.price, have: save.areas.includes(a.k), buy: () => save.areas.push(a.k) }));
+  }
+  L.innerHTML = rows.map((r, i) => `<div class="item"><span class="ico">${r.ico}</span><span class="txt">${r.n}<small>${r.d}</small></span>${r.have ? '<span class="owned">✅ もってる</span>' : r.lock ? '<span class="owned" style="color:#9AB0C0">🔒 まえの を かってね</span>' : `<button class="btn ${save.money >= r.price ? 'sun' : ''}" data-i="${i}" ${save.money >= r.price ? '' : 'disabled'}>${r.price.toLocaleString()}えん</button>`}</div>`).join('');
+  L.querySelectorAll('.item .btn').forEach(b => b.onclick = () => {
+    const r = rows[+b.dataset.i];
+    if (save.money < r.price) return;
+    save.money -= r.price; r.buy(); store(); snd('coin'); confetti();
+    toast(`${r.n}を かった！`); speak(`${r.n}を かったよ！`); renderShop();
+  });
+}
+$('shop-back').onclick = () => { renderHome(); show('home'); };
+
+// ---------- スタート ----------
+function setMuted() {}
+// ==== EMOJI-3D START ====
+// もんだいの なかの えもじを、どの スマホでも おなじに みえる 3Dの え（Microsoft Fluent Emoji, MIT ライセンス）に おきかえる
+const EMOJI_BASE = 'https://raw.githubusercontent.com/microsoft/fluentui-emoji/1ffb34c752ecf5d402f04cfb4b392c77f57c54bc/';
+const EMOJI_IMG = {"❄️": "assets/Snowflake/3D/snowflake_3d.png","🏞️": "assets/National park/3D/national_park_3d.png","🏝️": "assets/Desert island/3D/desert_island_3d.png","🍽️": "assets/Fork and knife with plate/3D/fork_and_knife_with_plate_3d.png","⛴️": "assets/Ferry/3D/ferry_3d.png","⛄": "assets/Snowman without snow/3D/snowman_without_snow_3d.png","📖": "assets/Open book/3D/open_book_3d.png","🏪": "assets/Convenience store/3D/convenience_store_3d.png","🔄": "assets/Counterclockwise arrows button/3D/counterclockwise_arrows_button_3d.png","🏆": "assets/Trophy/3D/trophy_3d.png","🔈": "assets/Speaker low volume/3D/speaker_low_volume_3d.png","🌸": "assets/Cherry blossom/3D/cherry_blossom_3d.png","🔒": "assets/Locked/3D/locked_3d.png","🍁": "assets/Maple leaf/3D/maple_leaf_3d.png","❄": "assets/Snowflake/3D/snowflake_3d.png","🟠": "assets/Orange circle/3D/orange_circle_3d.png","✅": "assets/Check mark button/3D/check_mark_button_3d.png","💰": "assets/Money bag/3D/money_bag_3d.png","🌊": "assets/Water wave/3D/water_wave_3d.png","🏞": "assets/National park/3D/national_park_3d.png","🐳": "assets/Spouting whale/3D/spouting_whale_3d.png","👧": "assets/Girl/Default/3D/girl_3d_default.png","✨": "assets/Sparkles/3D/sparkles_3d.png","🎣": "assets/Fishing pole/3D/fishing_pole_3d.png","🌻": "assets/Sunflower/3D/sunflower_3d.png","🏝": "assets/Desert island/3D/desert_island_3d.png","🍽": "assets/Fork and knife with plate/3D/fork_and_knife_with_plate_3d.png","🦑": "assets/Squid/3D/squid_3d.png","🔇": "assets/Muted speaker/3D/muted_speaker_3d.png","⛴": "assets/Ferry/3D/ferry_3d.png","🧊": "assets/Ice/3D/ice_3d.png","🐟": "assets/Fish/3D/fish_3d.png"};
+const EMOJI_RE = /(?:\p{Extended_Pictographic}|\p{Regional_Indicator}{2}|[0-9#*]\uFE0F?\u20E3)(?:\uFE0F|\u200D\p{Extended_Pictographic}|[\u{1F3FB}-\u{1F3FF}])*/gu;
+function emojiSrc(e) {
+  const p = EMOJI_IMG[e] || EMOJI_IMG[e.replace(/\uFE0F/g, '')] || EMOJI_IMG[e + '\uFE0F'];
+  return p ? EMOJI_BASE + encodeURI(p) : null;
+}
+function emojify(root) {
+  if (!root) return;
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  const nodes = [];
+  while (walker.nextNode()) { EMOJI_RE.lastIndex = 0; if (EMOJI_RE.test(walker.currentNode.nodeValue)) nodes.push(walker.currentNode); }
+  nodes.forEach(node => {
+    const frag = document.createDocumentFragment();
+    let last = 0; const text = node.nodeValue;
+    text.replace(EMOJI_RE, (m, offset) => {
+      const src = emojiSrc(m);
+      if (!src) return m;
+      if (offset > last) frag.appendChild(document.createTextNode(text.slice(last, offset)));
+      const img = document.createElement('img');
+      img.className = 'emo'; img.src = src; img.alt = m; img.draggable = false;
+      img.onerror = () => { img.replaceWith(document.createTextNode(m)); }; // よみこめなかったら もとの えもじ
+      frag.appendChild(img);
+      last = offset + m.length;
+      return m;
+    });
+    if (last === 0) return;
+    if (last < text.length) frag.appendChild(document.createTextNode(text.slice(last)));
+    node.replaceWith(frag);
+  });
+}
+// がめんが かわったら じどうで おきかえる
+['quiz-content', 'feedback-text'].forEach(id => {
+  const el = document.getElementById(id);
+  if (!el) return;
+  new MutationObserver(() => emojify(el)).observe(el, { childList: true, subtree: true, characterData: true });
+});
+// ==== EMOJI-3D END ====
+
+setMuted(isMuted);
+// 3Dの えもじに おきかえる（つりの がめんの うごく ところは のぞく）
+if (typeof emojify === 'function') {
+  ['title', 'home', 'map', 'zukan', 'shop', 'result', 'zdetail', 'picker', 'toast', 'fight'].concat(['fish-where', 'fish-cool', 'fish-money']).forEach(id => {
+    const el = $(id); if (!el) return;
+    emojify(el);
+    new MutationObserver(() => emojify(el)).observe(el, { childList: true, subtree: true, characterData: true });
+  });
+}
+renderTitle();
+if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
+
+</script>
+</body>
+</html>
