@@ -21,7 +21,7 @@
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     html { font-size: clamp(15px, min(2.3vw, 2.2vh), 24px); }
     html, body { margin: 0; height: 100%; }
-    body { font-family: 'M PLUS Rounded 1c', sans-serif; color: var(--ink); background: linear-gradient(180deg, var(--bg1), var(--bg2)); overflow: hidden; user-select: none; -webkit-user-select: none; overscroll-behavior: none; }
+    body { font-family: 'M PLUS Rounded 1c', sans-serif; color: var(--ink); background: linear-gradient(180deg, var(--bg1), var(--bg2)); overflow: hidden; user-select: none; word-break: keep-all; overflow-wrap: anywhere; line-break: strict; -webkit-user-select: none; overscroll-behavior: none; }
     button { font-family: inherit; color: inherit; cursor: pointer; }
     .screen { position: fixed; inset: 0; display: none; flex-direction: column; overflow-y: auto; -webkit-overflow-scrolling: touch; }
     .screen.show { display: flex; }
@@ -213,6 +213,64 @@
     .tap-ripple { position: fixed; z-index: 1002; width: 70px; height: 70px; border-radius: 50%; border: 4px solid rgba(255,255,255,0.95); box-shadow: 0 0 14px rgba(255,255,255,0.9); pointer-events: none; }
     .tap-ripple.sound { width: 150px; height: 150px; border: 3px solid var(--sea); box-shadow: none; }
     .float-note { position: fixed; z-index: 1003; font-size: 2rem; font-weight: 900; pointer-events: none; text-shadow: 0 2px 0 #FFF, 0 0 8px #FFF; }
+
+    /* ---------- アバター・きせかえ ---------- */
+    .player .av { height: 7.5rem; }
+    .harbor .avatar { position: absolute; left: 4%; bottom: calc(30% + 0.6rem); height: 9rem; cursor: pointer; }
+    .harbor .partner { left: 26%; }
+    .scene-avatar { position: absolute; pointer-events: auto; }
+    .dress { display: grid; grid-template-columns: minmax(10rem, 1fr) 2fr; gap: 1rem; align-items: start; }
+    @media (max-width: 640px) { .dress { grid-template-columns: 1fr; } .dress-prev { height: 15rem; } }
+    .dress-prev { position: sticky; top: 0; height: 22rem; border-radius: 1.6rem; background: linear-gradient(180deg, #CDEBFF, #FFF); display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 24px var(--shadow); }
+    .dress-prev img { height: 92%; }
+    .dress-opts { display: flex; flex-direction: column; gap: 0.7rem; }
+    .dgroup { background: #FFF; border-radius: 1.2rem; padding: 0.6rem 0.8rem; box-shadow: 0 6px 14px var(--shadow); }
+    .dgroup b { display: block; margin-bottom: 0.4rem; }
+    .dchips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .dchips button { border: none; padding: 0.45rem 0.8rem; border-radius: 999px; background: #EEF5FA; font-weight: 900; }
+    .dchips button.on { color: #FFF; background: var(--sea); }
+    .dchips .sw { width: 2.4rem; height: 2.4rem; padding: 0; border-radius: 50%; box-shadow: inset 0 0 0 2px rgba(0,0,0,0.12); }
+    .dchips .sw.on { box-shadow: 0 0 0 3px #FFF, 0 0 0 6px var(--sea); background-clip: padding-box; }
+    /* ---------- まとめて とれた ---------- */
+    .mgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr)); gap: 0.5rem; }
+    .mi { position: relative; border-radius: 1rem; background: #F2FAFF; padding: 0.3rem 0.3rem 0.5rem; font-weight: 900; font-size: 0.9rem; }
+    .mi img { width: 100%; aspect-ratio: 2 / 1; object-fit: contain; }
+    .mi small { display: block; color: var(--ink-soft); font-size: 0.75rem; }
+    .mi .nw { position: absolute; left: 0.3rem; top: 0.3rem; padding: 0.1rem 0.4rem; border-radius: 999px; background: #8F6BFF; color: #FFF; font-size: 0.7rem; }
+    .msum { font-size: 1.3rem; font-weight: 900; }
+    /* ---------- しおひがり・もぐり ---------- */
+    #dig, #dive { overflow: hidden; touch-action: none; }
+    #dig-field, #dive-field { position: absolute; inset: 0; overflow: hidden; }
+    #dig-field { background: radial-gradient(ellipse at 30% 70%, #F2DDB0, #E2C690 60%, #CDAE78); }
+    .sea-edge { position: absolute; left: 0; right: 0; top: 0; background: linear-gradient(180deg, #2E9CC8, #7FD0E8); transition: height 1s linear; }
+    .sea-edge::after { content: ''; position: absolute; left: 0; right: 0; bottom: -0.6rem; height: 1.2rem; background: radial-gradient(ellipse at 50% 0, rgba(255,255,255,0.9) 30%, transparent 70%) 0 0 / 3rem 1.2rem repeat-x; }
+    .hole { position: absolute; width: 3.6rem; height: 3.6rem; margin: -1.8rem; border: none; border-radius: 50%; background: radial-gradient(circle, #6A5236 18%, #B89A6A 22%, rgba(0,0,0,0) 60%); }
+    .hole.mate { width: 3rem; height: 4rem; margin: -2rem -1.5rem; background: radial-gradient(ellipse, #4A3622 20%, #B89A6A 26%, rgba(0,0,0,0) 62%); }
+    .hole img { position: absolute; left: 50%; top: 50%; width: 5.5rem; transform: translate(-50%, -50%); pointer-events: none; }
+    .hole.mate img { width: 6rem; transform: translate(-50%, -80%) rotate(-80deg); }
+    .pebble { position: absolute; border-radius: 50%; background: #C8B088; opacity: 0.6; pointer-events: none; }
+    .tide { position: absolute; left: 50%; top: 4.4rem; transform: translateX(-50%); width: min(70%, 22rem); height: 1.6rem; border-radius: 999px; background: rgba(255,255,255,0.9); overflow: hidden; box-shadow: 0 6px 14px rgba(0,0,0,0.2); }
+    .tide i { position: absolute; left: 0; top: 0; bottom: 0; background: linear-gradient(90deg, #2FB0F0, #1272C4); }
+    .tide span { position: relative; display: block; text-align: center; font-weight: 900; line-height: 1.6rem; font-size: 0.85rem; color: #12324A; }
+    .tide.breath i { background: linear-gradient(90deg, #F2545B, #FFD23F 30%, #5ED6A0 60%); }
+    .salt-on { outline: 5px solid #FFF; }
+    #dive-field { background: linear-gradient(180deg, #4FC0E8 0%, #1E86C0 35%, #0E5A8A 100%); }
+    .rock { position: absolute; border: none; padding: 0; background: none; transform-origin: 50% 100%; }
+    .rock svg { width: 100%; height: 100%; display: block; }
+    .item-in { position: absolute; pointer-events: auto; border: none; background: none; padding: 0; }
+    .item-in img { width: 100%; display: block; }
+    .diver { position: absolute; pointer-events: none; }
+    /* ---------- いけす ---------- */
+    .pens { display: grid; grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr)); gap: 0.8rem; }
+    .pen { position: relative; border-radius: 1.4rem; padding: 0.8rem; color: #FFF; background: linear-gradient(160deg, #3AA8D8, #0E5A86); box-shadow: 0 10px 22px var(--shadow); display: flex; flex-direction: column; gap: 0.4rem; min-height: 12rem; overflow: hidden; }
+    .pen::before { content: ''; position: absolute; inset: 0.5rem; border: 3px dashed rgba(255,255,255,0.35); border-radius: 1rem; pointer-events: none; }
+    .pen img.f { width: 70%; align-self: center; animation: bob 3s ease-in-out infinite; }
+    .pen b { font-size: 1.2rem; }
+    .pen .btn { position: relative; }
+    .pbar { height: 0.9rem; border-radius: 999px; background: rgba(255,255,255,0.3); overflow: hidden; }
+    .pbar i { display: block; height: 100%; background: linear-gradient(90deg, #5ED6A0, #FFD23F); }
+    .pen.locked { background: linear-gradient(160deg, #9AB0C0, #6E8494); }
+    .seed-list { display: flex; flex-direction: column; gap: 0.5rem; }
     /* 3Dの えもじ */
     .emo { display: inline-block; width: 1.2em; height: 1.2em; object-fit: contain; vertical-align: -0.25em; -webkit-user-drag: none; }
     .question-emoji .emo, .opt-emoji .emo { width: 1.1em; height: 1.1em; vertical-align: middle; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.12)); }
@@ -240,6 +298,7 @@
     <div class="harbor" id="harbor">
       <svg class="boat" viewBox="0 0 200 110"><path d="M10 60 L190 60 L165 100 L35 100 Z" fill="#F2545B" stroke="#8A2A30" stroke-width="4"/><rect x="60" y="22" width="70" height="38" rx="6" fill="#FFF" stroke="#8A2A30" stroke-width="4"/><rect x="72" y="30" width="18" height="14" rx="3" fill="#8FD3FF"/><rect x="100" y="30" width="18" height="14" rx="3" fill="#8FD3FF"/><path d="M10 60 L190 60" stroke="#FFF" stroke-width="6"/></svg>
       <div class="pier"></div>
+      <img class="avatar" id="home-avatar" alt="じぶん">
       <img class="partner" id="home-partner" alt="パートナー">
       <div class="bubble" id="home-bubble">きょうは なにを つる？</div>
     </div>
@@ -248,6 +307,8 @@
       <button class="btn primary go" id="go-btn"><span class="big">🎣</span>つりに いく！</button>
       <button class="btn" id="zukan-btn"><span class="big">📖</span>ずかん</button>
       <button class="btn" id="shop-btn"><span class="big">🏪</span>おみせ</button>
+      <button class="btn" id="farm-btn"><span class="big">🦪</span>いけす</button>
+      <button class="btn" id="dress-btn"><span class="big">👕</span>きせかえ</button>
     </div>
     <div class="row">
       <button class="btn" id="partner-btn">🔄 パートナー</button>
@@ -306,6 +367,42 @@
   </div>
 </section>
 
+<!-- しおひがり -->
+<section id="dig" class="screen">
+  <div id="dig-field"></div>
+  <div class="hud"><button class="round-btn" id="dig-back" aria-label="もどる">←</button><span class="chip">🐚 しおひがり</span><span class="sp"></span><span class="chip" id="dig-count">🪣 0</span></div>
+  <div class="tide"><i id="tide-bar"></i><span>しおが みちてくるまで</span></div>
+  <div class="controls"><button class="act blue" id="salt-btn">🧂 しお</button><span></span></div>
+</section>
+
+<!-- もぐり -->
+<section id="dive" class="screen">
+  <div id="dive-field"></div>
+  <div class="hud"><button class="round-btn" id="dive-back" aria-label="もどる">←</button><span class="chip">🤿 もぐり</span><span class="sp"></span><span class="chip" id="dive-count">🧺 0</span></div>
+  <div class="tide breath"><i id="breath-bar"></i><span>いき</span></div>
+</section>
+
+<!-- いけす -->
+<section id="farm" class="screen">
+  <div class="wrap">
+    <div class="topbar"><button class="round-btn" id="farm-back" aria-label="もどる">←</button><h2>いけす</h2><span class="chip money" id="farm-money"></span></div>
+    <p class="hint">たねを いれて まつと おおきく そだつよ。えさを あげると はやく なる！</p>
+    <div class="pens" id="pens"></div>
+  </div>
+</section>
+
+<!-- きせかえ -->
+<section id="dress" class="screen">
+  <div class="wrap">
+    <div class="topbar"><button class="round-btn" id="dress-back" aria-label="もどる">←</button><h2>きせかえ</h2></div>
+    <div class="dress">
+      <div class="dress-prev"><img id="dress-img" alt=""></div>
+      <div class="dress-opts" id="dress-opts"></div>
+    </div>
+  </div>
+</section>
+
+<div class="modal" id="multi"><div class="box" id="multi-box"></div></div>
 <div class="modal" id="result"><div class="box" id="result-box"></div></div>
 <div class="modal" id="zdetail"><div class="box" id="zdetail-box"></div></div>
 <div class="modal" id="picker"><div class="box"><h3 style="margin:0">いっしょに つりに いく ポケモン</h3><div class="picker-grid" id="picker-grid"></div><button class="btn" id="picker-close">とじる</button></div></div>
@@ -368,7 +465,7 @@ function toShadow(svg, color = '#0B2A3C') {
   return svg.replace('<defs>', `<defs><filter id="shd"><feFlood flood-color="${color}"/><feComposite in2="SourceAlpha" operator="in"/></filter>`).replace(/<\/defs>([\s\S]*)<\/svg>$/, '</defs><g filter="url(#shd)">$1</g></svg>');
 }
 
-function drawFish(sp) {
+var drawFish = function (sp) {
   if (sp.kind === 'squid') return drawSquid(sp);
   if (sp.kind === 'octo') return drawOcto(sp);
   if (sp.kind === 'flat') return drawFlat(sp);
@@ -442,6 +539,7 @@ function drawFish(sp) {
 ${over}${mouth}${pec}${eye}`, defs);
 }
 
+;
 // ---------- イカ（あしが ひだり、どうが みぎ）----------
 function drawSquid(sp) {
   const id = 'f' + (++_fid), ln = sp.line, cy = 110;
@@ -526,14 +624,14 @@ function drawShrimp(sp) {
   const id = 'f' + (++_fid), ln = sp.line, cy = 112;
   let segs = '';
   const pts = [[150, cy], [190, cy - 4], [228, cy - 2], [262, cy + 6], [292, cy + 18], [316, cy + 34]];
-  pts.forEach(([x, y], i) => { const r = 30 - i * 3.5; segs += `<ellipse cx="${x}" cy="${y}" rx="${r + 6}" ry="${r}" fill="url(#${id}g)" stroke="${ln}" stroke-width="1.5"/>`; });
+  pts.forEach(([x, y], i) => { const r = 30 - i * 3.5; segs += `<ellipse cx="${x}" cy="${y}" rx="${r + 6}" ry="${r}" fill="url(#${id}g)" stroke="${ln}" stroke-width="1.5"/>` + (sp.stripe ? `<path d="M${x - 4},${y - r + 2} q-4,${r} 0,${r * 2 - 4}" stroke="${sp.stripe}" stroke-width="5" fill="none" opacity="0.8"/>` : ''); });
   const tail = `M318,${cy + 44} L360,${cy + 40} L372,${cy + 64} L330,${cy + 64} Z M322,${cy + 48} L350,${cy + 76} L330,${cy + 82} Z`;
   const cara = `M70,${cy - 4} Q80,${cy - 34} 130,${cy - 34} Q170,${cy - 32} 172,${cy} Q170,${cy + 30} 120,${cy + 30} Q80,${cy + 28} 70,${cy - 4} Z`;
   const claw = (s) => `<path d="M100,${cy + 20 * s} Q60,${cy + 50 * s} 10,${cy + 40 * s}" fill="none" stroke="${ln}" stroke-width="7" stroke-linecap="round"/><path d="M100,${cy + 20 * s} Q60,${cy + 50 * s} 10,${cy + 40 * s}" fill="none" stroke="${sp.grad[0]}" stroke-width="4.5" stroke-linecap="round"/><path d="M16,${cy + 40 * s} q-14,${-6 * s} -14,${-14 * s} M16,${cy + 40 * s} q-14,${4 * s} -12,${12 * s}" stroke="${ln}" stroke-width="3" fill="none" stroke-linecap="round"/>`;
   let legs = ''; for (let i = 0; i < 5; i++) legs += `<path d="M${130 + i * 26},${cy + 26} l-6,26" stroke="${ln}" stroke-width="2" stroke-linecap="round"/>`;
   const stops = sp.grad.map((c, i) => `<stop offset="${(i / (sp.grad.length - 1)) * 100}%" stop-color="${c}"/>`).join('');
   return svgWrap(`<path d="M78,${cy - 18} Q20,${cy - 80} -10,${cy - 60}" fill="none" stroke="${ln}" stroke-width="1.6"/><path d="M80,${cy - 22} Q60,${cy - 100} 120,${cy - 110}" fill="none" stroke="${ln}" stroke-width="1.4"/>
-${claw(1)}${claw(-0.4)}${legs}<path d="${tail}" fill="${sp.grad[1]}" stroke="${ln}" stroke-width="1.5"/>${segs.split('</ellipse>').reverse().join('')}
+${sp.noClaw ? '' : claw(1) + claw(-0.4)}${legs}<path d="${tail}" fill="${sp.grad[1]}" stroke="${ln}" stroke-width="1.5"/>${segs.split('</ellipse>').reverse().join('')}
 <path d="${cara}" fill="url(#${id}g)" stroke="${ln}" stroke-width="1.8"/><path d="M72,${cy - 10} L40,${cy - 16}" stroke="${ln}" stroke-width="3" stroke-linecap="round"/>
 <circle cx="88" cy="${cy - 18}" r="7" fill="#15161B"/><circle cx="86" cy="${cy - 20}" r="2" fill="#FFF"/>`, `<linearGradient id="${id}g" x1="0" y1="0" x2="0" y2="1">${stops}</linearGradient>`);
 }
@@ -564,6 +662,71 @@ const blotch = (seed, n, c, op, rx = 14, ry = 10) => (ctx) => {
 const finlets = (c, n = 7) => ({ top, bot, x0, x1, yAt }) => { let o = ''; for (let i = 0; i < n; i++) { const x = x0 + (x1 - x0) * (0.7 + i * 0.038); o += `<path d="M${f1(x)},${f1(yAt(top, x) + 2)} l6,-10 l4,10 Z M${f1(x)},${f1(yAt(bot, x) - 2)} l6,10 l4,-10 Z" fill="${c}" stroke="#13203A" stroke-width="1" stroke-linejoin="round"/>`; } return o; };
 const spines = (from, to, n, h, c, op = 0.7) => ({ top, x0, x1, yAt }) => { let o = ''; for (let i = 0; i < n; i++) { const x = x0 + (x1 - x0) * (from + (to - from) * i / (n - 1)), y = yAt(top, x); o += `<line x1="${f1(x)}" y1="${f1(y)}" x2="${f1(x + 5)}" y2="${f1(y - h)}" stroke="${c}" stroke-width="1.5" opacity="${op}"/>`; } return o; };
 const tailSpots = (seed, c) => ({ x1, cy, tx, H }) => { const r = rnd(seed); let o = ''; for (let i = 0; i < 16; i++) o += `<circle cx="${f1(x1 + 6 + (tx - x1 - 12) * r())}" cy="${f1(cy + (r() - 0.5) * H * 1.2)}" r="${f1(1.3 + r() * 1.2)}" fill="${c}"/>`; return o; };
+
+// ---------- かい・ウニ・サザエ・アワビ・ナマコ・イセエビ・カニ ----------
+const _grad = (id, cols, radial) => radial
+  ? `<radialGradient id="${id}" cx="0.4" cy="0.35" r="0.75">${cols.map((c, i) => `<stop offset="${i / (cols.length - 1) * 100}%" stop-color="${c}"/>`).join('')}</radialGradient>`
+  : `<linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1">${cols.map((c, i) => `<stop offset="${i / (cols.length - 1) * 100}%" stop-color="${c}"/>`).join('')}</linearGradient>`;
+function drawShell(sp) {
+  const id = 'f' + (++_fid), ln = sp.line, r = rnd(sp.seed || 4);
+  if (sp.kind === 'clam') {
+    const w = sp.w || 150, h = sp.h || 120, cx = 220, cy = 118;
+    const sh = `M${cx},${cy - h * 0.55} C${cx + w * 0.75},${cy - h * 0.6} ${cx + w},${cy + h * 0.1} ${cx + w * 0.55},${cy + h * 0.48} C${cx + w * 0.2},${cy + h * 0.6} ${cx - w * 0.2},${cy + h * 0.6} ${cx - w * 0.55},${cy + h * 0.48} C${cx - w},${cy + h * 0.1} ${cx - w * 0.75},${cy - h * 0.6} ${cx},${cy - h * 0.55} Z`;
+    let rings = ''; for (let i = 1; i < 7; i++) { const k = i / 7; rings += `<path d="M${cx - w * 0.9 * k},${cy - h * 0.5 + h * 1.02 * k} Q${cx},${cy - h * 0.5 + h * 1.25 * k} ${cx + w * 0.9 * k},${cy - h * 0.5 + h * 1.02 * k}" stroke="${ln}" stroke-width="1.2" fill="none" opacity="0.35"/>`; }
+    let pat = '';
+    if (sp.pattern === 'zigzag') for (let i = 0; i < 9; i++) { const x = cx - w * 0.7 + i * w * 0.17; pat += `<path d="M${x},${cy - h * 0.3} l10,14 l-10,14 l10,14 l-10,14 l10,14" stroke="${sp.pat}" stroke-width="5" fill="none" opacity="0.6"/>`; }
+    if (sp.pattern === 'rays') for (let i = 0; i < 4; i++) pat += `<path d="M${cx},${cy - h * 0.5} L${cx - w * 0.6 + i * w * 0.4},${cy + h * 0.6}" stroke="${sp.pat}" stroke-width="14" opacity="0.35"/>`;
+    if (sp.pattern === 'dots') for (let i = 0; i < 30; i++) pat += `<circle cx="${f1(cx + (r() - 0.5) * w * 1.4)}" cy="${f1(cy + (r() - 0.3) * h)}" r="${f1(2 + r() * 4)}" fill="${sp.pat}" opacity="0.5"/>`;
+    let ribs = ''; if (sp.ribs) for (let i = 0; i <= sp.ribs; i++) { const a = -1 + 2 * i / sp.ribs; ribs += `<path d="M${cx},${cy - h * 0.5} L${f1(cx + a * w * 0.95)},${f1(cy + h * 0.55 - Math.abs(a) * h * 0.25)}" stroke="${ln}" stroke-width="2" opacity="0.35"/>`; }
+    const ears = sp.ears ? `<path d="M${cx - 40},${cy - h * 0.62} L${cx + 40},${cy - h * 0.62} L${cx + 26},${cy - h * 0.45} L${cx - 26},${cy - h * 0.45} Z" fill="${sp.grad[1]}" stroke="${ln}" stroke-width="1.6"/>` : '';
+    return svgWrap(`${ears}<path d="${sh}" fill="url(#${id}g)"/><clipPath id="${id}c"><path d="${sh}"/></clipPath><g clip-path="url(#${id}c)">${pat}${ribs}${rings}</g><path d="${sh}" fill="none" stroke="${ln}" stroke-width="2.4"/><ellipse cx="${cx - w * 0.2}" cy="${cy - h * 0.2}" rx="${w * 0.25}" ry="${h * 0.12}" fill="#FFF" opacity="0.25"/>`, _grad(id + 'g', sp.grad, true));
+  }
+  if (sp.kind === 'razor') {
+    return svgWrap(`<rect x="40" y="88" width="340" height="46" rx="22" fill="url(#${id}g)" stroke="${sp.line}" stroke-width="2.4"/>${[0, 1, 2, 3, 4].map(i => `<path d="M${70 + i * 60},92 q-6,20 0,38" stroke="${sp.line}" stroke-width="1.2" fill="none" opacity="0.3"/>`).join('')}<path d="M380,100 q26,10 0,22" fill="#F2E6D0" stroke="${sp.line}" stroke-width="1.6"/>`, _grad(id + 'g', sp.grad));
+  }
+  if (sp.kind === 'oyster') {
+    let d = ''; for (let i = 0; i < 20; i++) { const a = Math.PI * 2 * i / 20; d += `${i ? ' L' : 'M'}${f1(220 + Math.cos(a) * (130 + r() * 25))},${f1(115 + Math.sin(a) * (70 + r() * 18))}`; }
+    let fr = ''; for (let k = 0; k < 5; k++) { let dd = ''; for (let i = 0; i <= 20; i++) { const a = Math.PI * 2 * i / 20, rr = (0.85 - k * 0.15); dd += (i ? ' L' : 'M') + f1(220 + Math.cos(a) * 130 * rr + (r() - 0.5) * 10) + ',' + f1(115 + Math.sin(a) * 72 * rr + (r() - 0.5) * 8); } fr += `<path d="${dd} Z" fill="none" stroke="${sp.line}" stroke-width="1.5" opacity="0.4"/>`; }
+    return svgWrap(`<path d="${d} Z" fill="url(#${id}g)" stroke="${sp.line}" stroke-width="2.4" stroke-linejoin="round"/>${fr}`, _grad(id + 'g', sp.grad, true));
+  }
+  if (sp.kind === 'uni') {
+    let sp1 = ''; const n = sp.long ? 70 : 140, L = sp.long ? 70 : 22;
+    for (let i = 0; i < n; i++) { const a = r() * Math.PI * 2, rr = 62 + r() * 6, x0 = 220 + Math.cos(a) * rr * 0.9, y0 = 120 + Math.sin(a) * rr * 0.75, l = L * (0.6 + r() * 0.5); sp1 += `<line x1="${f1(x0)}" y1="${f1(y0)}" x2="${f1(x0 + Math.cos(a) * l)}" y2="${f1(y0 + Math.sin(a) * l * 0.85)}" stroke="${i % 3 ? sp.grad[0] : sp.grad[1]}" stroke-width="${sp.long ? 3.4 : 4}" stroke-linecap="round"/>`; }
+    return svgWrap(`${sp1}<ellipse cx="220" cy="120" rx="66" ry="54" fill="url(#${id}g)" stroke="${sp.line}" stroke-width="2"/>${sp1.split('/>').slice(0, n / 2).join('/>')}/>`, _grad(id + 'g', sp.grad, true));
+  }
+  if (sp.kind === 'sazae') {
+    let horns = ''; for (let i = 0; i < 7; i++) { const x = 140 + i * 28, y = 70 + Math.abs(i - 3) * 6; horns += `<path d="M${x},${y + 14} Q${x + 4},${y - 22} ${x + 14},${y - 26} Q${x + 10},${y - 6} ${x + 14},${y + 12} Z" fill="${sp.grad[1]}" stroke="${sp.line}" stroke-width="1.6"/>`; }
+    const body = `M110,170 C90,120 130,70 220,66 C300,64 340,110 330,160 C320,190 150,196 110,170 Z`;
+    return svgWrap(`${horns}<path d="${body}" fill="url(#${id}g)" stroke="${sp.line}" stroke-width="2.4"/><path d="M130,150 C170,120 270,116 320,140 M140,120 C190,96 270,96 310,112" stroke="${sp.line}" stroke-width="2" fill="none" opacity="0.4"/><ellipse cx="300" cy="168" rx="34" ry="18" fill="#F2E2B8" stroke="${sp.line}" stroke-width="2"/><ellipse cx="300" cy="168" rx="18" ry="9" fill="#5A5048"/>`, _grad(id + 'g', sp.grad, true));
+  }
+  if (sp.kind === 'awabi') {
+    const body = `M70,130 C60,70 180,48 300,60 C380,70 400,120 370,150 C330,190 120,196 70,130 Z`;
+    let holes = ''; for (let i = 0; i < 6; i++) holes += `<ellipse cx="${120 + i * 34}" cy="${80 - i * 2 + (i > 3 ? (i - 3) * 6 : 0)}" rx="7" ry="5" fill="#3A3430"/>`;
+    let ridges = ''; for (let i = 0; i < 8; i++) ridges += `<path d="M${330 - i * 4},${80 + i * 10} Q${200},${70 + i * 16} ${90 + i * 6},${110 + i * 8}" stroke="${sp.line}" stroke-width="1.4" fill="none" opacity="0.35"/>`;
+    return svgWrap(`<path d="${body}" fill="url(#${id}g)" stroke="${sp.line}" stroke-width="2.4"/>${ridges}${holes}<path d="M100,150 C180,176 300,172 360,148" stroke="#C8E0D8" stroke-width="4" fill="none" opacity="0.6"/>`, _grad(id + 'g', sp.grad, true));
+  }
+  if (sp.kind === 'namako') {
+    const body = `M50,130 C40,90 120,74 220,78 C320,80 400,96 392,130 C386,164 320,170 220,168 C120,166 56,164 50,130 Z`;
+    let bumps = ''; for (let i = 0; i < 26; i++) bumps += `<path d="M${f1(70 + r() * 310)},${f1(90 + r() * 30)} l5,-12 l5,12 Z" fill="${sp.grad[1]}" stroke="${sp.line}" stroke-width="1"/>`;
+    return svgWrap(`<path d="${body}" fill="url(#${id}g)" stroke="${sp.line}" stroke-width="2.4"/>${bumps}<circle cx="60" cy="128" r="10" fill="${sp.grad[2]}" stroke="${sp.line}" stroke-width="1.4"/>`, _grad(id + 'g', sp.grad));
+  }
+  if (sp.kind === 'lobster') {
+    let segs = ''; for (let i = 0; i < 6; i++) segs += `<ellipse cx="${200 + i * 30}" cy="${120 + i * 3}" rx="22" ry="${30 - i * 2.5}" fill="url(#${id}g)" stroke="${sp.line}" stroke-width="1.8"/>`;
+    let legs = ''; for (let i = 0; i < 5; i++) legs += `<path d="M${120 + i * 16},140 q-10,30 -26,40" stroke="${sp.grad[1]}" stroke-width="5" fill="none" stroke-linecap="round"/>`;
+    let spines = ''; for (let i = 0; i < 14; i++) spines += `<path d="M${70 + i * 9},${86 + (i % 2) * 4} l3,-10 l3,10" fill="${sp.grad[0]}"/>`;
+    return svgWrap(`<path d="M80,96 Q0,20 -20,10 M84,100 Q-10,60 -30,70" stroke="${sp.grad[0]}" stroke-width="7" fill="none" stroke-linecap="round"/>${legs}${segs.split('</ellipse>').reverse().join('')}<path d="M370,130 l40,-20 l10,30 l-10,24 l-40,-14 Z" fill="${sp.grad[1]}" stroke="${sp.line}" stroke-width="1.8"/>
+<path d="M60,116 C60,80 150,74 190,92 C200,110 200,140 186,150 C150,160 70,156 60,116 Z" fill="url(#${id}g)" stroke="${sp.line}" stroke-width="2.4"/>${spines}<circle cx="78" cy="104" r="6" fill="#121316"/>`, _grad(id + 'g', sp.grad));
+  }
+  if (sp.kind === 'crab') {
+    let legs = ''; for (let s of [-1, 1]) for (let i = 0; i < 4; i++) legs += `<path d="M${220 + s * 70},${110 + i * 14} q${s * 40},${-10 + i * 6} ${s * 70},${20 + i * 10}" stroke="${sp.grad[1]}" stroke-width="9" fill="none" stroke-linecap="round"/>`;
+    let hair = ''; for (let i = 0; i < 90; i++) { const a = r() * Math.PI * 2, rr = 76; hair += `<line x1="${f1(220 + Math.cos(a) * rr)}" y1="${f1(118 + Math.sin(a) * rr * 0.8)}" x2="${f1(220 + Math.cos(a) * (rr + 6))}" y2="${f1(118 + Math.sin(a) * (rr + 6) * 0.8)}" stroke="${sp.line}" stroke-width="1.4"/>`; }
+    const claws = [-1, 1].map(s => `<path d="M${220 + s * 60},80 q${s * 30},-30 ${s * 56},-26" stroke="${sp.grad[1]}" stroke-width="12" fill="none" stroke-linecap="round"/><ellipse cx="${220 + s * 116}" cy="52" rx="20" ry="13" fill="${sp.grad[1]}" stroke="${sp.line}" stroke-width="1.6"/>`).join('');
+    return svgWrap(`${legs}${claws}<ellipse cx="220" cy="118" rx="78" ry="62" fill="url(#${id}g)" stroke="${sp.line}" stroke-width="2.4"/>${hair}<circle cx="206" cy="64" r="5" fill="#121316"/><circle cx="234" cy="64" r="5" fill="#121316"/>`, _grad(id + 'g', sp.grad, true));
+  }
+  return svgWrap('');
+}
+const _drawFishBase = drawFish;
+drawFish = function (sp) { return ['clam', 'razor', 'oyster', 'uni', 'sazae', 'awabi', 'namako', 'lobster', 'crab'].includes(sp.kind) ? drawShell(sp) : _drawFishBase(sp); };
 
 // =========================================================
 // ▼▼ さかなの データ ▼▼
@@ -612,7 +775,7 @@ const SPECIES = [
   { k: 'kasago', n: 'カサゴ', a: ['seto', 'nihon', 'taihei'], m: ['uki', 'lure'], band: 'bot', sz: [12, 30], p: 260, shun: [12, 1, 2], pow: 1, rare: 1,
     info: 'いわの すきまに かくれてる。あたまに トゲが いっぱい あるよ', eat: 'からあげ・みそしる',
     art: AP.rock({ iris: '#E0A050', grad: ['#8A2E1C', '#B0482E', '#D88A62', '#F0C4A0', '#F8E2CC'], line: '#5A1C10', finColor: '#B85A3E', deco: all(blotch(4, 14, '#5A1C10', 0.35), spots(8, 30, '#FFF2DC', 1.5, 3.5, { x0: 0.2, x1: 0.95, y0: 0.1, y1: 0.8 })), over: spines(0.26, 0.6, 9, 18, '#5A1C10') }) },
-  { k: 'aji', n: 'マアジ', a: ['seto', 'nihon', 'taihei'], m: ['uki'], band: 'mid', sz: [15, 40], p: 90, shun: [5, 6, 7, 8], pow: 1, rare: 1,
+  { k: 'aji', n: 'マアジ', a: ['seto', 'nihon', 'taihei'], m: ['uki', 'ami'], band: 'mid', sz: [15, 40], p: 90, shun: [5, 6, 7, 8], pow: 1, rare: 1,
     info: 'しっぽの ちかくに「ぜいご」という トゲトゲの うろこが あるよ', eat: 'アジフライ・たたき・ひもの',
     art: AP.jack({ iris: '#D9C27A', eyeR: 12, mouth: 16, scale: 7, scaleOp: 0.22, grad: ['#4C6A55', '#7E9A84', '#C6D3CB', '#EEF2EF', '#FAFBFA'], line: '#2F4537', finColor: '#C9C79A', tailColor: '#B7B68C',
       deco: all(({ top, bot, x0, x1, yAt }) => {
@@ -621,7 +784,7 @@ const SPECIES = [
         pts.forEach(([x, y]) => { if (x > x0 + 150) o += `<path d="M${x - 3},${f1(y)} l3,-4 l3,4 l-3,4 Z" fill="#E7EEEA" stroke="#5B6E61" stroke-width="0.9"/>`; });
         return o;
       }, ({ x0, x1, top, yAt }) => { const x = x0 + (x1 - x0) * 0.23; return `<ellipse cx="${x}" cy="${f1(yAt(top, x) + 16)}" rx="5" ry="4" fill="#2A332D"/>`; }) }) },
-  { k: 'saba', n: 'マサバ', a: ['seto', 'nihon', 'taihei'], m: ['uki', 'lure'], band: 'mid', sz: [25, 45], p: 150, shun: [9, 10, 11, 12], pow: 2, rare: 1,
+  { k: 'saba', n: 'マサバ', a: ['seto', 'nihon', 'taihei'], m: ['uki', 'lure', 'ami'], band: 'mid', sz: [25, 45], p: 150, shun: [9, 10, 11, 12], pow: 2, rare: 1,
     info: 'せなかに なみなみの もようが あるよ。むれで およぐ', eat: 'しめさば・みそに・しおやき',
     art: AP.tuna({ dt: 36, db: 33, tailL: 56, tailH: 44, tail: 'fork', iris: '#B8C0C8', grad: ['#1F5C5A', '#3D8A84', '#B9D3D4', '#EEF4F4', '#F9FBFB'], line: '#163E3D', finColor: '#7E9C9A', pecColor: '#5E8482',
       fins: [{ edge: 'top', from: 0.3, to: 0.44, h: 18, peak: 0.2 }, { edge: 'top', from: 0.55, to: 0.64, h: 14, peak: 0.25 }, { edge: 'bot', from: 0.57, to: 0.66, h: 13, peak: 0.25 }],
@@ -769,7 +932,7 @@ const SPECIES = [
     info: 'ひらいて ほした「ひらき」が ゆうめい。きたの うみの さかな', eat: 'ひらきの しおやき',
     art: AP.slim({ ped: 6, dt: 30, db: 28, ta: 0.9, tailL: 44, tailH: 34, eyeR: 9, mouth: 14, iris: '#C8C090', grad: ['#6A7050', '#8E9470', '#D8D8C4', '#F6F4EC'], line: '#3A3E2A', finColor: '#A8A888',
       fins: [{ edge: 'top', from: 0.26, to: 0.84, h: 14, peak: 0.05, sweep: 0.1, backH: 0.7 }, { edge: 'bot', from: 0.5, to: 0.84, h: 12, peak: 0.05, backH: 0.7 }], deco: vbars(5, 0.3, 0.85, '#3A3E2A', 0.28, 22, 0, 0.7) }) },
-  { k: 'nishin', n: 'ニシン', a: ['hokkai'], m: ['uki'], band: 'top', sz: [25, 35], p: 180, shun: [3, 4, 5], pow: 1, rare: 2,
+  { k: 'nishin', n: 'ニシン', a: ['hokkai'], m: ['uki', 'ami'], band: 'top', sz: [25, 35], p: 180, shun: [3, 4, 5], pow: 1, rare: 2,
     info: 'たまごは「かずのこ」。むかしは たくさん とれたよ', eat: 'しおやき・にしんそば',
     art: AP.slim({ dt: 28, db: 28, eyeR: 9, iris: '#C8D0D8', grad: ['#2E5A80', '#5A86A8', '#CBD9E3', '#F4F7F9'], line: '#1E3A54', finColor: '#A8B8C8', tailColor: '#8EA2B6', fins: [{ edge: 'top', from: 0.42, to: 0.56, h: 16, peak: 0.25 }, { edge: 'bot', from: 0.68, to: 0.78, h: 10, peak: 0.2 }] }) },
   { k: 'kurosoi', n: 'クロソイ', a: ['hokkai'], m: ['lure', 'uki'], band: 'bot', sz: [25, 50], p: 700, shun: [10, 11, 12], t: 'night', pow: 2, rare: 2,
@@ -862,6 +1025,72 @@ const SPECIES = [
   { k: 'tenagaebi', n: 'テナガエビ', a: ['kawa'], m: ['uki'], band: 'bot', sz: [7, 12], p: 40, shun: [6, 7], pow: 1, rare: 1,
     info: 'からだより ながい ハサミを もってるよ', eat: 'からあげ',
     art: { kind: 'shrimp', grad: ['#8A7A5A', '#A89878', '#D6CCB4'], line: '#4A3E28' } },
+  // ---------------- あみ ----------------
+  { k: 'katakuchi', n: 'カタクチイワシ', a: ['seto', 'nihon', 'taihei'], m: ['ami'], band: 'top', sz: [8, 14], p: 15, shun: [5, 6, 7], pow: 1, rare: 1,
+    info: 'したあごが みじかくて、くちが おおきく ひらくよ。こどもは「しらす」', eat: 'しらすどん・にぼし・てんぷら',
+    art: AP.slim({ dt: 22, db: 20, mouth: 22, mouthY: 2, eyeR: 9, iris: '#C8D0D8', grad: ['#2E5E86', '#4E86B0', '#C8D8E4', '#F4F7F9'], line: '#1E3E5A', finColor: '#A8B8C8', fins: [{ edge: 'top', from: 0.42, to: 0.54, h: 12, peak: 0.25 }, { edge: 'bot', from: 0.68, to: 0.76, h: 8, peak: 0.25 }], deco: bandLine(0.5, '#8EB0CC', 4, 0.5, 40) }) },
+  { k: 'maiwashi', n: 'マイワシ', a: ['seto', 'nihon', 'taihei', 'hokkai'], m: ['ami'], band: 'top', sz: [15, 22], p: 40, shun: [6, 7, 8, 9], pow: 1, rare: 1,
+    info: 'からだの よこに くろい てんてんが ならぶ。おおきな むれで およぐよ', eat: 'つみれ・しおやき・かばやき',
+    art: AP.slim({ dt: 26, db: 26, eyeR: 9, iris: '#C8D0D8', grad: ['#2A5680', '#4E82AC', '#CAD8E4', '#F5F8FA'], line: '#1A3A56', finColor: '#A8B8C8', fins: [{ edge: 'top', from: 0.42, to: 0.55, h: 13, peak: 0.25 }, { edge: 'bot', from: 0.68, to: 0.76, h: 8, peak: 0.25 }],
+      deco: ({ top, bot, x0, x1, yAt }) => { let o = ''; for (let i = 0; i < 8; i++) { const x = x0 + (x1 - x0) * (0.26 + i * 0.07); o += `<circle cx="${f1(x)}" cy="${f1(yAt(top, x) * 0.55 + yAt(bot, x) * 0.45)}" r="3.4" fill="#1A2A3A"/>`; } return o; } }) },
+  { k: 'konoshiro', n: 'コノシロ', a: ['seto'], m: ['ami'], band: 'top', sz: [15, 25], p: 60, shun: [10, 11, 12], pow: 1, rare: 2,
+    info: 'こどもは「コハダ」と よばれる おすしの ネタ。せびれの さいごが ながい', eat: 'すづけ（コハダの おすし）',
+    art: AP.slim({ dt: 34, db: 32, eyeR: 9, iris: '#D0D0C0', grad: ['#4A6A7A', '#7A98A6', '#D2DCE0', '#F6F8F8'], line: '#2A3E48', finColor: '#B8C4C8', fins: [{ edge: 'top', from: 0.42, to: 0.56, h: 16, peak: 0.25 }, { edge: 'bot', from: 0.66, to: 0.82, h: 8, peak: 0.1 }],
+      over: ({ top, x0, x1, yAt }) => { const x = x0 + (x1 - x0) * 0.56, y = yAt(top, x); return `<path d="M${x},${y - 10} Q${x + 40},${y - 22} ${x + 80},${y - 10}" stroke="#2A3E48" stroke-width="2" fill="none"/>`; },
+      deco: all(spots(151, 40, '#2A3E48', 1.4, 2.2, { x0: 0.2, x1: 0.95, y0: 0.15, y1: 0.45 }), ({ x0, x1, top, yAt }) => { const x = x0 + (x1 - x0) * 0.26; return `<circle cx="${x}" cy="${f1(yAt(top, x) + 20)}" r="5" fill="#1A2A34"/>`; }) }) },
+  { k: 'sayori', n: 'サヨリ', a: ['seto', 'nihon'], m: ['ami'], band: 'top', sz: [25, 35], p: 120, shun: [3, 4, 5], pow: 1, rare: 2,
+    info: 'したあごが はりの ように ながくて、さきっぽが あかいよ', eat: 'さしみ・てんぷら',
+    art: AP.slim({ dt: 14, db: 14, ta: 0.9, eyeR: 7, eyeX: 0.12, iris: '#D0D8E0', grad: ['#3E6A6A', '#6A9A98', '#E0ECEC', '#FFFFFF'], line: '#24403E', finColor: '#B8CCCA', fins: [{ edge: 'top', from: 0.72, to: 0.82, h: 10, peak: 0.25 }, { edge: 'bot', from: 0.72, to: 0.82, h: 9, peak: 0.25 }],
+      over: ({ x0, cy }) => `<path d="M${x0 + 4},${cy + 4} L${x0 - 26},${cy + 8} L${x0 + 4},${cy + 10} Z" fill="#E8E0D0" stroke="#24403E" stroke-width="1.2"/><path d="M${x0 - 26},${cy + 8} l8,-1 l0,3 Z" fill="#E8403A"/>`, deco: bandLine(0.45, '#9ACCCC', 4, 0.6, 30) }) },
+  { k: 'bora', n: 'ボラ', a: ['seto', 'kawa'], m: ['ami'], band: 'top', sz: [30, 60], p: 150, shun: [10, 11, 12], pow: 2, rare: 1,
+    info: 'みずの うえで ジャンプする。たまごは「からすみ」に なるよ', eat: 'あらい・からすみ',
+    art: AP.slim({ ped: 9, dt: 32, db: 30, ta: 0.7, eyeR: 8, mouth: 10, mouthY: 4, scale: 10, scaleOp: 0.3, iris: '#D0C890', grad: ['#4A5A64', '#6E7E88', '#C8D0D4', '#F2F4F5'], line: '#2A343A', finColor: '#8A969C', fins: [{ edge: 'top', from: 0.36, to: 0.44, h: 16, peak: 0.3 }, { edge: 'top', from: 0.62, to: 0.7, h: 14, peak: 0.3 }, { edge: 'bot', from: 0.62, to: 0.72, h: 12, peak: 0.25 }], deco: all(bandLine(0.3, '#3A4A54', 2, 0.4, 40), bandLine(0.45, '#3A4A54', 2, 0.4, 40), bandLine(0.6, '#3A4A54', 2, 0.35, 40)) }) },
+
+  // ---------------- しおひがり ----------------
+  { k: 'asari', n: 'アサリ', a: ['seto', 'taihei'], m: ['hori'], sz: [3, 5], p: 25, shun: [3, 4, 5], pow: 1, rare: 1,
+    info: 'すなはまに たくさん いる。もようが ひとつずつ ちがうよ', eat: 'みそしる・さかむし・ボンゴレ',
+    art: { kind: 'clam', w: 140, h: 112, pattern: 'zigzag', pat: '#4A3A2E', grad: ['#E8DCC8', '#C8B498', '#8A7458'], line: '#4A3A2E' } },
+  { k: 'hamaguri', n: 'ハマグリ', a: ['seto', 'taihei'], m: ['hori'], sz: [5, 9], p: 120, shun: [2, 3, 4], pow: 1, rare: 2,
+    info: 'つるつるで おおきい かい。ひなまつりに たべるよ', eat: 'うしおじる・やきはまぐり',
+    art: { kind: 'clam', w: 160, h: 126, pattern: 'rays', pat: '#6A4A30', grad: ['#F2E6D2', '#D8C0A0', '#9A7A58'], line: '#4A3424', seed: 7 } },
+  { k: 'mategai', n: 'マテガイ', a: ['seto'], m: ['hori'], sz: [8, 12], p: 60, shun: [3, 4, 5], pow: 1, rare: 2,
+    info: 'あなに しおを いれると ぴょこっと とびだしてくる ほそながい かい', eat: 'バターやき・さかむし',
+    art: { kind: 'razor', grad: ['#E8D8B0', '#C8B080', '#A08A60'], line: '#5A4A30' } },
+  { k: 'hokkigai', n: 'ホッキガイ', a: ['hokkai'], m: ['hori'], sz: [8, 12], p: 400, shun: [12, 1, 2, 3], pow: 1, rare: 2,
+    info: 'ほっかいどうの すなはまに いる おおきな かい。ゆでると ピンクに なる', eat: 'ほっきめし・おすし',
+    art: { kind: 'clam', w: 170, h: 120, grad: ['#8A7A68', '#5E4E3E', '#3A2E24'], line: '#2A201A', seed: 3 } },
+
+  // ---------------- もぐり ----------------
+  { k: 'sazae', n: 'サザエ', a: ['seto', 'nihon', 'taihei'], m: ['moguri'], sz: [7, 12], p: 250, shun: [3, 4, 5, 6], pow: 1, rare: 1,
+    info: 'トゲトゲの かい。いわに くっついて かいそうを たべるよ', eat: 'つぼやき',
+    art: { kind: 'sazae', grad: ['#8A9A7A', '#6A7A5A', '#4A5640'], line: '#2E3628' } },
+  { k: 'murasakiuni', n: 'ムラサキウニ', a: ['seto', 'nihon', 'taihei'], m: ['moguri'], sz: [5, 8], p: 300, shun: [5, 6, 7], pow: 1, rare: 2,
+    info: 'ながい トゲが むらさきいろ。なかの オレンジの ところを たべるよ', eat: 'うにどん・おすし',
+    art: { kind: 'uni', long: true, grad: ['#3A2246', '#5A3A6A', '#2A1A34'], line: '#1A0E22' } },
+  { k: 'bafununi', n: 'バフンウニ', a: ['hokkai'], m: ['moguri'], sz: [3, 5], p: 600, shun: [6, 7, 8], pow: 1, rare: 3,
+    info: 'みじかい トゲの ちいさい ウニ。なかみが こい オレンジで あまい', eat: 'うにどん・おすし',
+    art: { kind: 'uni', grad: ['#5A6A3A', '#7A8A4A', '#3E4A28'], line: '#2A3418', seed: 9 } },
+  { k: 'kaki', n: 'マガキ', a: ['seto', 'hokkai'], m: ['moguri'], sz: [8, 15], p: 150, shun: [11, 12, 1, 2], pow: 1, rare: 1,
+    info: 'ひろしまの めいぶつ！ いわに くっついて そだつ「うみの ミルク」', eat: 'カキフライ・どてなべ・やきがき',
+    art: { kind: 'oyster', grad: ['#C8C4B4', '#9A9488', '#6E6A60'], line: '#3E3A34' } },
+  { k: 'namako', n: 'マナマコ', a: ['seto', 'hokkai'], m: ['moguri'], sz: [15, 30], p: 300, shun: [12, 1, 2], pow: 1, rare: 2,
+    info: 'ふにゃふにゃの いきもの。ほねが なくて、すなを たべて いきてるよ', eat: 'なまこす',
+    art: { kind: 'namako', grad: ['#6A5A3A', '#4E4228', '#8A7A5A'], line: '#2E2616', seed: 11 } },
+  { k: 'awabi', n: 'クロアワビ', a: ['nihon', 'taihei'], m: ['moguri'], sz: [10, 20], p: 2500, shun: [6, 7, 8], pow: 1, rare: 4,
+    info: 'いわに ぴったり くっつく まきがい。あなが ならんでいるよ', eat: 'ステーキ・さしみ',
+    art: { kind: 'awabi', grad: ['#6A7A70', '#4A5A52', '#3A463E'], line: '#1E2620' } },
+  { k: 'iseebi', n: 'イセエビ', a: ['taihei'], m: ['moguri'], sz: [20, 35], p: 4000, shun: [10, 11, 12], pow: 1, rare: 4,
+    info: 'いわの すきまに かくれてる おおきな エビ。おいわいの ごちそう', eat: 'さしみ・ぐそくに',
+    art: { kind: 'lobster', grad: ['#A8402A', '#C85A3A', '#8A2E1C'], line: '#4A1A10' } },
+  { k: 'hotate', n: 'ホタテ', a: ['hokkai'], m: ['moguri'], sz: [10, 18], p: 300, shun: [12, 1, 2, 3], pow: 1, rare: 2,
+    info: 'かいがらを パクパク して およぐ ことが できる かい', eat: 'バターやき・おすし',
+    art: { kind: 'clam', w: 160, h: 130, ribs: 18, ears: true, grad: ['#F2C8A0', '#D89A6A', '#A86A40'], line: '#5A3A20' } },
+  { k: 'kegani', n: 'ケガニ', a: ['hokkai'], m: ['moguri'], sz: [8, 12], p: 3000, shun: [2, 3, 4], pow: 1, rare: 3,
+    info: 'からだが みじかい けで おおわれた カニ。カニみそが おいしい', eat: 'ゆでがに',
+    art: { kind: 'crab', grad: ['#B8603A', '#9A4A2A', '#7A3A1E'], line: '#3A1A0C' } },
+  { k: 'kurumaebi', n: 'クルマエビ', a: ['seto'], m: ['farm'], sz: [12, 20], p: 400, shun: [6, 7, 8], pow: 1, rare: 2,
+    info: 'まるめると しまもようが くるまの わに みえるよ', eat: 'えびフライ・おどり・てんぷら',
+    art: { kind: 'shrimp', noClaw: true, stripe: '#3A3A5A', grad: ['#D8C8A0', '#C8B080', '#E8DCC0'], line: '#5A4A30' } },
 ];
 const SP_BY = Object.fromEntries(SPECIES.map(s => [s.k, s]));
 
@@ -878,6 +1107,14 @@ const METHODS = [
   { k: 'uki', n: 'うきづり', icon: '🎣', price: 0, desc: 'うきが しずんだら タップ！' },
   { k: 'lure', n: 'ルアー', icon: '🐟', price: 300, desc: 'リールを ぐるぐる まいて さかなを さそう' },
   { k: 'egi', n: 'エギング', icon: '🦑', price: 600, desc: 'しゃくって しずめて イカ・タコを ねらう' },
+  { k: 'ami', n: 'あみ', icon: '🕸️', price: 400, desc: 'むれを ねらって あみを なげる' },
+  { k: 'hori', n: 'しおひがり', icon: '🐚', price: 200, desc: 'すなを ほって かいを さがす' },
+  { k: 'moguri', n: 'もぐり', icon: '🤿', price: 800, desc: 'うみに もぐって いわを めくる' },
+];
+// いけすで そだてられる もの（min: そだつ じかん ふん、cost: たね の ねだん、yield: とれる かず）
+const FARM = [
+  { k: 'kaki', min: 10, cost: 200, yield: 6 }, { k: 'kurumaebi', min: 15, cost: 400, yield: 5 }, { k: 'hotate', min: 20, cost: 500, yield: 4 },
+  { k: 'madai', min: 40, cost: 900, yield: 1 }, { k: 'hiroshima', min: 30, cost: 900, yield: 1 }, { k: 'buri', min: 60, cost: 1500, yield: 1 },
 ];
 const METHOD_BY = Object.fromEntries(METHODS.map(m => [m.k, m]));
 const RODS = [
@@ -1140,6 +1377,104 @@ function elementCenter(el) { const r = el.getBoundingClientRect(); return { x: r
 
 function sfx(t) { snd('tap'); }
 // =========================================================
+// ▼▼ アバター（SVG で かく きせかえ にんぎょう）▼▼
+// =========================================================
+const AV_OPTS = {
+  face: [['slim', 'ほっそり'], ['round', 'まるがお']],
+  eyes: [['cool', 'きれなが'], ['big', 'ぱっちり'], ['normal', 'ふつう'], ['smile', 'にこにこ']],
+  hair: [['straight', 'サラサラ ロング'], ['ringlet', 'たてまき カール'], ['bob', 'ボブ'], ['pony', 'ポニーテール'], ['twin', 'ツインテール'], ['short', 'ショート'], ['bun', 'おだんご']],
+  hairColor: ['#2B211C', '#4A3326', '#7A5234', '#B8834A', '#E2BE6A', '#E87A9A', '#6A86E0'],
+  skin: ['#FFE6D2', '#F8D2B4', '#E8B48C', '#C88A62'],
+  top: ['#FF7A9A', '#FFB020', '#3CC48A', '#2FA6F0', '#8F6BFF', '#FFFFFF', '#F2545B', '#2E3A59'],
+  bottom: [['skirt', 'スカート'], ['shorts', 'ショートパンツ'], ['pants', 'ながズボン']],
+  bottomColor: ['#2E3A59', '#5A7AE0', '#E8607A', '#F2C14E', '#6E5A48', '#FFFFFF'],
+  hat: [['none', 'なし'], ['straw', 'むぎわら'], ['cap', 'キャップ'], ['ribbon', 'リボン'], ['beanie', 'ニット']],
+  hatColor: ['#F2545B', '#2FA6F0', '#FFB020', '#3CC48A', '#FF8FB1', '#2E3A59'],
+};
+const AV_DEFAULT = {
+  ibu: { face: 'slim', eyes: 'cool', hair: 'straight', hairColor: '#2B211C', skin: '#FFE6D2', top: '#FF7A9A', bottom: 'skirt', bottomColor: '#2E3A59', hat: 'straw', hatColor: '#F2545B' },
+  mii: { face: 'round', eyes: 'big', hair: 'ringlet', hairColor: '#4A3326', skin: '#FFE6D2', top: '#2FA6F0', bottom: 'shorts', bottomColor: '#F2C14E', hat: 'ribbon', hatColor: '#FF8FB1' },
+};
+function shade(hex, k) {
+  const n = parseInt(hex.slice(1), 16), r = n >> 16, g = (n >> 8) & 255, b = n & 255;
+  const f = (c) => Math.round(clamp(k < 0 ? c * (1 + k) : c + (255 - c) * k, 0, 255)).toString(16).padStart(2, '0');
+  return '#' + f(r) + f(g) + f(b);
+}
+function drawAvatar(a, opt = {}) {
+  const hc = a.hairColor, hd = shade(hc, -0.35), hl = shade(hc, 0.35), sk = a.skin, skd = shade(sk, -0.12), ln = '#3A2A26';
+  const round = a.face === 'round';
+  const cx = 60, cy = 58, rx = round ? 31 : 27, ry = round ? 29 : 31;
+  // かお の りんかく
+  const face = round
+    ? `M${cx - rx},${cy} C${cx - rx},${cy - ry * 1.05} ${cx + rx},${cy - ry * 1.05} ${cx + rx},${cy} C${cx + rx},${cy + ry * 0.9} ${cx + 12},${cy + ry + 2} ${cx},${cy + ry + 2} C${cx - 12},${cy + ry + 2} ${cx - rx},${cy + ry * 0.9} ${cx - rx},${cy} Z`
+    : `M${cx - rx},${cy - 2} C${cx - rx},${cy - ry * 1.05} ${cx + rx},${cy - ry * 1.05} ${cx + rx},${cy - 2} C${cx + rx},${cy + ry * 0.55} ${cx + 9},${cy + ry + 1} ${cx},${cy + ry + 2} C${cx - 9},${cy + ry + 1} ${cx - rx},${cy + ry * 0.55} ${cx - rx},${cy - 2} Z`;
+  // かみ（うしろ）
+  let back = '', front = '', extra = '';
+  const top = cy - ry - 4;
+  if (a.hair === 'straight') {
+    back = `<path d="M${cx - rx - 3},${cy - 6} C${cx - rx - 6},${top + 4} ${cx + rx + 6},${top + 4} ${cx + rx + 3},${cy - 6} L${cx + rx + 2},${cy + 58} Q${cx + 16},${cy + 64} ${cx},${cy + 62} Q${cx - 16},${cy + 64} ${cx - rx - 2},${cy + 58} Z" fill="${hc}"/>`
+      + [-20, -8, 6, 18].map(x => `<path d="M${cx + x},${cy + 10} L${cx + x * 1.05},${cy + 60}" stroke="${hl}" stroke-width="1.4" opacity="0.5"/>`).join('');
+    front = `<path d="M${cx - rx - 2},${cy - 2} C${cx - rx - 4},${top - 2} ${cx + rx + 4},${top - 2} ${cx + rx + 2},${cy - 2} L${cx + rx - 2},${cy - 10} Q${cx + 18},${cy - 22} ${cx + 10},${cy - 12} L${cx + 6},${cy - 20} Q${cx},${cy - 10} ${cx - 4},${cy - 14} L${cx - 10},${cy - 8} Q${cx - 16},${cy - 22} ${cx - rx + 2},${cy - 8} Z" fill="${hc}"/>`
+      + `<path d="M${cx - 14},${top + 6} Q${cx},${top + 10} ${cx + 16},${top + 16}" stroke="${hl}" stroke-width="2.4" fill="none" opacity="0.6"/>`
+      + `<path d="M${cx - rx - 2},${cy - 4} L${cx - rx - 1},${cy + 40} L${cx - rx + 4},${cy + 38} L${cx - rx + 3},${cy} Z M${cx + rx + 2},${cy - 4} L${cx + rx + 1},${cy + 40} L${cx + rx - 4},${cy + 38} L${cx + rx - 3},${cy} Z" fill="${hc}"/>`;
+  } else if (a.hair === 'ringlet') {
+    const curl = (x, y, s) => `<g transform="translate(${x},${y}) scale(${s})"><path d="M0,0 C-9,4 -9,12 0,14 C9,16 9,24 0,26 C-9,28 -9,36 0,38 C7,40 8,46 2,48" fill="none" stroke="${hc}" stroke-width="9" stroke-linecap="round"/><path d="M-2,2 C-6,5 -6,10 -1,12 M-2,16 C-6,19 -6,24 -1,26 M-2,30 C-6,33 -6,38 -1,40" fill="none" stroke="${hl}" stroke-width="1.8" stroke-linecap="round" opacity="0.7"/></g>`;
+    back = `<path d="M${cx - rx - 6},${cy + 6} C${cx - rx - 10},${top - 6} ${cx + rx + 10},${top - 6} ${cx + rx + 6},${cy + 6} L${cx + rx + 2},${cy + 30} L${cx - rx - 2},${cy + 30} Z" fill="${hd}"/>`;
+    extra = [[-rx - 4, 0, 1], [-rx + 4, 6, 0.9], [rx + 4, 0, 1], [rx - 4, 6, 0.9]].map(([dx, dy, s]) => curl(cx + dx, cy - 2 + dy, s)).join('');
+    front = `<path d="M${cx - rx - 4},${cy + 2} C${cx - rx - 8},${top - 6} ${cx + rx + 8},${top - 6} ${cx + rx + 4},${cy + 2} Q${cx + rx},${cy - 14} ${cx + 16},${cy - 14} Q${cx + 12},${cy - 6} ${cx + 4},${cy - 12} Q${cx - 2},${cy - 4} ${cx - 8},${cy - 13} Q${cx - 16},${cy - 6} ${cx - 20},${cy - 14} Q${cx - rx},${cy - 14} ${cx - rx - 4},${cy + 2} Z" fill="${hc}"/>`
+      + `<path d="M${cx - 16},${top + 10} Q${cx},${top + 4} ${cx + 18},${top + 12}" stroke="${hl}" stroke-width="2.6" fill="none" opacity="0.6"/>`;
+  } else if (a.hair === 'bob') {
+    back = `<path d="M${cx - rx - 6},${cy} C${cx - rx - 8},${top} ${cx + rx + 8},${top} ${cx + rx + 6},${cy} L${cx + rx + 6},${cy + 26} Q${cx},${cy + 34} ${cx - rx - 6},${cy + 26} Z" fill="${hc}"/>`;
+    front = `<path d="M${cx - rx - 5},${cy + 4} C${cx - rx - 8},${top - 4} ${cx + rx + 8},${top - 4} ${cx + rx + 5},${cy + 4} L${cx + rx - 1},${cy - 9} Q${cx},${cy - 15} ${cx - rx + 1},${cy - 9} Z" fill="${hc}"/><path d="M${cx - 14},${top + 13} Q${cx},${top + 8} ${cx + 16},${top + 14}" stroke="${hl}" stroke-width="2.6" fill="none" opacity="0.6"/>`;
+  } else if (a.hair === 'short') {
+    front = `<path d="M${cx - rx - 3},${cy + 2} C${cx - rx - 6},${top - 6} ${cx + rx + 6},${top - 6} ${cx + rx + 3},${cy + 2} L${cx + rx},${cy - 10} Q${cx + 10},${cy - 22} ${cx - 6},${cy - 12} Q${cx - 16},${cy - 20} ${cx - rx},${cy - 8} Z" fill="${hc}"/><path d="M${cx - 14},${top + 13} Q${cx},${top + 8} ${cx + 16},${top + 14}" stroke="${hl}" stroke-width="2.6" fill="none" opacity="0.6"/>`;
+  } else {
+    // ポニー・ツイン・おだんご は まえがみ ＋ むすぶ
+    front = `<path d="M${cx - rx - 3},${cy} C${cx - rx - 6},${top - 4} ${cx + rx + 6},${top - 4} ${cx + rx + 3},${cy} L${cx + rx},${cy - 10} Q${cx + 14},${cy - 20} ${cx + 4},${cy - 12} Q${cx - 6},${cy - 20} ${cx - 12},${cy - 10} Q${cx - 20},${cy - 18} ${cx - rx},${cy - 8} Z" fill="${hc}"/><path d="M${cx - 14},${top + 13} Q${cx},${top + 8} ${cx + 16},${top + 14}" stroke="${hl}" stroke-width="2.6" fill="none" opacity="0.6"/>`;
+    if (a.hair === 'pony') back = `<path d="M${cx + rx - 4},${top + 10} Q${cx + rx + 26},${top + 14} ${cx + rx + 16},${cy + 40} Q${cx + rx + 8},${cy + 10} ${cx + rx - 6},${top + 18} Z" fill="${hc}"/><circle cx="${cx + rx - 2}" cy="${top + 13}" r="4" fill="${opt.tie || '#FF5A7A'}"/>`;
+    if (a.hair === 'twin') back = [-1, 1].map(s => `<path d="M${cx + s * (rx - 2)},${cy - 14} Q${cx + s * (rx + 26)},${cy - 6} ${cx + s * (rx + 12)},${cy + 40} Q${cx + s * (rx + 6)},${cy + 6} ${cx + s * (rx - 6)},${cy - 6} Z" fill="${hc}"/><circle cx="${cx + s * (rx + 1)}" cy="${cy - 12}" r="4" fill="${opt.tie || '#FF5A7A'}"/>`).join('');
+    if (a.hair === 'bun') back = `<circle cx="${cx}" cy="${top - 4}" r="13" fill="${hc}"/><path d="M${cx - 8},${top - 8} Q${cx},${top - 14} ${cx + 8},${top - 6}" stroke="${hl}" stroke-width="2" fill="none" opacity="0.6"/>`;
+  }
+  // め
+  const ey = cy + 4, ex = round ? 12 : 11;
+  let eyes = '', brows = '';
+  if (a.eyes === 'cool') {
+    eyes = [-1, 1].map(s => `<path d="M${cx + s * ex - 6},${ey} Q${cx + s * ex},${ey - 4.5} ${cx + s * ex + 6},${ey}" stroke="${ln}" stroke-width="2" fill="none" stroke-linecap="round"/><ellipse cx="${cx + s * ex}" cy="${ey + 1}" rx="3.2" ry="3.8" fill="${ln}"/><circle cx="${cx + s * ex - 1}" cy="${ey - 0.4}" r="1.1" fill="#FFF"/>`).join('');
+    brows = [-1, 1].map(s => `<path d="M${cx + s * ex - 5},${ey - 9} Q${cx + s * ex},${ey - 11} ${cx + s * ex + 5},${ey - 9.5}" stroke="${shade(a.hairColor, 0.15)}" stroke-width="1.3" fill="none" stroke-linecap="round"/>`).join('');
+  } else if (a.eyes === 'big') {
+    eyes = [-1, 1].map(s => `<ellipse cx="${cx + s * ex}" cy="${ey + 1}" rx="6" ry="7.5" fill="#FFF"/><ellipse cx="${cx + s * ex}" cy="${ey + 2}" rx="5" ry="6.6" fill="#4A2E22"/><ellipse cx="${cx + s * ex}" cy="${ey + 3}" rx="3" ry="4" fill="#1E1410"/><circle cx="${cx + s * ex - 1.8}" cy="${ey - 1.2}" r="2.2" fill="#FFF"/><circle cx="${cx + s * ex + 2}" cy="${ey + 4.5}" r="1" fill="#FFF"/><path d="M${cx + s * ex - 7},${ey - 4} Q${cx + s * ex},${ey - 10} ${cx + s * ex + 7},${ey - 4}" stroke="${ln}" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M${cx + s * (ex + 6)},${ey - 5} l${s * 3},-3" stroke="${ln}" stroke-width="1.6" stroke-linecap="round"/>`).join('');
+    brows = [-1, 1].map(s => `<path d="M${cx + s * ex - 5},${ey - 13} Q${cx + s * ex},${ey - 15} ${cx + s * ex + 5},${ey - 13}" stroke="${shade(a.hairColor, 0.1)}" stroke-width="1.6" fill="none" stroke-linecap="round"/>`).join('');
+  } else if (a.eyes === 'smile') {
+    eyes = [-1, 1].map(s => `<path d="M${cx + s * ex - 5},${ey + 1} Q${cx + s * ex},${ey - 5} ${cx + s * ex + 5},${ey + 1}" stroke="${ln}" stroke-width="2.6" fill="none" stroke-linecap="round"/>`).join('');
+  } else {
+    eyes = [-1, 1].map(s => `<ellipse cx="${cx + s * ex}" cy="${ey + 1}" rx="3.8" ry="5" fill="${ln}"/><circle cx="${cx + s * ex - 1.2}" cy="${ey - 1}" r="1.4" fill="#FFF"/>`).join('');
+  }
+  const mouth = `<path d="M${cx - 4},${ey + 14} Q${cx},${ey + 18} ${cx + 4},${ey + 14}" stroke="#C0505A" stroke-width="2" fill="${opt.open ? '#E86A70' : 'none'}" stroke-linecap="round"/>`;
+  const cheek = [-1, 1].map(s => `<ellipse cx="${cx + s * (ex + 7)}" cy="${ey + 10}" rx="${round ? 5.5 : 4}" ry="${round ? 3.4 : 2.6}" fill="#FF8FA0" opacity="${round ? 0.55 : 0.35}"/>`).join('');
+  // からだ
+  const tc = a.top, td = shade(tc, -0.18), bc = a.bottomColor, bd = shade(bc, -0.2);
+  let lower;
+  if (a.bottom === 'skirt') lower = `<path d="M40,128 L80,128 L88,152 L32,152 Z" fill="${bc}"/><path d="M48,130 L44,152 M60,130 L60,152 M72,130 L76,152" stroke="${bd}" stroke-width="1.4"/><rect x="45" y="151" width="9" height="30" rx="4" fill="${sk}"/><rect x="66" y="151" width="9" height="30" rx="4" fill="${sk}"/>`;
+  else if (a.bottom === 'shorts') lower = `<path d="M40,126 L80,126 L82,146 L62,146 L60,138 L58,146 L38,146 Z" fill="${bc}"/><rect x="44" y="145" width="10" height="36" rx="4" fill="${sk}"/><rect x="66" y="145" width="10" height="36" rx="4" fill="${sk}"/>`;
+  else lower = `<path d="M40,126 L80,126 L78,182 L64,182 L60,140 L56,182 L42,182 Z" fill="${bc}"/><path d="M60,130 L60,140" stroke="${bd}" stroke-width="1.4"/>`;
+  const shoes = `<ellipse cx="49" cy="184" rx="9" ry="5" fill="#FFFFFF" stroke="#C9D2DA" stroke-width="1.5"/><ellipse cx="71" cy="184" rx="9" ry="5" fill="#FFFFFF" stroke="#C9D2DA" stroke-width="1.5"/>`;
+  const rod = opt.pose === 'rod';
+  const armR = rod ? `<path d="M76,100 Q90,104 92,114" stroke="${tc}" stroke-width="10" fill="none" stroke-linecap="round"/><circle cx="93" cy="116" r="5.5" fill="${sk}"/>` : `<path d="M77,100 Q86,112 84,124" stroke="${tc}" stroke-width="10" fill="none" stroke-linecap="round"/><circle cx="84" cy="127" r="5.5" fill="${sk}"/>`;
+  const armL = rod ? `<path d="M44,100 Q56,114 80,118" stroke="${td}" stroke-width="10" fill="none" stroke-linecap="round"/><circle cx="83" cy="119" r="5.5" fill="${sk}"/>` : `<path d="M43,100 Q34,112 36,124" stroke="${tc}" stroke-width="10" fill="none" stroke-linecap="round"/><circle cx="36" cy="127" r="5.5" fill="${sk}"/>`;
+  const body = `<rect x="55" y="84" width="10" height="10" fill="${skd}"/><path d="M40,96 Q60,88 80,96 L82,130 L38,130 Z" fill="${tc}"/><path d="M52,92 Q60,99 68,92" stroke="${td}" stroke-width="2.4" fill="none"/>`;
+  // ぼうし
+  let hat = '';
+  const hcol = a.hatColor;
+  if (a.hat === 'straw') hat = `<ellipse cx="${cx}" cy="${top + 12}" rx="${rx + 18}" ry="8" fill="#F2D27A" stroke="#C9A040" stroke-width="1.5"/><path d="M${cx - rx + 2},${top + 12} C${cx - rx + 2},${top - 16} ${cx + rx - 2},${top - 16} ${cx + rx - 2},${top + 12} Z" fill="#F6DC8A" stroke="#C9A040" stroke-width="1.5"/><path d="M${cx - rx + 3},${top + 6} L${cx + rx - 3},${top + 6} L${cx + rx - 2},${top + 11} L${cx - rx + 2},${top + 11} Z" fill="${hcol}"/>`;
+  if (a.hat === 'cap') hat = `<path d="M${cx - rx - 2},${top + 14} C${cx - rx},${top - 12} ${cx + rx},${top - 12} ${cx + rx + 2},${top + 14} Z" fill="${hcol}"/><path d="M${cx + 4},${top + 12} Q${cx + rx + 22},${top + 8} ${cx + rx + 24},${top + 16} L${cx + 4},${top + 16} Z" fill="${shade(hcol, -0.2)}"/><circle cx="${cx}" cy="${top - 6}" r="3" fill="${shade(hcol, -0.25)}"/>`;
+  if (a.hat === 'beanie') hat = `<path d="M${cx - rx - 2},${top + 14} C${cx - rx},${top - 14} ${cx + rx},${top - 14} ${cx + rx + 2},${top + 14} Z" fill="${hcol}"/><rect x="${cx - rx - 3}" y="${top + 8}" width="${rx * 2 + 6}" height="9" rx="4" fill="${shade(hcol, -0.15)}"/><circle cx="${cx}" cy="${top - 10}" r="7" fill="#FFF"/>`;
+  if (a.hat === 'ribbon') hat = `<g transform="translate(${cx + rx - 8},${top + 6}) rotate(20)"><path d="M0,0 L-14,-9 L-14,9 Z M0,0 L14,-9 L14,9 Z" fill="${hcol}" stroke="${shade(hcol, -0.25)}" stroke-width="1.2"/><circle r="4" fill="${shade(hcol, -0.15)}"/></g>`;
+  const inner = `${back}${lower}${shoes}${armL}${body}${armR}<path d="${face}" fill="${sk}"/>${extra}${front}${brows}${eyes}${cheek}${mouth}${hat}`;
+  return `<svg viewBox="0 -14 120 206" xmlns="http://www.w3.org/2000/svg">${inner}</svg>`;
+}
+function avatarURL(a, opt) { return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(drawAvatar(a, opt)); }
+
+// =========================================================
 // ▼▼ つりアプリ ほんたい ▼▼
 // =========================================================
 const $ = (id) => document.getElementById(id);
@@ -1205,7 +1540,7 @@ function snd(type) {
 // ---------- ほぞん（ひとりずつ）----------
 const PLAYERS = [{ k: 'ibu', n: 'いぶちゃん', face: '👧', color: '#FF8FB1' }, { k: 'mii', n: 'みーちゃん', face: '👧', color: '#8FC8FF' }];
 let player = null, save = null;
-function freshSave(k) { return { money: 300, rod: 0, cooler: 0, methods: ['uki'], areas: ['seto', 'kawa'], zukan: {}, box: [], partner: 7, easy: k === 'mii', total: 0 }; }
+function freshSave(k) { return { money: 300, rod: 0, cooler: 0, methods: ['uki'], areas: ['seto', 'kawa'], zukan: {}, box: [], partner: 7, easy: k === 'mii', total: 0, avatar: { ...AV_DEFAULT[k] }, pens: 0, farm: [] }; }
 function loadSave(k) { const s = loadProgress('fishing-save-' + k); return Object.assign(freshSave(k), s || {}); }
 function store() { if (player) saveProgress('fishing-save-' + player.k, save); }
 function setMoney(v) { save.money = Math.max(0, Math.round(v)); store(); updateMoney(); }
@@ -1226,7 +1561,7 @@ function renderTitle() {
   $('title-fish').innerHTML = ['madai', 'buri', 'aoriika'].map(k => `<img src="${fishImg(k)}" alt="">`).join('');
   $('players').innerHTML = PLAYERS.map(p => {
     const s = loadSave(p.k), n = Object.keys(s.zukan).length;
-    return `<button class="player" data-k="${p.k}" style="box-shadow:0 12px 26px rgba(0,0,0,0.2), inset 0 -8px 0 ${p.color}"><span class="face">${p.face}</span><b>${p.n}</b><small>ずかん ${n}/${SPECIES.length}</small><small>💰 ${s.money.toLocaleString()}えん</small></button>`;
+    return `<button class="player" data-k="${p.k}" style="box-shadow:0 12px 26px rgba(0,0,0,0.2), inset 0 -8px 0 ${p.color}"><img class="av" src="${avatarURL(s.avatar)}" alt=""><b>${p.n}</b><small>ずかん ${n}/${SPECIES.length}</small><small>💰 ${s.money.toLocaleString()}えん</small></button>`;
   }).join('');
   $('players').querySelectorAll('.player').forEach(b => b.onclick = () => { player = PLAYERS.find(p => p.k === b.dataset.k); save = loadSave(player.k); snd('tap'); renderHome(); show('home'); speak(`${player.n}、いっしょに つりに いこう！`); });
 }
@@ -1239,6 +1574,7 @@ function renderHome() {
   updateMoney();
   const p = partnerOf();
   $('home-partner').src = getPokemonImageUrl(p.id);
+  $('home-avatar').src = avImg(myAvatar());
   $('home-bubble').textContent = pick(HOME_LINES);
   const n = Object.keys(save.zukan).length;
   $('home-stats').innerHTML = `<span class="chip">📖 ずかん ${n}/${SPECIES.length}</span><span class="chip">🧊 クーラー ${save.box.length}/${boxCap()}</span><span class="chip">🎣 ${RODS[save.rod].n}</span>`;
@@ -1302,7 +1638,7 @@ function renderMap() {
   });
 }
 $('map-back').onclick = () => { renderHome(); show('home'); };
-$('start-btn').onclick = () => { snd('tap'); startFishing(selArea, selMethod); };
+$('start-btn').onclick = () => { snd('tap'); if (selMethod === 'hori') startDig(selArea); else if (selMethod === 'moguri') startDive(selArea); else startFishing(selArea, selMethod); };
 
 // =========================================================
 // ▼▼ つりの がめん ▼▼
@@ -1312,7 +1648,9 @@ let rafId = 0, lastT = 0;
 function geo() {
   const sc = $('scene'), W = sc.clientWidth, H = sc.clientHeight;
   const surf = H * 0.36, bot = H * 0.93;
-  return { W, H, surf, bot, pier: 0.2, tipX: W * 0.26, tipY: surf - H * 0.19, unit: Math.min(W, H * 1.1) };
+  const ah = Math.min(H * 0.19, W * 0.32, 230), aw = ah * 120 / 206, al = W * 0.07, at = surf - ah - H * 0.004;
+  const handX = al + aw * 93 / 120, handY = at + ah * 130 / 206;
+  return { W, H, surf, bot, pier: 0.2, ah, aw, al, at, handX, handY, tipX: handX + Math.max(W * 0.1, 70), tipY: handY - H * 0.15, unit: Math.min(W, H * 1.1) };
 }
 const dpx = (g, d) => g.surf + d * (g.bot - g.surf);
 const BANDS = { top: [0.05, 0.3], mid: [0.25, 0.62], bot: [0.62, 0.86] };
@@ -1365,6 +1703,7 @@ function buildScene(area) {
     <svg class="surface" style="top:calc(36% - 0.6rem)" viewBox="0 0 120 10" preserveAspectRatio="none"><path d="M0 5 Q5 0 10 5 T20 5 T30 5 T40 5 T50 5 T60 5 T70 5 T80 5 T90 5 T100 5 T110 5 T120 5 L120 10 L0 10 Z" fill="${a.sea[0]}"/><path d="M0 5 Q5 0 10 5 T20 5 T30 5 T40 5 T50 5 T60 5 T70 5 T80 5 T90 5 T100 5 T110 5 T120 5" fill="none" stroke="#FFF" stroke-width="0.8" opacity="0.7"/></svg>
     <div id="fish-layer" style="position:absolute;inset:0"></div>
     <div class="pier-el" style="top:calc(36% - 1.2rem);width:22%;height:${area === 'kawa' ? 64 : 62}%">${pierSvg(area)}</div>
+    <img class="scene-avatar" id="fish-avatar" alt="">
     <img class="partner-fish" id="fish-partner" alt="">
     <div class="say" id="say"></div>
     ${tod === 'よる' ? '<div class="night-veil"></div>' : ''}`;
@@ -1375,9 +1714,12 @@ function buildScene(area) {
 }
 function layoutPartner() {
   const g = geo(), pi = $('fish-partner'); if (!pi) return;
-  const h = Math.min(g.H * 0.11, g.W * 0.13, 120);
-  pi.style.height = h + 'px'; pi.style.left = (g.W * 0.01) + 'px'; pi.style.top = (g.surf - h - g.H * 0.012) + 'px';
-  const s = $('say'); s.style.left = (g.W * 0.03) + 'px'; s.style.top = (g.surf - h - g.H * 0.075) + 'px';
+  const h = Math.min(g.H * 0.09, g.W * 0.12, 100);
+  pi.style.height = h + 'px'; pi.style.left = '0px'; pi.style.top = (g.surf - h - g.H * 0.004) + 'px';
+  const av = $('fish-avatar');
+  av.src = avImg(myAvatar(), G.method === 'ami' ? {} : { pose: 'rod' });
+  av.style.height = g.ah + 'px'; av.style.left = g.al + 'px'; av.style.top = g.at + 'px';
+  const s = $('say'); s.style.left = (g.W * 0.03) + 'px'; s.style.top = (g.at - g.H * 0.05) + 'px';
 }
 let sayT = null;
 function say(text, voice = true) {
@@ -1442,11 +1784,13 @@ function startFishing(area, method) {
   updateMoney(); updateCool();
   layoutPartner();
   const g = geo();
-  for (let i = 0; i < 6; i++) spawnFish(g);
+  $('reel').style.display = method === 'ami' ? 'none' : '';
+  if (method === 'ami') { for (let i = 0; i < 3; i++) spawnSchool(g); G.net = null; }
+  else for (let i = 0; i < 6; i++) spawnFish(g);
   setAct('なげる', 'blue');
   $('fight').classList.remove('show');
   const p = partnerOf();
-  setTimeout(() => say(method === 'egi' ? 'エギを なげて、しゃくって しずめてね！' : method === 'lure' ? 'なげたら ぐるぐる まいてね！' : 'なげて、うきが しずんだら あわせてね！'), 400);
+  setTimeout(() => say(method === 'ami' ? 'さかなの むれを ねらって あみを なげよう！' : method === 'egi' ? 'エギを なげて、しゃくって しずめてね！' : method === 'lure' ? 'なげたら ぐるぐる まいてね！' : 'なげて、うきが しずんだら あわせてね！'), 400);
   playCry(p.id, 0.35);
   lastT = performance.now();
   cancelAnimationFrame(rafId);
@@ -1467,6 +1811,11 @@ $('act').addEventListener('pointerdown', (e) => { e.preventDefault(); onAct(); }
 function onAct() {
   if (!G.on) return;
   const ph = G.phase;
+  if (G.method === 'ami') {
+    if (ph === 'idle') { G.phase = 'netaim'; setAct('うみを タップ！', 'blue', true); say('むれの ところを タップしてね！', true); }
+    else if (ph === 'netpull') netPull();
+    return;
+  }
   if (ph === 'idle') { G.phase = 'aim'; G.aimT = 0; $('power').classList.add('show'); setAct('いまだ！', '', true); snd('tap'); return; }
   if (ph === 'aim') { doCast(); return; }
   if (ph === 'bite') { hookIt(); return; }
@@ -1557,7 +1906,8 @@ function loop(now) {
   } else if (G.phase === 'wait' || G.phase === 'bite') updateWait(g, dt);
   else if (G.phase === 'fight') updateFight(g, dt);
 
-  updateFishes(g, dt);
+  if (G.method === 'ami') { updateNet(g, dt); updateSchools(g, dt); }
+  else updateFishes(g, dt);
   drawLines(g);
   rafId = requestAnimationFrame(loop);
 }
@@ -1746,10 +2096,11 @@ function drawLines(g) {
   let tipX = g.tipX, tipY = g.tipY;
   const F = G.fight;
   if (F) { tipX += F.tension * g.W * 0.03; tipY += F.tension * g.H * 0.06; }
-  const baseX = g.W * 0.15, baseY = g.surf + g.H * 0.03;
+  if (G.method === 'ami') { svg.innerHTML = drawNet(g); return; }
+  const baseX = g.handX - g.W * 0.03, baseY = g.handY + g.H * 0.03;
   const midX = (baseX + tipX) / 2 + (F ? F.tension * 10 : 0), midY = (baseY + tipY) / 2 - 6 + (F ? F.tension * 30 : 0);
   let out = `<path d="M${baseX},${baseY} Q${midX},${midY} ${tipX},${tipY}" stroke="#2A2A30" stroke-width="7" fill="none" stroke-linecap="round"/><path d="M${baseX},${baseY} Q${midX},${midY} ${tipX},${tipY}" stroke="#E8524A" stroke-width="3" fill="none" stroke-linecap="round" stroke-dasharray="40 200"/>`;
-  out += `<circle cx="${baseX + 18}" cy="${baseY - 8}" r="9" fill="#5A6E80"/>`;
+  out += `<circle cx="${g.handX - 4}" cy="${g.handY + 6}" r="7" fill="#5A6E80"/>`;
   let ex = null, ey = null;
   if (G.phase === 'fly' && G.fly) {
     const t = G.fly.t, x = (G.fly.x0 + (G.fly.tx - G.fly.x0) * t) * g.W, y = tipY + (g.surf - tipY) * t - Math.sin(t * Math.PI) * g.H * 0.18;
@@ -1825,7 +2176,7 @@ function closeResult(msg) {
   toast(msg); updateCool(); updateMoney();
   G.phase = 'idle'; G.hookFish = null;
   setAct('なげる', 'blue'); $('act').classList.remove('hide');
-  const g = geo(); while (G.fishes.length < 6) spawnFish(g);
+  const g = geo(); if (G.method !== 'ami') while (G.fishes.length < 6) spawnFish(g);
 }
 
 // ---------- ずかん ----------
@@ -1886,6 +2237,8 @@ function renderShop() {
   if (shopTab === 'tool') {
     METHODS.filter(m => m.price).forEach(m => rows.push({ ico: m.icon, n: m.n + 'セット', d: m.desc, price: m.price, have: save.methods.includes(m.k), buy: () => save.methods.push(m.k) }));
     RODS.forEach((r, i) => { if (i) rows.push({ ico: '🎣', n: r.n, d: `まく ちから ×${r.power}・いとが きれにくい`, price: r.price, have: save.rod >= i, lock: save.rod < i - 1, buy: () => { save.rod = i; } }); });
+    rows.push({ ico: '🦪', n: 'いけす', d: 'さかなや かいを そだてられる（2つ）', price: 1500, have: (save.pens || 0) > 0, buy: () => { save.pens = 2; save.farm = save.farm || []; } });
+    if ((save.pens || 0) > 0 && save.pens < 6) rows.push({ ico: '🦪', n: 'いけすを ふやす', d: `いま ${save.pens}つ → ${save.pens + 1}つ`, price: 2000, have: false, buy: () => { save.pens++; } });
     COOLERS.forEach((c, i) => { if (i) rows.push({ ico: '🧊', n: c.n, d: `さかなが ${c.cap}ひき はいる`, price: c.price, have: save.cooler >= i, lock: save.cooler < i - 1, buy: () => { save.cooler = i; } }); });
   } else {
     AREAS.filter(a => a.price).forEach(a => rows.push({ ico: a.icon, n: a.n + 'への きっぷ', d: a.desc, price: a.price, have: save.areas.includes(a.k), buy: () => save.areas.push(a.k) }));
@@ -1900,12 +2253,376 @@ function renderShop() {
 }
 $('shop-back').onclick = () => { renderHome(); show('home'); };
 
+// =========================================================
+// ▼▼ アバター・きせかえ ▼▼
+// =========================================================
+function myAvatar() { return save && save.avatar ? save.avatar : AV_DEFAULT.ibu; }
+const AV_CACHE = {};
+function avImg(a, opt = {}) { const key = JSON.stringify([a, opt]); if (!AV_CACHE[key]) AV_CACHE[key] = avatarURL(a, opt); return AV_CACHE[key]; }
+const DRESS_GROUPS = [
+  ['hair', 'かみがた'], ['hairColor', 'かみの いろ'], ['face', 'かおの かたち'], ['eyes', 'め'], ['skin', 'はだの いろ'],
+  ['top', 'ふく'], ['bottom', 'した'], ['bottomColor', 'したの いろ'], ['hat', 'ぼうし'], ['hatColor', 'ぼうしの いろ'],
+];
+function renderDress() {
+  const a = save.avatar;
+  $('dress-img').src = avImg(a);
+  $('dress-opts').innerHTML = DRESS_GROUPS.map(([k, label]) => {
+    const opts = AV_OPTS[k];
+    const chips = opts.map(o => Array.isArray(o)
+      ? `<button class="${a[k] === o[0] ? 'on' : ''}" data-k="${k}" data-v="${o[0]}">${o[1]}</button>`
+      : `<button class="sw ${a[k] === o ? 'on' : ''}" data-k="${k}" data-v="${o}" style="background:${o}" aria-label="いろ"></button>`).join('');
+    return `<div class="dgroup"><b>${label}</b><div class="dchips">${chips}</div></div>`;
+  }).join('');
+  $('dress-opts').querySelectorAll('button').forEach(b => b.onclick = () => {
+    save.avatar = { ...save.avatar, [b.dataset.k]: b.dataset.v }; store(); snd('tap');
+    const y = $('dress').scrollTop; renderDress(); $('dress').scrollTop = y;
+  });
+}
+$('dress-btn').onclick = () => { snd('tap'); renderDress(); show('dress'); speak('すきな ふくを えらんでね'); };
+$('home-avatar').onclick = () => { snd('tap'); renderDress(); show('dress'); };
+$('dress-back').onclick = () => { renderHome(); show('home'); };
+
+// =========================================================
+// ▼▼ まとめて とれた ときの けっか（あみ・しおひがり・もぐり・いけす）▼▼
+// =========================================================
+let multiList = [];
+function recordCatch(k, size) {
+  const rec = save.zukan[k], isNew = !rec;
+  if (!rec) save.zukan[k] = { n: 0, max: 0, first: Date.now() };
+  const isRec = rec && size > rec.max;
+  save.zukan[k].n++; save.zukan[k].max = Math.max(save.zukan[k].max, size);
+  save.total = (save.total || 0) + 1;
+  return { isNew, isRec };
+}
+function showMulti(items, title, onClose) {
+  const month = NOW().getMonth() + 1;
+  const before = Object.keys(save.zukan).length;
+  multiList = items.map(it => {
+    const sp = SP_BY[it.k];
+    const r = recordCatch(it.k, it.size);
+    return { ...it, ...r, price: priceOf(sp, it.size, month), name: displayName(sp, it.size) };
+  });
+  store();
+  const after = Object.keys(save.zukan).length;
+  const friends = PARTNERS.filter(p => p.need > before && p.need <= after);
+  const sum = multiList.reduce((s, m) => s + m.price, 0), room = boxCap() - save.box.length;
+  const news = multiList.filter(m => m.isNew).map(m => m.name);
+  $('multi-box').innerHTML = `<p class="res-name">${multiList.length ? title : 'なにも とれなかった…'}</p>
+    ${multiList.length ? `<p class="msum">${multiList.length}こ とれた！</p>` : ''}
+    ${friends.map(f => `<div class="friend"><img src="${getPokemonImageUrl(f.id)}" alt=""><span>ずかん ${f.need}しゅ たっせい！<br><b>${f.n}</b>が なかまに なった！</span></div>`).join('')}
+    <div class="mgrid">${multiList.map(m => `<div class="mi">${m.isNew ? '<span class="nw">NEW</span>' : ''}<img src="${fishImg(m.k)}" alt="">${m.name}<small>${m.size}cm・${m.price}えん</small></div>`).join('')}</div>
+    ${multiList.length ? `<div class="res-actions">
+      <button class="btn green" id="m-keep" ${room <= 0 ? 'disabled' : ''}>🧊 もちかえる<small>${room >= multiList.length ? `${save.box.length}/${boxCap()}` : `${Math.max(0, room)}こ だけ（のこりは うる）`}</small></button>
+      <button class="btn sun" id="m-sell">💰 ぜんぶ うる<small>${sum.toLocaleString()}えん</small></button>
+      <button class="btn" id="m-free">🌊 にがす<small>またね〜</small></button></div>` : '<button class="btn" id="m-free">とじる</button>'}`;
+  $('multi').classList.add('show');
+  if (multiList.length) { snd('catch'); confetti(); }
+  const p = partnerOf(); playCry(p.id, 0.35);
+  setTimeout(() => speak(multiList.length ? `${multiList.length}こ とれたよ！${news.length ? ` はじめての ${news.join('と ')}！` : ''}${friends.map(f => ` ${f.n}が なかまに なったよ！`).join('')}` : 'ざんねん、なにも とれなかったね'), 300);
+  const close = (msg) => { $('multi').classList.remove('show'); if (msg) toast(msg); updateMoney(); if (onClose) onClose(); };
+  const k = $('m-keep'), s = $('m-sell');
+  if (k) k.onclick = () => {
+    let sold = 0;
+    multiList.forEach(m => { if (save.box.length < boxCap()) save.box.push({ k: m.k, size: m.size, price: m.price }); else sold += m.price; });
+    if (sold) save.money += sold;
+    store(); snd('coin'); close(sold ? `クーラーに いれて、のこりは ${sold}えんで うったよ` : 'クーラーに いれたよ');
+  };
+  if (s) s.onclick = () => { setMoney(save.money + sum); snd('coin'); close(`${sum.toLocaleString()}えんで うれた！`); };
+  $('m-free').onclick = () => close(multiList.length ? 'ばいばい〜' : '');
+}
+function randSize(k, area) { const [mn, mx] = sizeRange(SP_BY[k], area); return Math.round((mn + (mx - mn) * Math.pow(Math.random(), 1.5)) * 10) / 10; }
+function pickWeighted(pool) {
+  const month = NOW().getMonth() + 1, night = timeOfDay(NOW().getHours()) === 'よる';
+  const tot = pool.reduce((s, sp) => s + weightOf(sp, month, night), 0);
+  let r = Math.random() * tot;
+  for (const s of pool) { r -= weightOf(s, month, night); if (r <= 0) return s; }
+  return pool[0];
+}
+
+// =========================================================
+// ▼▼ あみ（つりの がめんを つかう）▼▼
+// =========================================================
+function spawnSchool(g) {
+  const sp = pickWeighted(poolFor(G.area, 'ami'));
+  const n = 5 + Math.floor(Math.random() * 7), cx = rand(0.4, 0.95), cd = rand(0.1, 0.45);
+  const school = { sp, cx, cd, vx: rand(-0.05, 0.05) || 0.03, t: 0 };
+  for (let i = 0; i < n; i++) {
+    const size = randSize(sp.k, G.area);
+    const f = { sp, size, school, ox: rand(-0.08, 0.08), od: rand(-0.06, 0.06), x: cx, d: cd, dir: -1, st: 'swim', t: Math.random() * 10, cool: 0 };
+    const el = document.createElement('div'); el.className = 'fish-sprite';
+    f.w = fishPx(g, sp, size); el.style.width = f.w + 'px'; el.style.height = f.w / 2 + 'px';
+    el.innerHTML = `<img src="${fishImg(sp.k, true)}" alt="" style="opacity:0.55">`;
+    $('fish-layer').appendChild(el); f.el = el; G.fishes.push(f);
+  }
+}
+function updateSchools(g, dt) {
+  const schools = [...new Set(G.fishes.map(f => f.school))];
+  schools.forEach(s => {
+    s.t += dt; s.cx += s.vx * dt; s.cd += Math.sin(s.t * 0.7) * 0.01 * dt;
+    if (s.cx < 0.3 || s.cx > 1.0) s.vx *= -1;
+    s.cd = clamp(s.cd, 0.06, 0.6);
+  });
+  G.fishes.forEach(f => {
+    if (f.st === 'net') return;
+    f.t += dt; f.x = f.school.cx + f.ox + Math.sin(f.t * 1.3) * 0.01; f.d = f.school.cd + f.od + Math.cos(f.t) * 0.01;
+    f.dir = f.school.vx > 0 ? 1 : -1; placeFish(g, f);
+  });
+  if (schools.length < 3 && G.phase !== 'netpull') spawnSchool(g);
+}
+function netTap(e) {
+  if (!G.on || G.method !== 'ami' || G.phase !== 'netaim') return;
+  const g = geo(), r = $('scene').getBoundingClientRect();
+  const x = (e.clientX - r.left) / g.W, y = e.clientY - r.top;
+  if (y < g.surf - 10) return;
+  G.net = { x: clamp(x, 0.3, 0.98), d: 0, t: 0, pulls: 0, need: save.easy ? 4 : 6 };
+  G.phase = 'netfly'; snd('cast');
+  setAct('…', ''); $('act').classList.add('hide');
+}
+$('scene').addEventListener('pointerdown', netTap);
+function updateNet(g, dt) {
+  const N = G.net; if (!N) return;
+  if (G.phase === 'netfly') { N.t += dt / 0.6; if (N.t >= 1) { G.phase = 'netsink'; N.t = 0; splashAt(N.x * g.W, g.surf, true); snd('splash'); } }
+  else if (G.phase === 'netsink') {
+    N.d = Math.min(0.55, N.d + dt * 0.5);
+    if (N.d >= 0.55) {
+      N.caught = G.fishes.filter(f => Math.abs(f.x - N.x) < 0.13 && f.d < N.d + 0.05);
+      N.caught.forEach(f => { f.st = 'net'; });
+      G.phase = 'netpull'; setAct('ひっぱる！', '', true); $('act').classList.remove('hide');
+      say(N.caught.length ? 'はいった！ ひっぱって！' : 'ひっぱって あげてみよう！');
+    }
+  } else if (G.phase === 'netpull') {
+    N.caught.forEach((f, i) => { f.x = N.x + Math.sin(i * 2.3) * 0.06; f.d = N.d - 0.03 + Math.cos(i * 1.7) * 0.03; f.t += dt; placeFish(g, f, ` rotate(${Math.sin(G.t * 12 + i) * 12}deg)`); });
+  }
+}
+function netPull() {
+  const N = G.net; N.pulls++; N.d = Math.max(0, 0.55 * (1 - N.pulls / N.need)); snd('swish'); vib(40);
+  if (N.pulls >= N.need) {
+    const items = N.caught.map(f => ({ k: f.sp.k, size: f.size }));
+    N.caught.forEach(f => removeFish(f));
+    G.net = null; G.phase = 'idle'; $('act').classList.add('hide');
+    const g = geo(); splashAt(N.x * g.W, g.surf, true);
+    showMulti(items, 'あみを あげた！', () => { if (G.on) { G.phase = 'idle'; setAct('なげる', 'blue'); $('act').classList.remove('hide'); } });
+  }
+}
+function drawNet(g) {
+  const N = G.net; if (!N) return '';
+  if (G.phase === 'netfly') { const x = (0.2 + (N.x - 0.2) * N.t) * g.W, y = g.surf - Math.sin(N.t * Math.PI) * g.H * 0.18; return `<circle cx="${x}" cy="${y}" r="${10 + N.t * 20}" fill="none" stroke="#FFF" stroke-width="2" stroke-dasharray="4 4"/>`; }
+  const cx = N.x * g.W, top = g.surf, bot = dpx(g, N.d), w = g.W * 0.13;
+  let mesh = ''; for (let i = -4; i <= 4; i++) mesh += `<line x1="${cx + i * w / 4}" y1="${top}" x2="${cx + i * w / 4 * 0.8}" y2="${bot}" />`;
+  for (let j = 1; j <= 5; j++) { const y = top + (bot - top) * j / 5; mesh += `<line x1="${cx - w * (1 - j * 0.04)}" y1="${y}" x2="${cx + w * (1 - j * 0.04)}" y2="${y}"/>`; }
+  return `<path d="M${g.W * 0.12},${g.surf - g.H * 0.08} Q${(cx + g.W * 0.12) / 2},${g.surf} ${cx},${top}" stroke="#FFF" stroke-width="2" fill="none"/><path d="M${cx - w},${top} L${cx + w},${top} L${cx + w * 0.8},${bot} Q${cx},${bot + 20} ${cx - w * 0.8},${bot} Z" fill="rgba(255,255,255,0.12)" stroke="#FFF" stroke-width="2"/><g stroke="#FFF" stroke-width="1" opacity="0.6">${mesh}</g>`;
+}
+
+// =========================================================
+// ▼▼ しおひがり ▼▼
+// =========================================================
+const D = { on: false };
+function startDig(area) {
+  const pool = poolFor(area, 'hori');
+  Object.assign(D, { on: true, area, pool, holes: [], got: [], time: save.easy ? 75 : 60, left: save.easy ? 75 : 60, salt: false, spawnT: 0 });
+  show('dig');
+  const f = $('dig-field');
+  let peb = ''; for (let i = 0; i < 40; i++) peb += `<i class="pebble" style="left:${Math.random() * 100}%;top:${20 + Math.random() * 80}%;width:${4 + Math.random() * 8}px;height:${3 + Math.random() * 6}px"></i>`;
+  f.innerHTML = `<div class="sea-edge" id="sea-edge" style="height:12%"></div>${peb}<img class="diver" id="dig-av" src="${avImg(myAvatar())}" style="right:3%;bottom:3%;height:22%"><img class="diver" src="${getPokemonImageUrl(partnerOf().id)}" style="right:20%;bottom:4%;height:11%">`;
+  $('dig-count').textContent = '🪣 0'; $('salt-btn').classList.remove('salt-on');
+  $('salt-btn').style.display = pool.some(s => s.k === 'mategai') ? '' : 'none';
+  for (let i = 0; i < 6; i++) addHole();
+  say2('あなを さがして タップで ほってね！');
+  D.last = performance.now(); requestAnimationFrame(digLoop);
+}
+function say2(t) { toast(t); speak(t); }
+function addHole() {
+  const sp = Math.random() < 0.15 ? null : pickWeighted(D.pool);
+  const mate = sp && sp.k === 'mategai';
+  const h = document.createElement('button'); h.className = 'hole' + (mate ? ' mate' : '');
+  const x = rand(8, 88), y = rand(30, 88);
+  h.style.left = x + '%'; h.style.top = y + '%';
+  const hole = { el: h, sp, mate, digs: 0, need: save.easy ? 2 : 3, state: 'hide' };
+  h.onpointerdown = (e) => { e.preventDefault(); tapHole(hole, e); };
+  $('dig-field').appendChild(h); D.holes.push(hole);
+  h.animate([{ transform: 'scale(0)' }, { transform: 'scale(1)' }], { duration: 300 });
+}
+function tapHole(hole, e) {
+  if (!D.on || hole.state === 'done') return;
+  if (hole.mate) {
+    if (hole.state === 'up') { collectHole(hole, e); return; }
+    if (!D.salt) { burst(e.clientX, e.clientY, { count: 5, spread: 30, shapes: [''], colors: ['#C8A870'] }); toast('ほそながい あなは 🧂しお を いれてみて！'); return; }
+    hole.state = 'wait'; D.salt = false; $('salt-btn').classList.remove('salt-on');
+    burst(e.clientX, e.clientY, { count: 10, spread: 30, shapes: [''], colors: ['#FFFFFF', '#EEEEEE'] }); snd('swish');
+    setTimeout(() => {
+      if (!D.on || hole.state !== 'wait') return;
+      hole.state = 'up'; hole.el.innerHTML = `<img src="${fishImg('mategai')}" alt="">`; snd('hop'); say2('でた！ いまだ タップ！');
+      setTimeout(() => { if (hole.state === 'up') { hole.state = 'hide'; hole.el.innerHTML = ''; toast('ひっこんじゃった… もういちど しおを いれてね'); } }, save.easy ? 2600 : 1600);
+    }, 900);
+    return;
+  }
+  hole.digs++; snd('swish'); vib(20);
+  burst(e.clientX, e.clientY, { count: 8, spread: 40, shapes: [''], colors: ['#C8A870', '#B89860', '#E2C690'] });
+  hole.el.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.25)' }, { transform: 'scale(1)' }], { duration: 200 });
+  if (hole.digs >= hole.need) {
+    if (!hole.sp) { hole.state = 'done'; toast('からっぽ…'); hole.el.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 400 }).onfinish = () => hole.el.remove(); D.holes = D.holes.filter(x => x !== hole); setTimeout(addHole, 600); return; }
+    hole.el.innerHTML = `<img src="${fishImg(hole.sp.k)}" alt="">`;
+    collectHole(hole, e);
+  }
+}
+function collectHole(hole, e) {
+  hole.state = 'done';
+  const size = randSize(hole.sp.k, D.area);
+  D.got.push({ k: hole.sp.k, size });
+  $('dig-count').textContent = `🪣 ${D.got.length}`;
+  snd('coin'); burst(e.clientX, e.clientY - 20, { count: 8, spread: 50 });
+  if (D.got.length === 1 || Math.random() < 0.3) speak(hole.sp.n + '！');
+  hole.el.animate([{ transform: 'translateY(0) scale(1)' }, { transform: 'translateY(-60px) scale(1.3)', opacity: 1 }, { transform: 'translateY(-90px) scale(0.6)', opacity: 0 }], { duration: 700, easing: 'ease-out' }).onfinish = () => hole.el.remove();
+  D.holes = D.holes.filter(x => x !== hole);
+  setTimeout(() => { if (D.on) addHole(); }, 500);
+}
+$('salt-btn').onpointerdown = (e) => { e.preventDefault(); D.salt = !D.salt; $('salt-btn').classList.toggle('salt-on', D.salt); snd('tap'); if (D.salt) toast('ほそながい あなを タップ！'); };
+function digLoop(now) {
+  if (!D.on) return;
+  const dt = Math.min(0.05, (now - D.last) / 1000); D.last = now;
+  D.left -= dt;
+  const k = 1 - D.left / D.time;
+  $('tide-bar').style.width = (100 - k * 100) + '%';
+  $('sea-edge').style.height = (12 + k * 20) + '%';
+  D.spawnT -= dt; if (D.spawnT <= 0 && D.holes.length < 8) { D.spawnT = 2.5; addHole(); }
+  if (D.left <= 0) { endDig(); return; }
+  requestAnimationFrame(digLoop);
+}
+function endDig() {
+  D.on = false;
+  showMulti(D.got, 'しおひがり おしまい！', () => { renderMap(); show('map'); });
+}
+$('dig-back').onclick = () => { if (D.got.length) endDig(); else { D.on = false; renderMap(); show('map'); } };
+
+// =========================================================
+// ▼▼ もぐり ▼▼
+// =========================================================
+const V = { on: false };
+const ROCK_SVG = (c) => `<svg viewBox="0 0 100 60" preserveAspectRatio="none"><path d="M4,58 C0,30 20,6 48,4 C78,2 98,26 96,58 Z" fill="${c}" stroke="rgba(0,0,0,0.25)" stroke-width="2"/><path d="M20,30 Q40,18 60,22" stroke="rgba(255,255,255,0.25)" stroke-width="4" fill="none"/></svg>`;
+function startDive(area) {
+  const pool = poolFor(area, 'moguri');
+  Object.assign(V, { on: true, area, pool, got: [], time: save.easy ? 60 : 45, left: save.easy ? 60 : 45, last: performance.now() });
+  show('dive');
+  const f = $('dive-field');
+  let rays = `<svg style="position:absolute;inset:0" viewBox="0 0 100 100" preserveAspectRatio="none" width="100%" height="100%"><path d="M15 0 L25 0 L45 100 L28 100 Z M55 0 L62 0 L80 100 L66 100 Z" fill="#FFF" opacity="0.08"/></svg>`;
+  let weeds = ''; for (let i = 0; i < 8; i++) weeds += `<div class="weed" style="left:${i * 12 + Math.random() * 6}%;animation-delay:${-Math.random() * 3}s">${weedSvg(area === 'hokkai' ? 'kelp' : 'weed', 80 + Math.random() * 90)}</div>`;
+  let bubbles = ''; for (let i = 0; i < 10; i++) bubbles += `<div class="bubble-dot" style="left:${Math.random() * 100}%;bottom:${Math.random() * 30}%;animation-duration:${4 + Math.random() * 4}s;animation-delay:${-Math.random() * 6}s"></div>`;
+  f.innerHTML = `${rays}<div class="seabed" style="height:22%">${bedSvg(area === 'kawa' ? 'seto' : area)}</div>${weeds}${bubbles}<img class="diver" id="dive-av" src="${avImg(myAvatar())}" style="left:4%;top:12%;height:20%;transform:rotate(-70deg)"><img class="diver" src="${getPokemonImageUrl(partnerOf().id)}" style="left:22%;top:16%;height:10%">`;
+  // いわ
+  const spots = [];
+  for (let i = 0; i < 9; i++) spots.push({ x: 6 + (i % 5) * 19 + rand(-3, 3), y: i < 5 ? rand(74, 84) : rand(52, 64) });
+  spots.forEach((s, i) => {
+    const rock = document.createElement('button'); rock.className = 'rock';
+    const w = rand(14, 22);
+    rock.style.cssText = `left:${s.x}%;top:${s.y}%;width:${w}vmin;height:${w * 0.6}vmin;`;
+    rock.innerHTML = ROCK_SVG(pick(['#6E6A60', '#7E786C', '#5E5A52', '#8A8274']));
+    const hidden = Math.random() < 0.75 ? pickWeighted(pool) : null;
+    const R = { el: rock, sp: hidden, open: false, x: s.x, y: s.y, w };
+    rock.onpointerdown = (e) => { e.preventDefault(); flipRock(R, e); };
+    f.appendChild(rock);
+    // いわの うえに みえている もの（サザエ・ウニ・カキ）
+    if (Math.random() < 0.5) {
+      const vis = pickWeighted(pool.filter(p => ['sazae', 'murasakiuni', 'bafununi', 'kaki'].includes(p.k)).length ? pool.filter(p => ['sazae', 'murasakiuni', 'bafununi', 'kaki'].includes(p.k)) : pool);
+      addDiveItem(vis, s.x, s.y - 9, w * 0.95);
+    }
+  });
+  $('dive-count').textContent = '🧺 0';
+  say2('いわを タップして めくってみよう！');
+  requestAnimationFrame(diveLoop);
+}
+function addDiveItem(sp, xPct, yPct, wv, pulls) {
+  const it = document.createElement('button'); it.className = 'item-in';
+  it.style.cssText = `left:${xPct}%;top:${yPct}%;width:${Math.max(16, wv)}vmin;z-index:5;`;
+  it.innerHTML = `<img src="${fishImg(sp.k)}" alt="">`;
+  let need = sp.k === 'iseebi' ? (save.easy ? 2 : 4) : 1;
+  it.onpointerdown = (e) => {
+    e.preventDefault(); if (!V.on) return;
+    need--; vib(20);
+    if (need > 0) { snd('swish'); it.animate([{ transform: 'translateX(0)' }, { transform: 'translateX(-10px)' }, { transform: 'translateX(8px)' }, { transform: 'translateX(0)' }], { duration: 250 }); toast('もっと ひっぱって！'); return; }
+    const size = randSize(sp.k, V.area);
+    V.got.push({ k: sp.k, size }); $('dive-count').textContent = `🧺 ${V.got.length}`;
+    snd('coin'); burst(e.clientX, e.clientY, { count: 8, spread: 50 });
+    if (V.got.length === 1 || Math.random() < 0.35) speak(sp.n + '！');
+    it.onpointerdown = null;
+    it.animate([{ transform: 'translateY(0)', opacity: 1 }, { transform: 'translateY(-120px) scale(0.5)', opacity: 0 }], { duration: 600, easing: 'ease-in' }).onfinish = () => it.remove();
+  };
+  $('dive-field').appendChild(it);
+  it.animate([{ transform: 'scale(0)' }, { transform: 'scale(1)' }], { duration: 300 });
+}
+function flipRock(R, e) {
+  if (!V.on || R.open) return;
+  R.open = true; snd('swish');
+  R.el.animate([{ transform: 'rotate(0)' }, { transform: 'rotate(-35deg) translateX(-20%)' }], { duration: 400, fill: 'forwards', easing: 'ease-out' });
+  burst(e.clientX, e.clientY, { count: 6, spread: 40, shapes: [''], colors: ['#D8C8A0', '#FFFFFF'] });
+  if (R.sp) setTimeout(() => addDiveItem(R.sp, R.x - 2, R.y - 2, R.w * 1.05), 250);
+  else toast('なにも いなかった');
+}
+function diveLoop(now) {
+  if (!V.on) return;
+  const dt = Math.min(0.05, (now - V.last) / 1000); V.last = now;
+  V.left -= dt;
+  $('breath-bar').style.width = Math.max(0, V.left / V.time * 100) + '%';
+  if (V.left < 8 && !V.warned) { V.warned = true; say2('いきが くるしい！ もうすぐ あがるよ'); }
+  if (V.left <= 0) { endDive(); return; }
+  requestAnimationFrame(diveLoop);
+}
+function endDive() { V.on = false; V.warned = false; showMulti(V.got, 'ぷはーっ！ あがったよ', () => { renderMap(); show('map'); }); }
+$('dive-back').onclick = () => { if (V.got.length) endDive(); else { V.on = false; renderMap(); show('map'); } };
+
+// =========================================================
+// ▼▼ いけす（ほんとうの じかんで そだつ）▼▼
+// =========================================================
+let farmTimer = 0;
+function renderFarm() {
+  updateMoney(); $('farm-money').textContent = `💰 ${save.money.toLocaleString()}えん`;
+  const pens = save.pens || 0;
+  if (!pens) { $('pens').innerHTML = `<div class="pen locked"><b>🔒 いけすが ないよ</b><span>おみせの「どうぐ」で いけすを かってね</span></div>`; return; }
+  const now = Date.now();
+  $('pens').innerHTML = Array.from({ length: pens }, (_, i) => {
+    const p = (save.farm || [])[i];
+    if (!p) return `<div class="pen"><b>あいてる いけす</b><span style="font-weight:800">なにを そだてる？</span><button class="btn sun" data-seed="${i}">🐟 たねを いれる</button></div>`;
+    const F = FARM.find(x => x.k === p.k), sp = SP_BY[p.k];
+    const total = F.min * 60000, done = clamp((now - p.start + (p.boost || 0)) / total, 0, 1);
+    const leftMin = Math.ceil((1 - done) * total / 60000);
+    const canFeed = now - (p.fed || 0) > 60000;
+    return `<div class="pen"><b>${sp.n}</b><img class="f" src="${fishImg(p.k)}" alt="" style="width:${40 + done * 40}%">
+      <div class="pbar"><i style="width:${done * 100}%"></i></div>
+      ${done >= 1 ? `<button class="btn green" data-harvest="${i}">🎉 とる！（${F.yield}こ）</button>` : `<span style="font-weight:800">あと ${leftMin}ぷん</span><button class="btn" data-feed="${i}" ${canFeed ? '' : 'disabled'}>🍤 えさを あげる</button>`}</div>`;
+  }).join('');
+  $('pens').querySelectorAll('[data-seed]').forEach(b => b.onclick = () => openSeeds(+b.dataset.seed));
+  $('pens').querySelectorAll('[data-feed]').forEach(b => b.onclick = () => {
+    const p = save.farm[+b.dataset.feed], F = FARM.find(x => x.k === p.k);
+    p.fed = Date.now(); p.boost = (p.boost || 0) + F.min * 60000 * 0.15; store(); snd('nibble');
+    burst(b.getBoundingClientRect().left + 60, b.getBoundingClientRect().top, { count: 8, spread: 50, shapes: ['heart'] });
+    toast('もぐもぐ！ ちょっと はやく そだつよ'); renderFarm();
+  });
+  $('pens').querySelectorAll('[data-harvest]').forEach(b => b.onclick = () => {
+    const i = +b.dataset.harvest, p = save.farm[i], F = FARM.find(x => x.k === p.k);
+    save.farm[i] = null; store();
+    const items = Array.from({ length: F.yield }, () => { const sp = SP_BY[p.k], [mn, mx] = sp.sz; return { k: p.k, size: Math.round((mn + (mx - mn) * rand(0.5, 1)) * 10) / 10 }; });
+    showMulti(items, 'そだった！', () => renderFarm());
+  });
+}
+function openSeeds(i) {
+  const list = FARM.map((F, j) => { const sp = SP_BY[F.k]; return `<div class="item"><span class="ico"><img class="fishimg" src="${fishImg(F.k)}" alt=""></span><span class="txt">${sp.n}<small>${F.min}ぷんで ${F.yield}こ</small></span><button class="btn ${save.money >= F.cost ? 'sun' : ''}" data-j="${j}" ${save.money >= F.cost ? '' : 'disabled'}>${F.cost}えん</button></div>`; }).join('');
+  $('multi-box').innerHTML = `<p class="res-name">なにを そだてる？</p><div class="seed-list">${list}</div><button class="btn" id="seed-close">やめる</button>`;
+  $('multi').classList.add('show');
+  $('seed-close').onclick = () => $('multi').classList.remove('show');
+  $('multi-box').querySelectorAll('[data-j]').forEach(b => b.onclick = () => {
+    const F = FARM[+b.dataset.j];
+    save.money -= F.cost; save.farm = save.farm || []; save.farm[i] = { k: F.k, start: Date.now(), boost: 0, fed: 0 }; store(); snd('splash');
+    $('multi').classList.remove('show'); speak(`${SP_BY[F.k].n}を いれたよ！ おおきく なあれ`); renderFarm();
+  });
+}
+$('farm-btn').onclick = () => { snd('tap'); renderFarm(); show('farm'); clearInterval(farmTimer); farmTimer = setInterval(() => { if ($('farm').classList.contains('show') && !$('multi').classList.contains('show')) renderFarm(); }, 15000); };
+$('farm-back').onclick = () => { clearInterval(farmTimer); renderHome(); show('home'); };
+
 // ---------- スタート ----------
 function setMuted() {}
 // ==== EMOJI-3D START ====
 // もんだいの なかの えもじを、どの スマホでも おなじに みえる 3Dの え（Microsoft Fluent Emoji, MIT ライセンス）に おきかえる
 const EMOJI_BASE = 'https://raw.githubusercontent.com/microsoft/fluentui-emoji/1ffb34c752ecf5d402f04cfb4b392c77f57c54bc/';
-const EMOJI_IMG = {"❄️": "assets/Snowflake/3D/snowflake_3d.png","🏞️": "assets/National park/3D/national_park_3d.png","🏝️": "assets/Desert island/3D/desert_island_3d.png","🍽️": "assets/Fork and knife with plate/3D/fork_and_knife_with_plate_3d.png","⛴️": "assets/Ferry/3D/ferry_3d.png","⛄": "assets/Snowman without snow/3D/snowman_without_snow_3d.png","📖": "assets/Open book/3D/open_book_3d.png","🏪": "assets/Convenience store/3D/convenience_store_3d.png","🔄": "assets/Counterclockwise arrows button/3D/counterclockwise_arrows_button_3d.png","🏆": "assets/Trophy/3D/trophy_3d.png","🔈": "assets/Speaker low volume/3D/speaker_low_volume_3d.png","🌸": "assets/Cherry blossom/3D/cherry_blossom_3d.png","🔒": "assets/Locked/3D/locked_3d.png","🍁": "assets/Maple leaf/3D/maple_leaf_3d.png","❄": "assets/Snowflake/3D/snowflake_3d.png","🟠": "assets/Orange circle/3D/orange_circle_3d.png","✅": "assets/Check mark button/3D/check_mark_button_3d.png","💰": "assets/Money bag/3D/money_bag_3d.png","🌊": "assets/Water wave/3D/water_wave_3d.png","🏞": "assets/National park/3D/national_park_3d.png","🐳": "assets/Spouting whale/3D/spouting_whale_3d.png","👧": "assets/Girl/Default/3D/girl_3d_default.png","✨": "assets/Sparkles/3D/sparkles_3d.png","🎣": "assets/Fishing pole/3D/fishing_pole_3d.png","🌻": "assets/Sunflower/3D/sunflower_3d.png","🏝": "assets/Desert island/3D/desert_island_3d.png","🍽": "assets/Fork and knife with plate/3D/fork_and_knife_with_plate_3d.png","🦑": "assets/Squid/3D/squid_3d.png","🔇": "assets/Muted speaker/3D/muted_speaker_3d.png","⛴": "assets/Ferry/3D/ferry_3d.png","🧊": "assets/Ice/3D/ice_3d.png","🐟": "assets/Fish/3D/fish_3d.png"};
+const EMOJI_IMG = {"❄️": "assets/Snowflake/3D/snowflake_3d.png","🏞️": "assets/National park/3D/national_park_3d.png","🏝️": "assets/Desert island/3D/desert_island_3d.png","🍽️": "assets/Fork and knife with plate/3D/fork_and_knife_with_plate_3d.png","⛴️": "assets/Ferry/3D/ferry_3d.png","🕸️": "assets/Spider web/3D/spider_web_3d.png","⛄": "assets/Snowman without snow/3D/snowman_without_snow_3d.png","📖": "assets/Open book/3D/open_book_3d.png","👕": "assets/T-shirt/3D/t-shirt_3d.png","🏪": "assets/Convenience store/3D/convenience_store_3d.png","🔄": "assets/Counterclockwise arrows button/3D/counterclockwise_arrows_button_3d.png","🏆": "assets/Trophy/3D/trophy_3d.png","🔈": "assets/Speaker low volume/3D/speaker_low_volume_3d.png","🍤": "assets/Fried shrimp/3D/fried_shrimp_3d.png","🎉": "assets/Party popper/3D/party_popper_3d.png","🌸": "assets/Cherry blossom/3D/cherry_blossom_3d.png","🔒": "assets/Locked/3D/locked_3d.png","🍁": "assets/Maple leaf/3D/maple_leaf_3d.png","🐚": "assets/Spiral shell/3D/spiral_shell_3d.png","❄": "assets/Snowflake/3D/snowflake_3d.png","🟠": "assets/Orange circle/3D/orange_circle_3d.png","✅": "assets/Check mark button/3D/check_mark_button_3d.png","🧺": "assets/Basket/3D/basket_3d.png","💰": "assets/Money bag/3D/money_bag_3d.png","🌊": "assets/Water wave/3D/water_wave_3d.png","🏞": "assets/National park/3D/national_park_3d.png","🐳": "assets/Spouting whale/3D/spouting_whale_3d.png","👧": "assets/Girl/Default/3D/girl_3d_default.png","✨": "assets/Sparkles/3D/sparkles_3d.png","🎣": "assets/Fishing pole/3D/fishing_pole_3d.png","🌻": "assets/Sunflower/3D/sunflower_3d.png","🏝": "assets/Desert island/3D/desert_island_3d.png","🦪": "assets/Oyster/3D/oyster_3d.png","🧂": "assets/Salt/3D/salt_3d.png","🍽": "assets/Fork and knife with plate/3D/fork_and_knife_with_plate_3d.png","🪣": "assets/Bucket/3D/bucket_3d.png","🦑": "assets/Squid/3D/squid_3d.png","🔇": "assets/Muted speaker/3D/muted_speaker_3d.png","⛴": "assets/Ferry/3D/ferry_3d.png","🕸": "assets/Spider web/3D/spider_web_3d.png","🧊": "assets/Ice/3D/ice_3d.png","🤿": "assets/Diving mask/3D/diving_mask_3d.png","🐟": "assets/Fish/3D/fish_3d.png"};
 const EMOJI_RE = /(?:\p{Extended_Pictographic}|\p{Regional_Indicator}{2}|[0-9#*]\uFE0F?\u20E3)(?:\uFE0F|\u200D\p{Extended_Pictographic}|[\u{1F3FB}-\u{1F3FF}])*/gu;
 function emojiSrc(e) {
   const p = EMOJI_IMG[e] || EMOJI_IMG[e.replace(/\uFE0F/g, '')] || EMOJI_IMG[e + '\uFE0F'];
