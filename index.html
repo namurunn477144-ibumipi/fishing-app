@@ -415,6 +415,7 @@
     .piece.fried img { width: 100%; filter: sepia(1) saturate(2) brightness(0.9); pointer-events: none; }
     .rack { position: relative; width: 80%; height: 6rem; border-radius: 1rem; background: repeating-linear-gradient(90deg, #C8CED4 0 4px, transparent 4px 18px), repeating-linear-gradient(0deg, #C8CED4 0 4px, transparent 4px 18px), #F4F6F8; display: flex; align-items: flex-end; justify-content: center; font-weight: 900; color: #9AA2AA; }
     .onrack { position: absolute; bottom: 0.5rem; width: 28%; filter: sepia(1) saturate(2) brightness(0.9); }
+    .snd-row { border: none; width: 100%; text-align: left; font-family: inherit; color: inherit; cursor: pointer; }
     /* 3Dの えもじ */
     .emo { display: inline-block; width: 1.2em; height: 1.2em; object-fit: contain; vertical-align: -0.25em; -webkit-user-drag: none; }
     .question-emoji .emo, .opt-emoji .emo { width: 1.1em; height: 1.1em; vertical-align: middle; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.12)); }
@@ -1358,7 +1359,7 @@ function stopSpeech() {
 
 // parts: [{ text: "...", lang: "en" | "ja", pauseAfter: ミリびょう }]
 function speakSequence(parts) {
-  if (!hasSpeech || isMuted) return;
+  if (!hasSpeech || !voiceOn) return;
   const wasBusy = window.speechSynthesis.speaking || window.speechSynthesis.pending;
   stopSpeech();
   const token = speechToken;
@@ -1405,6 +1406,9 @@ document.addEventListener('click', unlockSpeech, true);
 
 const APP_ID = 'fishing';
 let isMuted = loadProgress(APP_ID + '-muted') === true;
+// おとの せってい（むかしの「おとを けす」は ぜんぶ オフ として ひきつぐ）
+const _pref = (k) => { const v = loadProgress('fishing-' + k); return v === null ? !isMuted : v === true; };
+let voiceOn = _pref('voice'), sfxOn = _pref('sfx'), bgmOn = _pref('bgm');
 // すすみぐあいの ほぞん
 function saveProgress(key, data) { try { localStorage.setItem(key, JSON.stringify(data)); } catch (e) {} }
 function loadProgress(key) { try { const s = localStorage.getItem(key); return s ? JSON.parse(s) : null; } catch (e) { return null; } }
@@ -1711,14 +1715,14 @@ function fishImg(k, shadow) {
 }
 function getPokemonImageUrl(id) { return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/${id}.gif`; }
 function playCry(id, volume = 0.45) {
-  if (isMuted) return;
+  if (!sfxOn) return;
   try { const a = new Audio(`https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/${id}.ogg`); a.volume = volume; a.play().catch(() => {}); } catch (e) {}
 }
 
 // ---------- こうかおん ----------
 let actx = null;
 function snd(type) {
-  if (isMuted) return;
+  if (!sfxOn) return;
   try {
     actx = actx || new (window.AudioContext || window.webkitAudioContext)();
     if (actx.state === 'suspended') actx.resume();
@@ -1768,6 +1772,7 @@ function speak(text) { speakText(text, 'ja'); }
 function show(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.toggle('show', s.id === id));
   if (id !== 'fish') stopLoop();
+  if (typeof bgmPlay === 'function') bgmPlay(bgmFor(id));
 }
 
 // ---------- タイトル ----------
@@ -1793,7 +1798,7 @@ function renderHome() {
   const n = Object.keys(save.zukan).length;
   $('home-stats').innerHTML = `<span class="chip">📖 ずかん ${n}/${SPECIES.length}</span><span class="chip">🧊 クーラー ${save.box.length}/${boxCap()}</span><span class="chip">🎣 ${RODS[save.rod].n}</span>`;
   $('easy-sw').classList.toggle('on', !!save.easy);
-  $('mute-btn').textContent = isMuted ? '🔇 おと なし' : '🔈 おと あり';
+  $('mute-btn').textContent = (bgmOn || sfxOn || voiceOn) ? '🔊 おと' : '🔇 おと なし';
   renderTank(); renderHarborDeco();
 }
 $('home-back').onclick = () => { renderTitle(); show('title'); };
@@ -1806,7 +1811,7 @@ $('go-btn').onclick = () => { snd('tap'); renderMap(); show('map'); };
 $('zukan-btn').onclick = () => { snd('tap'); zukanTab = 'all'; renderZukan(); show('zukan'); };
 $('shop-btn').onclick = () => { snd('tap'); shopTab = save.box.length ? 'sell' : 'tool'; renderShop(); show('shop'); };
 $('easy-btn').onclick = () => { save.easy = !save.easy; store(); renderHome(); toast(save.easy ? 'かんたん：いとが きれないよ' : 'ふつう：ひっぱりすぎると いとが きれるよ'); };
-$('mute-btn').onclick = () => { isMuted = !isMuted; saveProgress(APP_ID + '-muted', isMuted); if (isMuted) stopSpeech(); renderHome(); };
+$('mute-btn').onclick = () => soundSettings();
 $('partner-btn').onclick = () => openPicker();
 function openPicker() {
   const got = Object.keys(save.zukan).length;
@@ -2243,7 +2248,7 @@ function startFight(f) {
   const dist = 8 + (G.bx - 0.2) * 40 + S * 4;
   G.fight = { f, S, dist, max: dist, stam: 1, run: true, phaseT: 0.8, tension: 0, danger: 0, sayCd: 0, x0: f.x, d0: f.d, floatX: G.bx };
   G.sinkTo = 1;
-  G.phase = 'fight';
+  G.phase = 'fight'; bgmPlay('fight');
   $('act').classList.add('hide');
   $('fight').classList.add('show');
   splashAt(f.x * g.W, g.surf, true);
@@ -2298,14 +2303,14 @@ function lineBreak() {
   say('あ〜… ざんねん！ つぎは ひかれてる ときは まかないでね');
   F.f.st = 'flee'; F.f.cool = 5;
   $('fight').classList.remove('show');
-  G.phase = 'idle'; G.hookFish = null;
+  G.phase = 'idle'; G.hookFish = null; bgmPlay(bgmFor('fish'));
   setTimeout(() => { if (G.on) { setAct('なげる', 'blue'); $('act').classList.remove('hide'); } }, 1200);
 }
 function landFish() {
   const F = G.fight; G.fight = null;
   const g = geo(), f = F.f;
   $('fight').classList.remove('show');
-  G.phase = 'land';
+  G.phase = 'land'; bgmPlay(timeOfDay(curHour()) === 'よる' ? 'night' : 'sea');
   splashAt(f.x * g.W, g.surf, true); snd('splash');
   f.el.querySelector('img').src = fishImg(f.sp.k); f.el.querySelector('img').style.opacity = 1;
   const x0 = f.x * g.W - f.w / 2, y0 = dpx(g, f.d) - f.w / 4;
@@ -3599,12 +3604,127 @@ $('bk-file').onchange = async (e) => {
   e.target.value = '';
 };
 
+// =========================================================
+// ▼▼ BGM（ブラウザの なかで つくる オリジナル きょく）▼▼
+//   1きょく = 4しょうせつ（8ぶおんぷ × 32）を くりかえす
+// =========================================================
+const SONGS = {
+  home: { bpm: 100, lead: 'triangle', chords: [[48, 52, 55], [43, 47, 50], [45, 48, 52], [41, 45, 48]], bass: 'q',
+    mel: [[0, 72, 2], [2, 76, 2], [4, 79, 3], [7, 76, 1], [8, 74, 2], [10, 79, 2], [12, 77, 2], [14, 76, 2], [16, 72, 2], [18, 76, 2], [20, 81, 3], [23, 79, 1], [24, 77, 2], [26, 76, 2], [28, 74, 4]] },
+  sea: { bpm: 76, lead: 'sine', chords: [[41, 45, 48], [38, 41, 45], [34, 38, 41], [36, 40, 43]], bass: 'h', waves: true,
+    mel: [[0, 72, 3], [3, 74, 1], [4, 77, 4], [8, 76, 2], [10, 74, 2], [12, 72, 4], [16, 70, 3], [19, 72, 1], [20, 74, 4], [24, 72, 2], [26, 70, 2], [28, 69, 4]] },
+  night: { bpm: 64, lead: 'bell', chords: [[45, 48, 52], [41, 45, 48], [48, 52, 55], [43, 47, 50]], bass: 'w',
+    mel: [[0, 76, 4], [6, 79, 2], [8, 77, 4], [14, 76, 2], [16, 72, 6], [24, 74, 4], [28, 71, 4]] },
+  cook: { bpm: 126, lead: 'square', chords: [[43, 47, 50], [48, 52, 55], [50, 54, 57], [43, 47, 50]], bass: 'e', drums: true,
+    mel: [[0, 79, 1], [1, 79, 1], [2, 83, 1], [4, 81, 1], [6, 79, 1], [8, 76, 1], [9, 76, 1], [10, 79, 1], [12, 81, 2], [14, 78, 2], [16, 74, 1], [17, 76, 1], [18, 78, 1], [19, 79, 1], [20, 81, 2], [22, 83, 2], [24, 79, 2], [26, 74, 2], [28, 79, 4]] },
+  fight: { bpm: 144, lead: 'square', chords: [[40, 43, 47], [36, 40, 43], [38, 42, 45], [35, 39, 42]], bass: 'e', drums: true,
+    mel: [[0, 76, 1], [1, 79, 1], [2, 83, 2], [4, 82, 1], [5, 83, 1], [6, 79, 2], [8, 76, 1], [9, 79, 1], [10, 84, 2], [12, 83, 2], [14, 81, 2], [16, 79, 1], [17, 81, 1], [18, 83, 2], [20, 86, 2], [22, 83, 2], [24, 82, 2], [26, 79, 2], [28, 78, 4]] },
+  dive: { bpm: 72, lead: 'none', chords: [[38, 41, 45], [45, 48, 52], [36, 40, 43], [43, 47, 50]], bass: 'w', arp: true, mel: [] },
+  beach: { bpm: 110, lead: 'triangle', chords: [[48, 52, 55], [41, 45, 48], [43, 47, 50], [48, 52, 55]], bass: 'q', pluck: true,
+    mel: [[0, 79, 2], [2, 77, 1], [3, 76, 1], [4, 74, 2], [6, 72, 2], [8, 77, 2], [10, 76, 1], [11, 74, 1], [12, 72, 4], [16, 76, 2], [18, 79, 2], [20, 81, 2], [22, 79, 2], [24, 77, 2], [26, 74, 2], [28, 72, 4]] },
+};
+const BGM = { song: null, step: 0, next: 0, timer: 0, gain: null };
+function audioCtx() {
+  actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+  return actx;
+}
+const mtof = (m) => 440 * Math.pow(2, (m - 69) / 12);
+function bgmNote(t, midi, dur, type, vol, opt = {}) {
+  const c = audioCtx(), o = c.createOscillator(), g = c.createGain();
+  o.type = type === 'bell' ? 'sine' : type; o.frequency.setValueAtTime(mtof(midi), t);
+  const a = opt.attack ?? 0.01, r = opt.release ?? Math.max(0.08, dur * 0.8);
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + a);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + a + r);
+  o.connect(g); g.connect(BGM.gain); o.start(t); o.stop(t + a + r + 0.05);
+  if (type === 'bell') { const o2 = c.createOscillator(), g2 = c.createGain(); o2.type = 'sine'; o2.frequency.setValueAtTime(mtof(midi) * 3.01, t); g2.gain.setValueAtTime(vol * 0.25, t); g2.gain.exponentialRampToValueAtTime(0.0001, t + r * 0.6); o2.connect(g2); g2.connect(BGM.gain); o2.start(t); o2.stop(t + r); }
+}
+function bgmNoise(t, dur, vol, freq, swell) {
+  const c = audioCtx(), len = Math.floor(c.sampleRate * dur), buf = c.createBuffer(1, len, c.sampleRate), d = buf.getChannelData(0);
+  for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+  const s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain();
+  f.type = 'lowpass'; f.frequency.value = freq; s.buffer = buf;
+  if (swell) { g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + dur * 0.45); g.gain.exponentialRampToValueAtTime(0.0001, t + dur); }
+  else { g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur); }
+  s.connect(f); f.connect(g); g.connect(BGM.gain); s.start(t); s.stop(t + dur);
+}
+function bgmSchedule() {
+  const c = audioCtx(), S = SONGS[BGM.song]; if (!S) return;
+  const st = 60 / S.bpm / 2;
+  while (BGM.next < c.currentTime + 0.35) {
+    const t = BGM.next, i = BGM.step % 32, ch = S.chords[Math.floor(i / 8)];
+    // コード（やわらかい パッド）
+    if (i % 8 === 0) ch.forEach(m => bgmNote(t, m + 12, st * 8, 'sine', 0.035, { attack: 0.25, release: st * 7 }));
+    // ベース
+    const bassHit = S.bass === 'e' ? true : S.bass === 'q' ? i % 2 === 0 : S.bass === 'h' ? i % 4 === 0 : i % 8 === 0;
+    if (bassHit) bgmNote(t, ch[0] - 12 + (S.bass === 'q' && i % 4 === 2 ? 7 : 0), st * (S.bass === 'w' ? 8 : 2), 'triangle', 0.09, { release: st * (S.bass === 'w' ? 6 : 1.6) });
+    // メロディ
+    S.mel.forEach(([s, m, l]) => { if (s === i) bgmNote(t, m, st * l, S.lead, S.lead === 'square' ? 0.03 : 0.06, { release: st * l * (S.lead === 'bell' ? 2.4 : 0.9) }); });
+    // アルペジオ・ポロン
+    if (S.arp) { const m = ch[[0, 1, 2, 1][i % 4]] + 24 + (i % 8 >= 4 ? 12 : 0); bgmNote(t, m, st * 3, 'sine', 0.035, { release: st * 4 }); }
+    if (S.pluck && i % 2 === 1) bgmNote(t, ch[(i >> 1) % 3] + 12, st, 'triangle', 0.035, { release: st * 0.9 });
+    // ドラム
+    if (S.drums) { bgmNoise(t, 0.04, i % 2 ? 0.02 : 0.035, 7000); if (i % 4 === 0) bgmNote(t, 36, 0.12, 'sine', 0.12, { release: 0.12 }); }
+    // なみの おと
+    if (S.waves && i % 16 === 0) bgmNoise(t, st * 14, 0.05, 700, true);
+    BGM.next += st; BGM.step++;
+  }
+}
+function bgmPlay(name) {
+  if (!bgmOn || !name) { bgmStop(); BGM.want = name; return; }
+  BGM.want = name;
+  if (BGM.song === name) return;
+  try {
+    const c = audioCtx();
+    if (c.state === 'suspended') c.resume();
+    bgmStop();
+    BGM.gain = c.createGain(); BGM.gain.gain.setValueAtTime(0.0001, c.currentTime); BGM.gain.gain.exponentialRampToValueAtTime(0.9, c.currentTime + 1.2);
+    BGM.gain.connect(c.destination);
+    BGM.song = name; BGM.step = 0; BGM.next = c.currentTime + 0.1;
+    BGM.timer = setInterval(bgmSchedule, 120); bgmSchedule();
+  } catch (e) {}
+}
+function bgmStop() {
+  clearInterval(BGM.timer); BGM.timer = 0;
+  if (BGM.gain) { const g = BGM.gain, c = audioCtx(); try { g.gain.cancelScheduledValues(c.currentTime); g.gain.setValueAtTime(g.gain.value, c.currentTime); g.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + 0.4); setTimeout(() => g.disconnect(), 600); } catch (e) {} }
+  BGM.gain = null; BGM.song = null;
+}
+// がめんに あわせて きょくを かえる
+function bgmFor(id) {
+  if (id === 'fish') return G.phase === 'fight' ? 'fight' : timeOfDay(curHour()) === 'よる' ? 'night' : 'sea';
+  if (id === 'kitchen' || id === 'cook') return 'cook';
+  if (id === 'dive') return 'dive';
+  if (id === 'dig') return 'beach';
+  return 'home';
+}
+document.addEventListener('visibilitychange', () => {
+  if (!actx) return;
+  if (document.hidden) actx.suspend(); else actx.resume();
+});
+// iPhone・Android は さいしょの タップで おとを ならせるように なる
+document.addEventListener('pointerdown', () => { if (bgmOn && BGM.want && !BGM.song) bgmPlay(BGM.want); if (actx && actx.state === 'suspended' && !document.hidden) actx.resume(); }, true);
+
+// ---------- おとの せってい（BGM・こうかおん・こえ）----------
+function soundSettings() {
+  const sw = (k, label, on) => `<button class="item snd-row" data-k="${k}"><span class="ico">${label[0]}</span><span class="txt">${label[1]}<small>${label[2]}</small></span><span class="switch ${on ? 'on' : ''}"><i></i></span></button>`;
+  $('multi-box').innerHTML = `<p class="res-name">おとの せってい</p><div class="shop-list">
+    ${sw('bgm', ['🎵', 'BGM', 'ばめんごとの おんがく'], bgmOn)}${sw('sfx', ['🔔', 'こうかおん', 'チャポン・カチカチ・なきごえ'], sfxOn)}${sw('voice', ['🗣️', 'こえ', 'なまえや セリフの よみあげ'], voiceOn)}</div><button class="btn primary" id="snd-close">とじる</button>`;
+  $('multi').classList.add('show');
+  $('multi-box').querySelectorAll('.snd-row').forEach(b => b.onclick = () => {
+    const k = b.dataset.k;
+    if (k === 'bgm') { bgmOn = !bgmOn; saveProgress('fishing-bgm', bgmOn); if (bgmOn) bgmPlay(BGM.want || 'home'); else bgmStop(); }
+    if (k === 'sfx') { sfxOn = !sfxOn; saveProgress('fishing-sfx', sfxOn); if (sfxOn) snd('coin'); }
+    if (k === 'voice') { voiceOn = !voiceOn; saveProgress('fishing-voice', voiceOn); if (voiceOn) speak('こえ、オン！'); else stopSpeech(); }
+    soundSettings(); renderHome();
+  });
+  $('snd-close').onclick = () => $('multi').classList.remove('show');
+}
+
 // ---------- スタート ----------
 function setMuted() {}
 // ==== EMOJI-3D START ====
 // もんだいの なかの えもじを、どの スマホでも おなじに みえる 3Dの え（Microsoft Fluent Emoji, MIT ライセンス）に おきかえる
 const EMOJI_BASE = 'https://raw.githubusercontent.com/microsoft/fluentui-emoji/1ffb34c752ecf5d402f04cfb4b392c77f57c54bc/';
-const EMOJI_IMG = {"♨️": "assets/Hot springs/3D/hot_springs_3d.png","❄️": "assets/Snowflake/3D/snowflake_3d.png","🛳️": "assets/Passenger ship/3D/passenger_ship_3d.png","🏞️": "assets/National park/3D/national_park_3d.png","🏝️": "assets/Desert island/3D/desert_island_3d.png","🛥️": "assets/Motor boat/3D/motor_boat_3d.png","🍽️": "assets/Fork and knife with plate/3D/fork_and_knife_with_plate_3d.png","⛴️": "assets/Ferry/3D/ferry_3d.png","🕸️": "assets/Spider web/3D/spider_web_3d.png","⛱️": "assets/Umbrella on ground/3D/umbrella_on_ground_3d.png","☀️": "assets/Sun/3D/sun_3d.png","⛄": "assets/Snowman without snow/3D/snowman_without_snow_3d.png","📖": "assets/Open book/3D/open_book_3d.png","🚢": "assets/Ship/3D/ship_3d.png","✊": "assets/Raised fist/Default/3D/raised_fist_3d_default.png","📅": "assets/Calendar/3D/calendar_3d.png","🍶": "assets/Sake/3D/sake_3d.png","👕": "assets/T-shirt/3D/t-shirt_3d.png","🍣": "assets/Sushi/3D/sushi_3d.png","🎏": "assets/Carp streamer/3D/carp_streamer_3d.png","🔪": "assets/Kitchen knife/3D/kitchen_knife_3d.png","🏪": "assets/Convenience store/3D/convenience_store_3d.png","🥚": "assets/Egg/3D/egg_3d.png","🔄": "assets/Counterclockwise arrows button/3D/counterclockwise_arrows_button_3d.png","🪸": "assets/Coral/3D/coral_3d.png","🌅": "assets/Sunrise/3D/sunrise_3d.png","🐠": "assets/Tropical fish/3D/tropical_fish_3d.png","🏆": "assets/Trophy/3D/trophy_3d.png","🔈": "assets/Speaker low volume/3D/speaker_low_volume_3d.png","🍤": "assets/Fried shrimp/3D/fried_shrimp_3d.png","🎡": "assets/Ferris wheel/3D/ferris_wheel_3d.png","🥣": "assets/Bowl with spoon/3D/bowl_with_spoon_3d.png","🗿": "assets/Moai/3D/moai_3d.png","🎉": "assets/Party popper/3D/party_popper_3d.png","🌸": "assets/Cherry blossom/3D/cherry_blossom_3d.png","🔒": "assets/Locked/3D/locked_3d.png","♨": "assets/Hot springs/3D/hot_springs_3d.png","🍁": "assets/Maple leaf/3D/maple_leaf_3d.png","📒": "assets/Ledger/3D/ledger_3d.png","🐚": "assets/Spiral shell/3D/spiral_shell_3d.png","🪁": "assets/Kite/3D/kite_3d.png","🛟": "assets/Ring buoy/3D/ring_buoy_3d.png","❄": "assets/Snowflake/3D/snowflake_3d.png","🟠": "assets/Orange circle/3D/orange_circle_3d.png","🛳": "assets/Passenger ship/3D/passenger_ship_3d.png","✅": "assets/Check mark button/3D/check_mark_button_3d.png","🧺": "assets/Basket/3D/basket_3d.png","💰": "assets/Money bag/3D/money_bag_3d.png","⚓": "assets/Anchor/3D/anchor_3d.png","🌊": "assets/Water wave/3D/water_wave_3d.png","🏮": "assets/Red paper lantern/3D/red_paper_lantern_3d.png","🏞": "assets/National park/3D/national_park_3d.png","⛵": "assets/Sailboat/3D/sailboat_3d.png","🐙": "assets/Octopus/3D/octopus_3d.png","😋": "assets/Face savoring food/3D/face_savoring_food_3d.png","🍱": "assets/Bento box/3D/bento_box_3d.png","🐧": "assets/Penguin/3D/penguin_3d.png","🐳": "assets/Spouting whale/3D/spouting_whale_3d.png","👧": "assets/Girl/Default/3D/girl_3d_default.png","✨": "assets/Sparkles/3D/sparkles_3d.png","🔨": "assets/Hammer/3D/hammer_3d.png","🎣": "assets/Fishing pole/3D/fishing_pole_3d.png","🌻": "assets/Sunflower/3D/sunflower_3d.png","🌴": "assets/Palm tree/3D/palm_tree_3d.png","🌙": "assets/Crescent moon/3D/crescent_moon_3d.png","🧈": "assets/Butter/3D/butter_3d.png","🏝": "assets/Desert island/3D/desert_island_3d.png","🏠": "assets/House/3D/house_3d.png","🦪": "assets/Oyster/3D/oyster_3d.png","🛥": "assets/Motor boat/3D/motor_boat_3d.png","🍗": "assets/Poultry leg/3D/poultry_leg_3d.png","🦭": "assets/Seal/3D/seal_3d.png","🧂": "assets/Salt/3D/salt_3d.png","🍋": "assets/Lemon/3D/lemon_3d.png","🍽": "assets/Fork and knife with plate/3D/fork_and_knife_with_plate_3d.png","🧯": "assets/Fire extinguisher/3D/fire_extinguisher_3d.png","🥢": "assets/Chopsticks/3D/chopsticks_3d.png","🪣": "assets/Bucket/3D/bucket_3d.png","🚤": "assets/Speedboat/3D/speedboat_3d.png","🦑": "assets/Squid/3D/squid_3d.png","🍚": "assets/Cooked rice/3D/cooked_rice_3d.png","🔇": "assets/Muted speaker/3D/muted_speaker_3d.png","📂": "assets/Open file folder/3D/open_file_folder_3d.png","💾": "assets/Floppy disk/3D/floppy_disk_3d.png","🍳": "assets/Cooking/3D/cooking_3d.png","👗": "assets/Dress/3D/dress_3d.png","⛴": "assets/Ferry/3D/ferry_3d.png","🕸": "assets/Spider web/3D/spider_web_3d.png","🧊": "assets/Ice/3D/ice_3d.png","⭐": "assets/Star/3D/star_3d.png","🕐": "assets/One oclock/3D/one_oclock_3d.png","⛱": "assets/Umbrella on ground/3D/umbrella_on_ground_3d.png","🌈": "assets/Rainbow/3D/rainbow_3d.png","🔥": "assets/Fire/3D/fire_3d.png","☀": "assets/Sun/3D/sun_3d.png","🤿": "assets/Diving mask/3D/diving_mask_3d.png","🌇": "assets/Sunset/3D/sunset_3d.png","🐟": "assets/Fish/3D/fish_3d.png"};
+const EMOJI_IMG = {"♨️": "assets/Hot springs/3D/hot_springs_3d.png","❄️": "assets/Snowflake/3D/snowflake_3d.png","🗣️": "assets/Speaking head/3D/speaking_head_3d.png","🛳️": "assets/Passenger ship/3D/passenger_ship_3d.png","🏞️": "assets/National park/3D/national_park_3d.png","🏝️": "assets/Desert island/3D/desert_island_3d.png","🛥️": "assets/Motor boat/3D/motor_boat_3d.png","🍽️": "assets/Fork and knife with plate/3D/fork_and_knife_with_plate_3d.png","⛴️": "assets/Ferry/3D/ferry_3d.png","🕸️": "assets/Spider web/3D/spider_web_3d.png","⛱️": "assets/Umbrella on ground/3D/umbrella_on_ground_3d.png","☀️": "assets/Sun/3D/sun_3d.png","⛄": "assets/Snowman without snow/3D/snowman_without_snow_3d.png","🔔": "assets/Bell/3D/bell_3d.png","📖": "assets/Open book/3D/open_book_3d.png","🚢": "assets/Ship/3D/ship_3d.png","✊": "assets/Raised fist/Default/3D/raised_fist_3d_default.png","📅": "assets/Calendar/3D/calendar_3d.png","🍶": "assets/Sake/3D/sake_3d.png","👕": "assets/T-shirt/3D/t-shirt_3d.png","🍣": "assets/Sushi/3D/sushi_3d.png","🎏": "assets/Carp streamer/3D/carp_streamer_3d.png","🔪": "assets/Kitchen knife/3D/kitchen_knife_3d.png","🏪": "assets/Convenience store/3D/convenience_store_3d.png","🥚": "assets/Egg/3D/egg_3d.png","🔄": "assets/Counterclockwise arrows button/3D/counterclockwise_arrows_button_3d.png","🪸": "assets/Coral/3D/coral_3d.png","🌅": "assets/Sunrise/3D/sunrise_3d.png","🐠": "assets/Tropical fish/3D/tropical_fish_3d.png","🏆": "assets/Trophy/3D/trophy_3d.png","🔈": "assets/Speaker low volume/3D/speaker_low_volume_3d.png","🍤": "assets/Fried shrimp/3D/fried_shrimp_3d.png","🎡": "assets/Ferris wheel/3D/ferris_wheel_3d.png","🥣": "assets/Bowl with spoon/3D/bowl_with_spoon_3d.png","🗿": "assets/Moai/3D/moai_3d.png","🎉": "assets/Party popper/3D/party_popper_3d.png","🌸": "assets/Cherry blossom/3D/cherry_blossom_3d.png","🔒": "assets/Locked/3D/locked_3d.png","♨": "assets/Hot springs/3D/hot_springs_3d.png","🍁": "assets/Maple leaf/3D/maple_leaf_3d.png","📒": "assets/Ledger/3D/ledger_3d.png","🐚": "assets/Spiral shell/3D/spiral_shell_3d.png","🪁": "assets/Kite/3D/kite_3d.png","🛟": "assets/Ring buoy/3D/ring_buoy_3d.png","❄": "assets/Snowflake/3D/snowflake_3d.png","🟠": "assets/Orange circle/3D/orange_circle_3d.png","🗣": "assets/Speaking head/3D/speaking_head_3d.png","🛳": "assets/Passenger ship/3D/passenger_ship_3d.png","✅": "assets/Check mark button/3D/check_mark_button_3d.png","🧺": "assets/Basket/3D/basket_3d.png","💰": "assets/Money bag/3D/money_bag_3d.png","⚓": "assets/Anchor/3D/anchor_3d.png","🌊": "assets/Water wave/3D/water_wave_3d.png","🏮": "assets/Red paper lantern/3D/red_paper_lantern_3d.png","🏞": "assets/National park/3D/national_park_3d.png","⛵": "assets/Sailboat/3D/sailboat_3d.png","🐙": "assets/Octopus/3D/octopus_3d.png","😋": "assets/Face savoring food/3D/face_savoring_food_3d.png","🍱": "assets/Bento box/3D/bento_box_3d.png","🐧": "assets/Penguin/3D/penguin_3d.png","🐳": "assets/Spouting whale/3D/spouting_whale_3d.png","👧": "assets/Girl/Default/3D/girl_3d_default.png","✨": "assets/Sparkles/3D/sparkles_3d.png","🔨": "assets/Hammer/3D/hammer_3d.png","🎣": "assets/Fishing pole/3D/fishing_pole_3d.png","🌻": "assets/Sunflower/3D/sunflower_3d.png","🌴": "assets/Palm tree/3D/palm_tree_3d.png","🌙": "assets/Crescent moon/3D/crescent_moon_3d.png","🧈": "assets/Butter/3D/butter_3d.png","🏝": "assets/Desert island/3D/desert_island_3d.png","🏠": "assets/House/3D/house_3d.png","🦪": "assets/Oyster/3D/oyster_3d.png","🛥": "assets/Motor boat/3D/motor_boat_3d.png","🍗": "assets/Poultry leg/3D/poultry_leg_3d.png","🦭": "assets/Seal/3D/seal_3d.png","🧂": "assets/Salt/3D/salt_3d.png","🍋": "assets/Lemon/3D/lemon_3d.png","🍽": "assets/Fork and knife with plate/3D/fork_and_knife_with_plate_3d.png","🧯": "assets/Fire extinguisher/3D/fire_extinguisher_3d.png","🥢": "assets/Chopsticks/3D/chopsticks_3d.png","🪣": "assets/Bucket/3D/bucket_3d.png","🚤": "assets/Speedboat/3D/speedboat_3d.png","🦑": "assets/Squid/3D/squid_3d.png","🍚": "assets/Cooked rice/3D/cooked_rice_3d.png","🔇": "assets/Muted speaker/3D/muted_speaker_3d.png","📂": "assets/Open file folder/3D/open_file_folder_3d.png","💾": "assets/Floppy disk/3D/floppy_disk_3d.png","🍳": "assets/Cooking/3D/cooking_3d.png","👗": "assets/Dress/3D/dress_3d.png","⛴": "assets/Ferry/3D/ferry_3d.png","🕸": "assets/Spider web/3D/spider_web_3d.png","🧊": "assets/Ice/3D/ice_3d.png","⭐": "assets/Star/3D/star_3d.png","🕐": "assets/One oclock/3D/one_oclock_3d.png","🔊": "assets/Speaker high volume/3D/speaker_high_volume_3d.png","⛱": "assets/Umbrella on ground/3D/umbrella_on_ground_3d.png","🌈": "assets/Rainbow/3D/rainbow_3d.png","🔥": "assets/Fire/3D/fire_3d.png","☀": "assets/Sun/3D/sun_3d.png","🤿": "assets/Diving mask/3D/diving_mask_3d.png","🌇": "assets/Sunset/3D/sunset_3d.png","🎵": "assets/Musical note/3D/musical_note_3d.png","🐟": "assets/Fish/3D/fish_3d.png"};
 const EMOJI_RE = /(?:\p{Extended_Pictographic}|\p{Regional_Indicator}{2}|[0-9#*]\uFE0F?\u20E3)(?:\uFE0F|\u200D\p{Extended_Pictographic}|[\u{1F3FB}-\u{1F3FF}])*/gu;
 function emojiSrc(e) {
   const p = EMOJI_IMG[e] || EMOJI_IMG[e.replace(/\uFE0F/g, '')] || EMOJI_IMG[e + '\uFE0F'];
