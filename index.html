@@ -2873,7 +2873,7 @@ function startDive(area) {
   startTrip(area, 'moguri');
   const pool = poolFor(area, 'moguri');
   const vsec = (tripOpts().diveSec || 45) + (save.easy ? 10 : 0), base = tripOpts().diveSec || 45;
-  Object.assign(V, { on: true, area, pool, got: [], spots: [], time: vsec, left: vsec, last: performance.now(), next: 1.2, real: 0, rare: 0, maxReal: Math.round((save.easy ? 9 : 8) * base / 45), warned: false });
+  Object.assign(V, { on: true, area, pool, got: [], spots: [], time: vsec, left: vsec, last: performance.now(), next: 1.2, real: 0, rare: 0, ending: false, maxReal: Math.round((save.easy ? 9 : 8) * base / 45), warned: false });
   show('dive');
   const f = $('dive-field');
   const rays = `<svg style="position:absolute;inset:0" viewBox="0 0 100 100" preserveAspectRatio="none" width="100%" height="100%"><path d="M15 0 L25 0 L45 100 L28 100 Z M55 0 L62 0 L80 100 L66 100 Z" fill="#FFF" opacity="0.08"/></svg>`;
@@ -2900,7 +2900,8 @@ function startDive(area) {
 function peekOut() {
   const free = V.spots.filter(s => !s.busy); if (!free.length) return;
   const S = pick(free);
-  const decoy = V.real >= V.maxReal || Math.random() < 0.22;
+  if (V.real >= V.maxReal) return; // ぜんぶ だしおわったら もう でない
+  const decoy = Math.random() < 0.22;
   let sp = decoy ? null : pickWeighted(V.pool);
   // たかい もの（アワビ・イセエビ・ケガニ など）は 1かいの もぐりで 1ぴき まで
   if (sp && sp.rare >= 3) { if (V.rare >= 1) { const cheap = V.pool.filter(p => p.rare < 3); sp = cheap.length ? pickWeighted(cheap) : sp; } else V.rare = 1; }
@@ -2942,6 +2943,11 @@ function diveLoop(now) {
   const dt = Math.min(0.05, (now - V.last) / 1000); V.last = now;
   V.left -= dt; V.next -= dt;
   if (V.next <= 0) { V.next = rand(1.2, 2.0); peekOut(); }
+  // ぜんぶ でおわって、もう かおを だしている ものが いなければ あがる
+  if (V.real >= V.maxReal && !V.ending && !V.spots.some(s => s.busy)) {
+    V.ending = true; say2(V.got.length ? 'ぜんぶ さがしたよ！ あがろう！' : 'もう いないみたい… あがろう！');
+    setTimeout(() => { if (V.on) endDive(); }, 1400);
+  }
   $('breath-bar').style.width = Math.max(0, V.left / V.time * 100) + '%';
   if (V.left < 8 && !V.warned) { V.warned = true; say2('いきが くるしい！ もうすぐ あがるよ'); }
   if (V.left <= 0) { endDive(); return; }
