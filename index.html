@@ -234,6 +234,8 @@
     .cloud-btn { background: linear-gradient(135deg, #FFFFFF, #E2F2FF) !important; }
     .cl-more { text-align: left; font-weight: 900; color: var(--ink-soft); }
     .cl-more summary { cursor: pointer; padding: 0.4rem 0; }
+    .vol { display: flex; align-items: center; gap: 0.5rem; margin: -0.2rem 0.4rem 0.3rem; }
+    .vol input { flex: 1; accent-color: #1FA772; height: 2rem; }
     .toast { position: fixed; left: 50%; bottom: 2rem; z-index: 80; transform: translateX(-50%); padding: 0.7rem 1.2rem; border-radius: 999px; background: #12324A; color: #FFF; font-weight: 900; opacity: 0; transition: opacity 0.25s; pointer-events: none; white-space: nowrap; }
     .toast.show { opacity: 1; }
     .switch { display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 900; }
@@ -1430,7 +1432,7 @@ function speakSequence(parts) {
     const voice = pickVoice(p.lang);
     if (voice) msg.voice = voice;
     const s = VOICE_SETTINGS[p.lang] || { rate: 0.85, pitch: 1.05 };
-    msg.rate = s.rate; msg.pitch = s.pitch;
+    msg.rate = s.rate; msg.pitch = s.pitch; msg.volume = voiceVol;
     msg.onend = () => {
       if (token !== speechToken) return;
       speechTimers.push(setTimeout(() => playAt(i + 1), p.pauseAfter || 0));
@@ -1467,6 +1469,9 @@ let isMuted = loadProgress(APP_ID + '-muted') === true;
 // おとの せってい（むかしの「おとを けす」は ぜんぶ オフ として ひきつぐ）
 const _pref = (k) => { const v = loadProgress('fishing-' + k); return v === null ? !isMuted : v === true; };
 let voiceOn = _pref('voice'), sfxOn = _pref('sfx'), bgmOn = _pref('bgm');
+// おんりょう（0〜1）
+const _vol = (k, d) => { const v = loadProgress('fishing-vol-' + k); return typeof v === 'number' ? v : d; };
+let bgmVol = _vol('bgm', 0.8), sfxVol = _vol('sfx', 0.7), voiceVol = _vol('voice', 0.65);
 // すすみぐあいの ほぞん
 function saveProgress(key, data) { try { localStorage.setItem(key, JSON.stringify(data)); } catch (e) {} }
 function loadProgress(key) { try { const s = localStorage.getItem(key); return s ? JSON.parse(s) : null; } catch (e) { return null; } }
@@ -1774,7 +1779,7 @@ function fishImg(k, shadow) {
 function getPokemonImageUrl(id) { return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/${id}.gif`; }
 function playCry(id, volume = 0.45) {
   if (!sfxOn) return;
-  try { const a = new Audio(`https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/${id}.ogg`); a.volume = volume; a.play().catch(() => {}); } catch (e) {}
+  try { const a = new Audio(`https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/${id}.ogg`); a.volume = Math.min(1, volume * sfxVol); a.play().catch(() => {}); } catch (e) {}
 }
 
 // ---------- こうかおん ----------
@@ -1786,6 +1791,7 @@ function snd(type) {
     if (actx.state === 'suspended') actx.resume();
     const t = actx.currentTime;
     const tone = (f1, f2, st, dur, vol = 0.14, wave = 'triangle') => {
+      vol = Math.max(0.0002, vol * sfxVol);
       const o = actx.createOscillator(), g = actx.createGain(); o.type = wave;
       o.frequency.setValueAtTime(f1, t + st); o.frequency.exponentialRampToValueAtTime(f2, t + st + dur);
       g.gain.setValueAtTime(0.0001, t + st); g.gain.exponentialRampToValueAtTime(vol, t + st + 0.015); g.gain.exponentialRampToValueAtTime(0.0001, t + st + dur);
@@ -1795,7 +1801,7 @@ function snd(type) {
       const len = Math.floor(actx.sampleRate * dur), buf = actx.createBuffer(1, len, actx.sampleRate), d = buf.getChannelData(0);
       for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / len);
       const s = actx.createBufferSource(), f = actx.createBiquadFilter(), g = actx.createGain();
-      f.type = 'lowpass'; f.frequency.value = freq; g.gain.value = vol; s.buffer = buf;
+      f.type = 'lowpass'; f.frequency.value = freq; g.gain.value = vol * sfxVol; s.buffer = buf;
       s.connect(f); f.connect(g); g.connect(actx.destination); s.start(t + st);
     };
     if (type === 'cast') { noise(0, 0.35, 0.25, 2400); tone(900, 300, 0, 0.35, 0.05, 'sine'); }
@@ -3793,7 +3799,7 @@ function bgmPlay(name) {
     const c = audioCtx();
     if (c.state === 'suspended') c.resume();
     bgmStop();
-    BGM.gain = c.createGain(); BGM.gain.gain.setValueAtTime(0.0001, c.currentTime); BGM.gain.gain.exponentialRampToValueAtTime(0.9, c.currentTime + 1.2);
+    BGM.gain = c.createGain(); BGM.gain.gain.setValueAtTime(0.0001, c.currentTime); BGM.gain.gain.exponentialRampToValueAtTime(bgmLevel(), c.currentTime + 1.2);
     BGM.gain.connect(c.destination);
     BGM.song = name; BGM.step = 0; BGM.next = c.currentTime + 0.1;
     BGM.timer = setInterval(bgmSchedule, 120); bgmSchedule();
@@ -3820,10 +3826,22 @@ document.addEventListener('visibilitychange', () => {
 document.addEventListener('pointerdown', () => { if (bgmOn && BGM.want && !BGM.song) bgmPlay(BGM.want); if (actx && actx.state === 'suspended' && !document.hidden) actx.resume(); }, true);
 
 // ---------- おとの せってい（BGM・こうかおん・こえ）----------
+const bgmLevel = () => Math.max(0.0002, bgmVol * 2.2);
 function soundSettings() {
+  const slider = (k, v, on) => on ? `<label class="vol"><span>🔈</span><input type="range" min="5" max="100" value="${Math.round(v * 100)}" data-k="${k}"><span>🔊</span></label>` : '';
   const sw = (k, label, on) => `<button class="item snd-row" data-k="${k}"><span class="ico">${label[0]}</span><span class="txt">${label[1]}<small>${label[2]}</small></span><span class="switch ${on ? 'on' : ''}"><i></i></span></button>`;
   $('multi-box').innerHTML = `<p class="res-name">おとの せってい</p><div class="shop-list">
-    ${sw('bgm', ['🎵', 'BGM', 'ばめんごとの おんがく'], bgmOn)}${sw('sfx', ['🔔', 'こうかおん', 'チャポン・カチカチ・なきごえ'], sfxOn)}${sw('voice', ['🗣️', 'こえ', 'なまえや セリフの よみあげ'], voiceOn)}</div><button class="btn primary" id="snd-close">とじる</button>`;
+    ${sw('bgm', ['🎵', 'BGM', 'ばめんごとの おんがく'], bgmOn)}${slider('bgm', bgmVol, bgmOn)}${sw('sfx', ['🔔', 'こうかおん', 'チャポン・カチカチ・なきごえ'], sfxOn)}${slider('sfx', sfxVol, sfxOn)}${sw('voice', ['🗣️', 'こえ', 'なまえや セリフの よみあげ'], voiceOn)}${slider('voice', voiceVol, voiceOn)}</div><button class="btn primary" id="snd-close">とじる</button>`;
+  $('multi-box').querySelectorAll('.vol input').forEach(r => {
+    r.oninput = () => {
+      const v = +r.value / 100, k = r.dataset.k;
+      if (k === 'bgm') { bgmVol = v; if (BGM.gain) { const c = audioCtx(); BGM.gain.gain.cancelScheduledValues(c.currentTime); BGM.gain.gain.setValueAtTime(bgmLevel(), c.currentTime); } }
+      if (k === 'sfx') sfxVol = v;
+      if (k === 'voice') voiceVol = v;
+      saveProgress('fishing-vol-' + k, v);
+    };
+    r.onchange = () => { if (r.dataset.k === 'sfx') snd('coin'); if (r.dataset.k === 'voice') speak('このくらい？'); };
+  });
   $('multi').classList.add('show');
   $('multi-box').querySelectorAll('.snd-row').forEach(b => b.onclick = () => {
     const k = b.dataset.k;
