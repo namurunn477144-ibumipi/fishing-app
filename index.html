@@ -3544,7 +3544,9 @@ function renderTripOpts() {
   $('trip-opts').innerHTML = `
     <div class="dgroup"><b>きせつ</b><div class="dchips">${row('season', [['now', '📅 いま'], ...Object.keys(SEASON_ICON).map(k => [k, SEASON_ICON[k] + ' ' + k])])}</div></div>
     <div class="dgroup"><b>じかん</b><div class="dchips">${row('tod', [['now', '🕐 いま'], ...Object.keys(TOD_ICON).map(k => [k, TOD_ICON[k] + ' ' + k])])}</div></div>
-    <div class="dgroup"><b>なんびき つったら かえる？</b><div class="dchips">${row('limit', [[3, '3びき'], [5, '5ひき'], [10, '10ぴき'], [0, 'じゆう']])}</div><small class="sub">あみは なんかい あげたか、しおひがり・もぐりは じかんで おわるよ</small></div>
+    ${selMethod === 'hori' || selMethod === 'moguri' ? `<div class="dgroup"><b>${selMethod === 'hori' ? 'しおが みちてくるまで' : 'いきが つづくまで'} あそぶよ</b><small class="sub">じかんに なったら おわるよ</small></div>`
+      : selMethod === 'ami' ? `<div class="dgroup"><b>なんかい あみを あげたら かえる？</b><div class="dchips">${row('limit', [[3, '3かい'], [5, '5かい'], [10, '10かい'], [0, 'じゆう']])}</div><small class="sub">1かいで なんびき とれても だいじょうぶ</small></div>`
+      : `<div class="dgroup"><b>なんびき つったら かえる？</b><div class="dchips">${row('limit', [[3, '3びき'], [5, '5ひき'], [10, '10ぴき'], [0, 'じゆう']])}</div></div>`}
     ${(save.bait || 0) > 0 ? `<div class="dgroup"><b>✨ きらきら えさ（のこり ${save.bait}）</b><div class="dchips">${row('bait', [[false, 'つかわない'], [true, 'つかう！ めずらしい さかなが でやすい']])}</div></div>` : ''}`;
   renderTargets();
   $('trip-opts').querySelectorAll('button').forEach(b => b.onclick = () => {
