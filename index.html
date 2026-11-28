@@ -2107,7 +2107,8 @@ function onAct() {
   if (!G.on) return;
   const ph = G.phase;
   if (G.method === 'ami') {
-    if (ph === 'idle') { G.phase = 'netaim'; setAct('ゆびで ねらってね', 'wait'); say('ゆびで むれを ねらって、はなすと なげるよ！', true); }
+    if (ph === 'idle') { G.phase = 'netaim'; G.aimX = bestSchoolX(); setAct('ここに なげる！', '', true); say('もういちど おすと なげるよ！ ゆびで ねらいも うごかせるよ', true); }
+    else if (ph === 'netaim') throwNet();
     else if (ph === 'netpull') netPull();
     return;
   }
@@ -2740,12 +2741,19 @@ function netAimAt(e) {
 }
 $('scene').addEventListener('pointerdown', (e) => { if (G.on && G.method === 'ami' && G.phase === 'netaim') { G.aiming = true; netAimAt(e); } });
 $('scene').addEventListener('pointermove', (e) => { if (G.aiming) netAimAt(e); });
-$('scene').addEventListener('pointerup', () => {
-  if (!G.aiming) return; G.aiming = false;
+$('scene').addEventListener('pointerup', () => { if (!G.aiming) return; G.aiming = false; throwNet(); });
+function throwNet() {
+  if (G.phase !== 'netaim' || G.aimX == null) return;
   G.net = { x: G.aimX, d: 0, t: 0, pulls: 0, need: save.easy ? 3 : 4, ring: 0 };
   G.phase = 'netfly'; snd('cast'); G.aimX = null;
   setAct('…', ''); $('act').classList.add('hide');
-});
+}
+// いちばん さかなが おおい むれの ばしょ
+function bestSchoolX() {
+  let best = 0.6, bc = -1;
+  G.fishes.forEach(f => { const n = G.fishes.filter(o => Math.abs(o.x - f.x) < 0.12).length; if (n > bc) { bc = n; best = f.x; } });
+  return clamp(best, 0.3, 0.95);
+}
 function updateNet(g, dt) {
   const N = G.net; if (!N) return;
   if (G.phase === 'netfly') { N.t += dt / 0.6; if (N.t >= 1) { G.phase = 'netsink'; N.t = 0; splashAt(N.x * g.W, g.surf, true); snd('splash'); } }
