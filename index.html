@@ -463,6 +463,12 @@
     .tg em { display: flex; gap: 0.2rem; justify-content: center; flex-wrap: wrap; font-style: normal; }
     .tg i { font-style: normal; font-size: 0.65rem; padding: 0.05rem 0.35rem; border-radius: 999px; }
     .tg .shun { background: #1FA772; color: #FFF; } .tg .nt { background: #2E3A59; color: #FFF; }
+    /* ---------- がめんの はしの ジェスチャーに あたりにくく ---------- */
+    html, body { -webkit-touch-callout: none; touch-action: manipulation; }
+    img, svg { -webkit-user-drag: none; user-select: none; }
+    .controls { padding-bottom: calc(2.2rem + env(safe-area-inset-bottom)); padding-left: 1.4rem; padding-right: 1.4rem; }
+    #dig .controls { padding-bottom: calc(2.2rem + env(safe-area-inset-bottom)); }
+    input { user-select: text; -webkit-user-select: text; }
     /* 3Dの えもじ */
     .emo { display: inline-block; width: 1.2em; height: 1.2em; object-fit: contain; vertical-align: -0.25em; -webkit-user-drag: none; }
     .question-emoji .emo, .opt-emoji .emo { width: 1.1em; height: 1.1em; vertical-align: middle; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.12)); }
@@ -3947,6 +3953,22 @@ function openCloud() {
 }
 $('bk-cloud').onclick = () => openCloud();
 setTimeout(cloudCheckOnOpen, 800);
+
+// =========================================================
+// ▼▼ ぜんがめん：うえと したの バーを かくして、まちがって ほかの がめんに いかないように ▼▼
+// =========================================================
+document.addEventListener('contextmenu', (e) => { if (!(e.target && e.target.tagName === 'INPUT')) e.preventDefault(); });
+function goFull() {
+  try {
+    if (document.fullscreenElement || !document.documentElement.requestFullscreen) return;
+    if (window.matchMedia('(display-mode: fullscreen)').matches) return;
+    document.documentElement.requestFullscreen({ navigationUI: 'hide' }).catch(() => {});
+  } catch (e) {}
+}
+// あそびはじめ（だれかを えらんだ とき）と、とちゅうで もどった ときに ぜんがめんに する
+document.addEventListener('pointerup', (e) => {
+  if (e.target.closest && e.target.closest('.player, #go-btn, #start-btn, #cook-btn')) goFull();
+}, true);
 
 // ---------- スタート ----------
 function setMuted() {}
