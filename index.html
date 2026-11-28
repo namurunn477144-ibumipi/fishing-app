@@ -471,6 +471,12 @@
     .controls { padding-bottom: calc(2.2rem + env(safe-area-inset-bottom)); padding-left: 1.4rem; padding-right: 1.4rem; }
     #dig .controls { padding-bottom: calc(2.2rem + env(safe-area-inset-bottom)); }
     input { user-select: text; -webkit-user-select: text; }
+    .reel { width: 13.5rem; height: 13.5rem; margin-right: 0.6rem; }
+    .reel .arm { top: -5.4rem; height: 5.4rem; }
+    .reel .knob { top: -6.8rem; width: 3.6rem; height: 3.6rem; left: -1.8rem; }
+    .reel .hub { width: 3rem; height: 3rem; margin: -1.5rem; }
+    .reel .lbl2 { position: absolute; left: -3rem; right: -1rem; bottom: -1.3rem; text-align: center; font-size: 0.75rem; font-weight: 900; color: #FFF; text-shadow: 0 2px 4px rgba(0,0,0,0.6); }
+    @media (max-width: 520px) { .reel { width: 10.5rem; height: 10.5rem; } .reel .arm { top: -4.2rem; height: 4.2rem; } .reel .knob { top: -5.3rem; } }
     /* 3Dの えもじ */
     .emo { display: inline-block; width: 1.2em; height: 1.2em; object-fit: contain; vertical-align: -0.25em; -webkit-user-drag: none; }
     .question-emoji .emo, .opt-emoji .emo { width: 1.1em; height: 1.1em; vertical-align: middle; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.12)); }
@@ -551,7 +557,7 @@
   <div class="pullring" id="pullring"><i class="t"></i><i class="o" id="pullring-o"></i></div>
   <div class="controls">
     <button class="act" id="act">なげる</button>
-    <div class="reel" id="reel"><div class="hub"></div><div class="knob-arm" id="knob"><div class="arm"></div><div class="knob"></div></div><div class="lbl">ぐるぐる まく</div></div>
+    <div class="reel" id="reel"><div class="hub"></div><div class="knob-arm" id="knob"><div class="arm"></div><div class="knob"></div></div><div class="lbl">ぐるぐる まく</div><div class="lbl2">うみの うえを こすっても OK</div></div>
   </div>
 </section>
 
@@ -2168,6 +2174,17 @@ function hookIt() {
   });
   const up = () => { lastAng = null; G.held = false; };
   reel.addEventListener('pointerup', up); reel.addEventListener('pointercancel', up);
+  // うみの うえを どこでも こすれば まける（まるく なくても OK）
+  const sc = $('scene'); let last = null;
+  const can = () => G.on && (G.phase === 'fight' || (G.phase === 'wait' && (G.method === 'lure' || G.method === 'egi')));
+  sc.addEventListener('pointerdown', (e) => { if (!can() || e.target.closest('.partner-fish')) return; last = [e.clientX, e.clientY]; G.held = true; try { sc.setPointerCapture(e.pointerId); } catch (er) {} });
+  sc.addEventListener('pointermove', (e) => {
+    if (!last) return;
+    const d = Math.hypot(e.clientX - last[0], e.clientY - last[1]); last = [e.clientX, e.clientY];
+    const rad = Math.min(d, 80) * 0.016; G.reelAcc += rad; G.knob += rad;
+  });
+  const up2 = () => { if (last) { last = null; G.held = false; } };
+  sc.addEventListener('pointerup', up2); sc.addEventListener('pointercancel', up2);
 })();
 
 // ---------- まいフレーム ----------
@@ -2180,7 +2197,8 @@ function loop(now) {
   const inst = G.reelAcc / (Math.PI * 2) / Math.max(dt, 0.001); G.reelAcc = 0;
   G.reelRaw = (G.reelRaw || 0) * 0.82 + inst * 0.18;
   let reel = Math.min(3, G.reelRaw);
-  if (G.held && reel < 0.45) { reel = 0.45; G.knob += 0.45 * Math.PI * 2 * dt; }
+  const holdSp = save.easy ? 0.9 : 0.5;
+  if (G.held && reel < holdSp) { reel = holdSp; G.knob += holdSp * Math.PI * 2 * dt; }
   G.reel = reel;
   G.tickAcc += reel * dt * 4; if (G.tickAcc > 1) { G.tickAcc = 0; snd('tick'); }
   $('knob').style.transform = `rotate(${G.knob}rad)`;
@@ -3051,7 +3069,7 @@ const RECIPES = [
   { k: 'yude', n: 'しおゆで', icon: '♨️', steps: ['wash', 'boil', 'aku'], ok: (k) => ['kegani', 'iseebi', 'kurumaebi', 'hokkigai', 'namako', 'tenagaebi'].includes(k), dish: 'boiled' },
 ];
 const RECIPE_BY = Object.fromEntries(RECIPES.map(r => [r.k, r]));
-const STEP_NAMES = { scale: 'うろこを とる', fillet: 'さばく', slice: 'きる', plate: 'もりつけ', nigiri: 'にぎる', salt: 'しおを ふる', grill: 'やく', coat3: 'ころもを つける', coat1: 'こなを つける', fry: 'あげる', wash: 'あらう', boil: 'にる', stir: 'まぜる', open: 'からを あける', hogusu: 'ほぐす', takoyaki: 'くるっと まわす', wasabi: 'わさびを する', kushi: 'くしを さす', kazari: 'かざりぎり', egg: 'たまごを わる', chop: 'ねぎを きざむ', aku: 'あくを とる', scoop: 'あみで すくう', lemon: 'レモンを しぼる', aburi: 'あぶる', shake: 'フライパンを ふる', tare: 'たれを かける' };
+const STEP_NAMES = { scale: 'うろこを とる', fillet: 'さばく', slice: 'きる', plate: 'もりつけ', nigiri: 'にぎる', salt: 'しおを ふる', grill: 'やく', coat3: 'ころもを つける', coat1: 'こなを つける', fry: 'あげる', wash: 'あらう', boil: 'にる', stir: 'まぜる', open: 'からを あける', hogusu: 'ほぐす', takoyaki: 'くるっと まわす', wasabi: 'わさびを する', kushi: 'くしを さす', kazari: 'かざりぎり', egg: 'たまごを わる', chop: 'ねぎを きざむ', aku: 'あくを とる', scoop: 'あみで すくう', lemon: 'レモンを しぼる', aburi: 'あぶる', shake: 'フライパンを ふる', tare: 'たれを かける', peel: 'かわを むく', shiomomi: 'しおで もむ' };
 function itemName(k) { return k === 'ikura' ? 'いくら' : SP_BY[k].n; }
 function itemImg(k) { return k === 'ikura' ? IKURA_IMG() : fishImg(k); }
 let _ikura = null;
@@ -3108,7 +3126,7 @@ function renderKitchen() {
   if (!it) { $('kitchen-recipes').innerHTML = `<p class="hint">ざいりょうを えらんでね</p>`; }
   else {
     const rs = RECIPES.filter(r => r.ok(it.k));
-    $('kitchen-recipes').innerHTML = rs.length ? rs.map(r => `<button class="recipe" data-r="${r.k}"><img src="${dishURL(r.k, it.k)}" alt=""><b>${itemName(it.k)}の ${r.n}</b><small>${r.steps.map(s => STEP_NAMES[s]).join(' → ')}</small>${made[r.k + ':' + it.k] ? `<span class="made">${'⭐'.repeat(made[r.k + ':' + it.k].stars)}</span>` : ''}</button>`).join('')
+    $('kitchen-recipes').innerHTML = rs.length ? rs.map(r => `<button class="recipe" data-r="${r.k}"><img src="${dishURL(r.k, it.k)}" alt=""><b>${itemName(it.k)}の ${r.n}</b><small>${r.steps.map(s => s !== 'scale' || isFish(it.k) ? s : SQUID.includes(it.k) ? 'peel' : OCTO.includes(it.k) ? 'shiomomi' : 'wash').filter((s, i, a) => !(s === 'wash' && a.indexOf('wash') !== i)).map(s => STEP_NAMES[s]).join(' → ')}</small>${made[r.k + ':' + it.k] ? `<span class="made">${'⭐'.repeat(made[r.k + ':' + it.k].stars)}</span>` : ''}</button>`).join('')
       : `<p class="hint">これは りょうり できないみたい</p>`;
     $('kitchen-recipes').querySelectorAll('.recipe').forEach(b => b.onclick = () => { snd('tap'); startCook(b.dataset.r, kitchenSel); });
   }
@@ -3122,7 +3140,11 @@ $('kitchen-back').onclick = () => { renderHome(); show('home'); };
 const C = {};
 function startCook(rk, idx) {
   const it = save.box[idx];
-  Object.assign(C, { rk, it, idx, step: 0, scores: [], R: RECIPE_BY[rk] });
+  // うろこが ない ものは ざいりょうに あった てじゅんに かえる（イカ：かわを むく／タコ：しおで もむ／かい・エビ：あらう）
+  const base = RECIPE_BY[rk], k = it.k;
+  const steps = base.steps.map(s => s !== 'scale' || isFish(k) ? s : SQUID.includes(k) ? 'peel' : OCTO.includes(k) ? 'shiomomi' : 'wash')
+    .filter((s, i, a) => !(s === 'wash' && a.indexOf('wash') !== i));
+  Object.assign(C, { rk, it, idx, step: 0, scores: [], R: { ...base, steps } });
   show('cook');
   $('cook-title').textContent = `${itemName(it.k)}の ${C.R.n}`;
   nextStep();
@@ -3314,6 +3336,8 @@ const STEPS = {
   scale: (st, done) => rubStep(st, done, itemImg(C.it.k), 'ゆびで ごしごし こすって うろこを とってね', { colors: ['#E8F4FF', '#FFFFFF', '#C8D8E8'], shapes: ['star'] }),
   wash: (st, done) => rubStep(st, done, itemImg(C.it.k), 'ゆびで ごしごし こすって きれいに あらってね', { colors: ['#9AD8FF', '#FFFFFF'] }),
   hogusu: (st, done) => rubStep(st, done, itemImg(C.it.k), 'ゆびで やさしく ほぐしてね', { colors: ['#F26A1E', '#FFB060'] }),
+  peel: (st, done) => rubStep(st, done, itemImg(C.it.k), 'ゆびで こすって うすい かわを むいてね', { colors: ['#B8604A', '#F4E6E0', '#FFFFFF'] }),
+  shiomomi: (st, done) => rubStep(st, done, itemImg(C.it.k), 'しおを ふって ゆびで もみもみ（ぬめりを とる）', { colors: ['#FFFFFF', '#E8EEF2'], shapes: ['star'] }),
   fillet: filletStep,
   slice: sliceStep,
   salt: (st, done) => tapStep(st, done, { msg: 'しおを パラパラ ふってね', btn: '🧂 パラパラ', n: 5, scene: fishBoard() + '<div id="salt" class="saltlayer"></div>', onTap: () => { const s = $('salt'); for (let i = 0; i < 12; i++) { const d = document.createElement('i'); d.style.left = rand(15, 85) + '%'; d.style.top = rand(30, 70) + '%'; s.appendChild(d); } } }),
